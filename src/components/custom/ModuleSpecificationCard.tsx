@@ -11,6 +11,12 @@ const ModuleSpecificationCard = () => {
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pretium, felis eget faucibus molestie, arcu ligula luctus felis, in viverra eros ex id enim. Integer bibendum tellus eget risus pharetra eleifend. 
             </p>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pretium, felis eget faucibus molestie, arcu ligula luctus felis, in viverra eros ex id enim. Integer bibendum tellus eget risus pharetra eleifend. 
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pretium, felis eget faucibus molestie, arcu ligula luctus felis, in viverra eros ex id enim. Integer bibendum tellus eget risus pharetra eleifend. 
+            </p>
         </div>
     );
 };

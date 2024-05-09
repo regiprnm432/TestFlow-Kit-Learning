@@ -1,6 +1,8 @@
 import Layout from "./Layout";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
 import CodePorgramCard from "@/components/custom/CodeProgramCard";
+import { AddTestCaseCard } from "@/components/custom/AddTestCaseCard";
+import CFGCard from "@/components/custom/CFGCard";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -24,21 +26,12 @@ const AddTestCasePage = () => {
               </ScrollArea>
             </div>
           </ResizablePanel>
-          <ResizableHandle style={{ backgroundColor: "black" }} />
+          <ResizableHandle style={{ backgroundColor: "#D1D5DB" }} />
           <ResizablePanel defaultSize={50}>
-            <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={50}>
-                <div className="flex h-full items-center justify-center p-6">
-                  <span className="font-semibold">Two</span>
-                </div>
-              </ResizablePanel>
-              <ResizableHandle style={{ backgroundColor: "black" }} />
-              <ResizablePanel defaultSize={50}>
-                <div className="flex h-full items-center justify-center p-6">
-                  <span className="font-semibold">Three</span>
-                </div>
-              </ResizablePanel>
-            </ResizablePanelGroup>
+            <div className="flex flex-col h-full items-center justify-center p-6 gap-6">
+              <CFGCard/>
+              <AddTestCaseCard/>
+            </div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
