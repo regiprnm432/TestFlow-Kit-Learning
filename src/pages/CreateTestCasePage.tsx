@@ -18,7 +18,7 @@ const AddTestCasePage = () => {
         >
           <ResizablePanel defaultSize={50}>
             <div className="flex h-full items-center justify-center">
-              <ScrollArea className="h-full w-full rounded-md border border px-8">
+              <ScrollArea className="h-full w-full px-8">
                 <ModuleSpecificationCard />
                 <CodePorgramCard />
               </ScrollArea>
