@@ -35,9 +35,9 @@ const TestCaseFormDialog = ({ isDialogOpen, setIsDialogOpen }: FormDialogProps) 
         <>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                    <Button className="bg-blue-800 text-white" onClick={handleOpenDialog}>Tambah</Button>
+                    <Button className="bg-blue-800 text-white border border-black hover:bg-gray-200" onClick={handleOpenDialog}>Tambah</Button>
                 </DialogTrigger>
-                <DialogContent className="" style={{ backgroundColor: "white" }}>
+                <DialogContent className="bg-white">
                     <DialogHeader>
                         <DialogTitle>Tambah Test Case</DialogTitle>
                         <Form {...form}>
