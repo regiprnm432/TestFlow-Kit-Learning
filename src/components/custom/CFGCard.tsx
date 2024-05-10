@@ -13,8 +13,8 @@ import cfgImage from "../../assets/cfg.jpg";
 const CFGCard = ({}) => {
   return (
     <div className="card-container w-full">
-      <Card className="card">
-        <CardHeader className="card-header ">
+      <Card >
+        <CardHeader className=" p-6 ">
           <CardTitle className="module-title">CFG</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center items-center module-title">

@@ -7,7 +7,6 @@
   line-height: 1.5;
   font-weight: 400;
 
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -29,10 +28,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #F6F6FF; 
+  background-color: #f6f6ff;
   overflow-x: hidden;
   max-width: 100vw;
 }
+
 
 h1 {
   font-size: 3.2em;
@@ -51,8 +51,9 @@ button {
   transition: border-color 0.25s;
   font-family: Arial, sans-serif;
 }
+
 button:hover {
-  border-color: #2140AD;
+  border-color: #2140ad;
 }
 
 .buttonMenu {
@@ -66,7 +67,7 @@ button:hover {
 
 .activeButton {
   /* Gaya untuk tombol yang aktif */
-  background-color:#ffffff;
+  background-color: #ffffff;
   color: #000;
   box-shadow: #f0f0f0;
 }
@@ -75,7 +76,6 @@ button:hover {
   /* Gaya untuk tombol yang tidak aktif */
   background-color: transparent;
   color: #333;
-  
 }
 
 .buttonMenu:hover {
@@ -83,13 +83,11 @@ button:hover {
   background-color: #f0f0f0;
 }
 
-
 button:focus,
 button:focus-visible {
-  background-color: #ffffff; 
-  color:#2140AD;
+  background-color: #ffffff;
+  color: #2140ad;
 }
-
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -108,6 +106,13 @@ button:focus-visible {
   font-size: 18px;
   font-weight: bold;
   color: #333;
+  margin-bottom: 16px;
+}
+
+.module-title-white {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
   margin-bottom: 16px;
 }
 
@@ -135,9 +140,8 @@ button:focus-visible {
 }
 
 .card-container {
-  max-height: 33vh ; /* Tinggi maksimal card */
+  max-height: 33vh; /* Tinggi maksimal card */
   overflow-y: auto; /* Aktifkan scrollbar jika konten melebihi tinggi maksimal */
-
 }
 
 .card {
@@ -150,10 +154,8 @@ button:focus-visible {
 .pass-card {
   border-radius: 4px; /* Sudut border */
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Bayangan */
-  background-color: #2e048f; /* Warna latar belakang */
   padding: 16px; /* Padding di dalam card */
 }
-
 
 /* Gaya scrollbar untuk Chrome dan Safari */
 ::-webkit-scrollbar {
@@ -185,3 +187,18 @@ button:focus-visible {
   scrollbar-color: #555 #f1f1f1; /* Warna thumb dan track scrollbar saat dihover */
 }
 
+.button-container-custom {
+  display: flex;
+  justify-content: right;
+  gap: 4px;
+}
+
+.button-container-custom .button-custom {
+  border-radius: 8px;
+  font-size: 10px;
+}
+
+.button-container-custom .button-custom:hover {
+  color: white;
+  border: 2px solid white;
+}
