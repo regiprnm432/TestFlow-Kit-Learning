@@ -9,7 +9,11 @@ import {
 } from "@/components/ui/card";
 import "../../index.css";
 
-const edges = [{ id: '1-2', source: '1', target: '2' }];
+const edges = [
+  { id: '1-2', source: '1', target: '2' },
+  { id: '1-3', source: '1', target: '3' },
+  { id: '1-4', source: '1', target: '4' },
+];
 
 const nodes = [
   {
@@ -22,6 +26,16 @@ const nodes = [
     id: '2',
     data: { label: 'World' },
     position: { x: 100, y: 100 },
+  },
+  {
+    id: '3',
+    data: { label: 'React' },
+    position: { x: 200, y: 50 },
+  },
+  {
+    id: '4',
+    data: { label: 'Flow' },
+    position: { x: 200, y: 150 },
   },
 ];
 
