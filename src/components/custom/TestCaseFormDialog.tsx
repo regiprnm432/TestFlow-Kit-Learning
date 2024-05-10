@@ -15,6 +15,7 @@ import {
     FormControl,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 
 interface FormDialogProps {
     isDialogOpen: boolean;
@@ -35,7 +36,12 @@ const TestCaseFormDialog = ({ isDialogOpen, setIsDialogOpen }: FormDialogProps) 
         <>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                    <Button className="bg-blue-800 text-white border border-black hover:bg-gray-200" onClick={handleOpenDialog}>Tambah</Button>
+                <Button
+                    className="bg-blue-800 text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
+                    style={{ fontSize: "10px" }}
+                >
+                    <FaPlus className="mr-1" />
+                </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-white">
                     <DialogHeader>

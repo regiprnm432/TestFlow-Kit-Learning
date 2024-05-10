@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import TestCaseFormDialog from "./TestCaseFormDialog";
 import {
   Card,
   CardContent,
@@ -20,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import "../../index.css";
 
 const AddTestCaseCard = () => {
+  const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
   const [testData, setTestData] = useState([
     {
       id: 1,
@@ -79,12 +81,10 @@ const AddTestCaseCard = () => {
           >
             Eksekusi Test Case
           </Button>
-          <Button
-            className="bg-blue-800 text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
-            style={{ fontSize: "10px" }}
-          >
-            <FaPlus className="mr-1" />
-          </Button>
+          <TestCaseFormDialog 
+              isDialogOpen={isFormDialogOpen} 
+              setIsDialogOpen={setIsFormDialogOpen}
+            />
         </div>
       </CardHeader>
 
