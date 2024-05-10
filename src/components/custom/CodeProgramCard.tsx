@@ -1,6 +1,6 @@
 const CodeProgramCard = () => {
     return (
-        <div className="p-4">
+        <div className="p-4 bg-white">
             <h2 className="text-xl font-semibold mb-2">Source Code Program</h2>
             <pre className="bg-gray-200 p-4 rounded-lg">
                 <code className="language-javascript">
