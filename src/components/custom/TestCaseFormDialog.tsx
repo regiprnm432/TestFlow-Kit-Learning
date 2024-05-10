@@ -15,7 +15,7 @@ import {
     FormControl,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 
 interface FormDialogProps {
     isDialogOpen: boolean;
@@ -23,9 +23,7 @@ interface FormDialogProps {
 }
 
 const TestCaseFormDialog = ({ isDialogOpen, setIsDialogOpen }: FormDialogProps) => {
-    const handleOpenDialog = () => {
-        setIsDialogOpen(true);
-    };
+
     const form = useForm();
 
     const handleSubmit = (data: any) => {
