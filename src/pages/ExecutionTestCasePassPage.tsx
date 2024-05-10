@@ -29,7 +29,7 @@ const AddTestCasePage = () => {
             </div>
           </ResizablePanel>
           <ResizablePanel defaultSize={50}>
-            <div className="flex flex-col h-full items-center pl-4 pr-4 gap-4">
+            <div className="flex flex-col h-full items-center p-6 gap-6">
               <CFGCard />
               <AddTestCaseCard />
               <PassCard />

@@ -12,7 +12,7 @@ import cfgImage from "../../assets/cfg.jpg";
 
 const CFGCard = ({}) => {
   return (
-    <div className="card-container w-full">
+    <div className="card-container w-full h-full">
       <Card className="card">
         <CardHeader className="card-header ">
           <CardTitle className="module-title">CFG</CardTitle>

@@ -31,7 +31,7 @@ const AddTestCasePage = () => {
           </ResizablePanel>
           <ResizableHandle style={{ backgroundColor: "#D1D5DB" }} />
           <ResizablePanel defaultSize={50}>
-            <div className="flex flex-col h-full items-center justify-center p-6 gap-6">
+            <div className="flex flex-col h-full items-center  p-6 gap-6">
               <CFGCard />
               <AddTestCaseCard />
             </div>

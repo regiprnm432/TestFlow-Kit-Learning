@@ -1,3 +1,5 @@
+import React from "react";
+import TestCaseFormDialog from "./TestCaseFormDialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,6 +21,7 @@ import {
 import "../../index.css";
 
 const AddTestCaseCard = () => {
+  const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
   // Dummy data untuk tabel (boleh diganti dengan data yang sesuai)
   const testData = [
     {
@@ -44,7 +47,10 @@ const AddTestCaseCard = () => {
             <Button variant="outline" className="text-black">
               Eksekusi Test Case
             </Button>
-            <Button className="bg-blue-500 text-white">Tambah</Button>
+            <TestCaseFormDialog 
+              isDialogOpen={isFormDialogOpen} 
+              setIsDialogOpen={setIsFormDialogOpen}
+            />
           </div>
         </div>
       </CardHeader>
