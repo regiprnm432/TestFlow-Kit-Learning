@@ -37,7 +37,7 @@ export function Menu() {
         alignItems: "center",
         justifyContent: "space-between",
         maxWidth: "100%",
-        marginRight:"20px"
+        marginRight: "20px",
       }}
     >
       <div className="buttons" style={{ display: "flex" }}>
@@ -63,17 +63,20 @@ export function Menu() {
         </Link>
       </div>
 
-      <div className="poin mr-6" style={{ display: "flex", alignItems: "center" }}>
+      <div
+        className="poin mr-6"
+        style={{ display: "flex", alignItems: "center" }}
+      >
         <img
           src={PoinIcon}
           alt="Poin Icon"
           style={{ width: 24, height: 24, marginRight: 10 }}
         />
         <div>
-          <p style={{ fontSize: 14, fontWeight: "bold", marginTop:"3px" }}>
+          <p style={{ fontSize: 14, fontWeight: "bold", marginTop: "3px" }}>
             Poin Maksimal: {maxPoint}
           </p>
-          <p style={{ fontSize: 12, marginBottom:"5px" }}>
+          <p style={{ fontSize: 12, marginBottom: "5px" }}>
             {levels[difficultyLevel]}
           </p>
         </div>

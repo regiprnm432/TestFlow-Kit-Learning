@@ -12,7 +12,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import PassCard from "@/components/custom/PassCard";
 
-const AddTestCasePage = () => {
+const ExecTestCasePassPage = () => {
   return (
     <Layout>
       <Menu />
@@ -23,9 +23,7 @@ const AddTestCasePage = () => {
         >
           <ResizablePanel defaultSize={50}>
             <div className="flex h-full flex-col">
-           
-                <ModuleSpecificationCard />
-         
+              <ModuleSpecificationCard />
             </div>
           </ResizablePanel>
           <ResizablePanel defaultSize={50}>
@@ -41,4 +39,4 @@ const AddTestCasePage = () => {
   );
 };
 
-export default AddTestCasePage;
+export default ExecTestCasePassPage;

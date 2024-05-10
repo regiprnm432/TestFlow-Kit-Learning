@@ -11,9 +11,8 @@ import {
 } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FailCard from "@/components/custom/FailCard";
-import MinimalCard from "@/components/custom/MinimalCard";
 
-const AddTestCasePage = () => {
+const ExecTestCaseFailPage = () => {
   return (
     <Layout>
       <Menu />
@@ -31,7 +30,7 @@ const AddTestCasePage = () => {
             <div className="flex flex-col h-full items-center pl-4 pr-4 gap-4">
               <CFGCard />
               <AddTestCaseCard />
-              <MinimalCard />
+              <FailCard />
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
@@ -40,4 +39,4 @@ const AddTestCasePage = () => {
   );
 };
 
-export default AddTestCasePage;
+export default ExecTestCaseFailPage;

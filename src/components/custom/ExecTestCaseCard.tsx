@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -20,7 +20,8 @@ import { Button } from "@/components/ui/button";
 import "../../index.css";
 
 const AddTestCaseCard = () => {
-  const [testData, setTestData] = useState([
+  // Dummy data untuk tabel (boleh diganti dengan data yang sesuai)
+  const testData = [
     {
       id: 1,
       objective:
@@ -34,65 +35,27 @@ const AddTestCaseCard = () => {
       parameters: ["Param 1", "Param 2"],
       expected: "Expected2 jkjkjkjk",
     },
-  ]);
-  const [editingTestId, setEditingTestId] = useState<number | null>(null);
-  const [deletingTestId, setDeletingTestId] = useState<number | null>(null);
-  const [executedTestCase, setExecutedTestCase] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
+  ];
 
-  useEffect(() => {
-    if (
-      (editingTestId || deletingTestId || testData.length > 2) &&
-      executedTestCase
-    ) {
-      setShowMessage(true);
-      const timer = setTimeout(() => {
-        setShowMessage(false);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [editingTestId, deletingTestId, testData, executedTestCase]);
+  // State untuk menyimpan ID tes yang sedang diedit atau dihapus
+  const [editingTestId, setEditingTestId] = useState(null);
+  const [deletingTestId, setDeletingTestId] = useState(null);
 
+  // Handle edit test case
   const handleEdit = () => {
-    setEditingTestId(1); // Contoh ID untuk pengeditan
+    // Lakukan logika atau tindakan sesuai kebutuhan untuk mengedit test case
   };
 
+  // Handle hapus test case
   const handleDelete = () => {
-    setDeletingTestId(1); // Contoh ID untuk penghapusan
-  };
-
-  const handleExecuteTestCase = () => {
-    // Lakukan logika untuk eksekusi test case
-    setExecutedTestCase(true);
+    // Lakukan logika atau tindakan sesuai kebutuhan untuk menghapus test case
   };
 
   return (
     <Card className="h-[30vh] w-full overflow-auto">
-      <CardHeader className="flex justify-between">
-        <CardTitle className="module-title">Test Case</CardTitle>
-        <div className="flex space-x-2 items-center justify-end">
-          <Button
-            variant="outline"
-            className="text-blue-800 border-2 border-blue-800 rounded-[20]"
-            style={{ fontSize: "12px" }}
-            onClick={handleExecuteTestCase}
-          >
-            Eksekusi Test Case
-          </Button>
-          <Button
-            className="bg-blue-800 text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
-            style={{ fontSize: "10px" }}
-          >
-            <FaPlus className="mr-1" />
-          </Button>
-        </div>
+      <CardHeader className="p-6">
+        <CardTitle className="module-title ">Test Case</CardTitle>
       </CardHeader>
-
-      {showMessage && (
-        <div className="bg-red-100 text-red-700 p-2 text-sm">
-          Test case terbaru belum dieksekusi
-        </div>
-      )}
 
       <CardContent>
         <Table>
