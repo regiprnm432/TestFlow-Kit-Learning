@@ -41,27 +41,39 @@ const AddModuleDialog = ({ isDialogOpen, setIsDialogOpen }: FormDialogProps) => 
                 </DialogTrigger>
                 <DialogContent className="bg-white">
                     <DialogHeader>
-                        <DialogTitle>Tambah Test Case</DialogTitle>
+                        <DialogTitle>Tambah Modul Program</DialogTitle>
                         <Form {...form}>
                             <form className="space-y-8" onSubmit={form.handleSubmit(handleSubmit)}>
                             <FormField
                             control={form.control}
-                            name="username"
+                            name="modul-program"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Objekif Pengujian</FormLabel>
+                                    <FormLabel>Nama Modul</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
                                     </FormControl>
-                                    <FormLabel>Parameter 1</FormLabel>
+                                    <FormLabel>Deskripsi Modul</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
                                     </FormControl>
-                                    <FormLabel>Parameter 2</FormLabel>
+                                    <FormLabel>Jenis Modul</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
                                     </FormControl>
-                                    <FormLabel>Expected</FormLabel>
+                                    <FormLabel>Jumlah Parameter</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormLabel>Tipe Data Kembalian</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormLabel>Kode Program</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormLabel>Tingkat Kesulitan</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
                                     </FormControl>
