@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CreateTestCasePage from "./pages/CreateTestCasePage";
 import ExecutionTestCaseFailPage from "./pages/ExecutionTestCaseFailPage";
 import ExecutionTestCasePassPage from "./pages/ExecutionTestCasePassPage";
+import ModuleTestPage from "./pages/ModuleTestPage";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Route path="/" element={<CreateTestCasePage />} />
         <Route path="/pass" element={<ExecutionTestCasePassPage />} />
         <Route path="/fail" element={<ExecutionTestCaseFailPage />} />
+        <Route path="/module" element={<ModuleTestPage />} />
       </Routes>
     </BrowserRouter>
   );
