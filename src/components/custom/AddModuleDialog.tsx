@@ -15,6 +15,16 @@ import {
     FormControl,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    SelectGroup,
+    SelectLabel,
+  } from "@/components/ui/select"
+  
 
 interface FormDialogProps {
     isDialogOpen: boolean;
@@ -75,7 +85,18 @@ const AddModuleDialog = ({ isDialogOpen, setIsDialogOpen }: FormDialogProps) => 
                                     </FormControl>
                                     <FormLabel>Tingkat Kesulitan</FormLabel>
                                     <FormControl>
-                                        <Input {...field} />
+                                        <Select>
+                                            <SelectTrigger className="w-[180px]">
+                                                <SelectValue placeholder="Pilih tingkat kesulitan" />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-white">
+                                                <SelectGroup>
+                                                    <SelectItem value="mudah">Mudah</SelectItem>
+                                                    <SelectItem value="sedang">Sedang</SelectItem>
+                                                    <SelectItem value="sulit">Sulit</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                 </FormItem>
                             )}
