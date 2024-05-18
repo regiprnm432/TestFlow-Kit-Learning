@@ -12,6 +12,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FailCard from "@/components/custom/FailCard";
 import MinimalCard from "@/components/custom/MinimalCard";
+import { Button } from "@/components/ui/button";
 
 const AddTestCasePage = () => {
   return (
@@ -32,6 +33,15 @@ const AddTestCasePage = () => {
               <CFGCard />
               <AddTestCaseCard />
               <MinimalCard />
+              <div className="flex w-full justify-end space-x-2 items-center">
+                <Button
+                    variant="outline"
+                    className="text-blue-800 border-2 border-blue-800 rounded-[20]"
+                    style={{ fontSize: "12px" }}
+                >
+                    Laporan Pengujian
+                </Button>                  
+              </div>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

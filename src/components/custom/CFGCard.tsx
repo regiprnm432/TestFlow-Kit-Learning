@@ -1,3 +1,4 @@
+import React from 'react';
 import ReactFlow, { Controls, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
 import {
@@ -8,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import "../../index.css";
+import PercentageCodeCoverage from "./PresentaseCodeCoverage";
 
 const edges = [
   { id: '1-2', source: '1', target: '2' },
@@ -39,27 +41,22 @@ const nodes = [
   },
 ];
 
-const containerStyle = {
-  width: '100%',
-  height: '300px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-};
-
-const CFGCard = ({}) => {
+const CFGCard: React.FC = () => {
   return (
     <div className="card-container w-full h-full"> {/* Specify width and height */}
       <Card >
         <CardHeader className="p-6">
           <CardTitle className="module-title">CFG</CardTitle>
         </CardHeader>
-        <CardContent className="flex justify-center items-center module-title">
-          <div style={containerStyle}> {/* Specify width and height */}
-            <ReactFlow nodes={nodes} edges={edges}>
+        <CardContent className="relative flex justify-center items-center module-title">
+          <div className="w-full h-72 flex justify-center items-center relative">
+            <ReactFlow nodes={nodes} edges={edges} className="w-full h-full">
               <Background />
               <Controls />
             </ReactFlow>
+            <div className="absolute top-2 right-2">
+              <PercentageCodeCoverage percentage={80} />
+            </div>
           </div>
         </CardContent>
         <CardFooter className="card-footer">
