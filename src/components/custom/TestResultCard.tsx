@@ -38,9 +38,9 @@ const TestResultCard = () => {
   ]);
  
   return (
-    <Card className="h-full w-full overflow-auto">
+    <Card className="h-full w-full flex-grow-1">
       <CardHeader className="flex justify-between">
-        <CardTitle className="module-title">HasiL Pengujian 50% Pass</CardTitle>
+        <CardTitle className="module-title m-0">HasiL Pengujian 50% Pass</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="mb-2 text-gray-600">
