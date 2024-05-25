@@ -3,6 +3,10 @@ import "../../index.css";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const modulId = import.meta.env.VITE_MODULE_ID;
+
 interface DataModul {
   ms_id_modul: string;
   ms_jenis_modul: string;
@@ -38,11 +42,6 @@ const ModuleSpecificationCard = () => {
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
-
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const apiKey = import.meta.env.VITE_API_KEY;
-  const modulId = import.meta.env.VITE_MODULE_ID;
-
 
   useEffect(() => {
     const fetchDataModule = async () => {
