@@ -15,8 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
 
 import "../../index.css";
 
@@ -40,11 +38,17 @@ const TestResultCard = () => {
   ]);
  
   return (
-    <Card className="h-[30vh] w-full overflow-auto">
+    <Card className="h-full w-full overflow-auto">
       <CardHeader className="flex justify-between">
-        <CardTitle className="module-title">HasiL Pengujian</CardTitle>
+        <CardTitle className="module-title">HasiL Pengujian 50% Pass</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="mb-2 text-gray-600">
+            <p><span className="font-bold">Jumlah Test Case:</span>2</p>
+            <p><span className="font-bold">Jumlah Test Case Pass:</span>1</p>
+            <p><span className="font-bold">Jumlah Test Case Not Pass:</span>2</p>
+        </div>
+
         <Table>
           <TableHeader>
             <TableRow

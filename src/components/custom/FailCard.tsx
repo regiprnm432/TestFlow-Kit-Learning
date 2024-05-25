@@ -19,7 +19,7 @@ const PassCard: React.FC = () => {
   const formattedDate = currentDate.toLocaleDateString();
 
   return (
-    <div className="card-container w-full">
+    <div className="h-full w-full">
       <Card className="pass-card bg-red-700 text-white">
         <CardTitle className="module-title-white">Hasil Pengujian</CardTitle>
         <div className="text-center flex flex-col items-center">

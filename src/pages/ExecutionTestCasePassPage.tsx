@@ -1,7 +1,6 @@
 import Layout from "./Layout";
 import { Menu } from "@/components/custom/Menu";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
-import CodePorgramCard from "@/components/custom/CodeProgramCard";
 import AddTestCaseCard from "@/components/custom/AddTestCaseCard";
 import CFGCard from "@/components/custom/CFGCard";
 import {
@@ -27,7 +26,7 @@ const ExecTestCasePassPage = () => {
             </div>
           </ResizablePanel>
           <ResizablePanel defaultSize={50}>
-            <div className="flex flex-col h-full items-center p-6 gap-6">
+            <div className="flex flex-col h-full items-center p-6 gap-6" style={{ overflowY: 'auto' }}>
               <CFGCard />
               <AddTestCaseCard />
               <PassCard />
