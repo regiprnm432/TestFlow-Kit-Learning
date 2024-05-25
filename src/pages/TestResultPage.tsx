@@ -1,4 +1,5 @@
 import Layout from "./Layout";
+import { useState } from "react";
 import { Menu } from "@/components/custom/Menu";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
 import CFGCard from "@/components/custom/CFGCard";
@@ -12,6 +13,11 @@ import { Button } from "@/components/ui/button";
 import PercentageCodeCoverage from "@/components/custom/PresentaseCodeCoverage";
 
 const TestResultPage = () => {
+    const [showCyclomaticComplexity, setShowCyclomaticComplexity] = useState(false);
+    const [showCodeCoverage, setShowCodeCoverage] = useState(true);
+    const cyclomaticComplexityValue = 5; 
+    const codeCoveragePercentage = 80; 
+
     return (
         <Layout>
         <Menu />
@@ -27,7 +33,12 @@ const TestResultPage = () => {
             </ResizablePanel>
             <ResizablePanel defaultSize={50}>
                 <div className="flex flex-col h-full items-center pl-4 pr-4 gap-4" style={{ overflowY: 'auto' }}>
-                <CFGCard />
+                <CFGCard 
+                  showCyclomaticComplexity={showCyclomaticComplexity}
+                  cyclomaticComplexityValue={cyclomaticComplexityValue}
+                  showCodeCoverage={showCodeCoverage}
+                  codeCoveragePercentage={codeCoveragePercentage}
+                />
                 <TestResultCard />
                 </div>
             </ResizablePanel>

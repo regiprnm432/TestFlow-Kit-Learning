@@ -1,4 +1,5 @@
 import Layout from "./Layout";
+import { useState } from "react";
 import { Menu } from "@/components/custom/Menu";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
 import AddTestCaseCard from "@/components/custom/AddTestCaseCard";
@@ -11,7 +12,12 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FailCard from "@/components/custom/FailCard";
 
-const ExecTestCaseFailPage = () => {
+const ExecutionTestCaseFailPage: React.FC = () => {
+  const [showCyclomaticComplexity, setShowCyclomaticComplexity] = useState(true);
+  const [showCodeCoverage, setShowCodeCoverage] = useState(false);
+  const cyclomaticComplexityValue = 5; 
+  const codeCoveragePercentage = 80; 
+
   return (
     <Layout>
       <Menu />
@@ -27,7 +33,12 @@ const ExecTestCaseFailPage = () => {
           </ResizablePanel>
           <ResizablePanel defaultSize={50}>
             <div className="flex flex-col h-full items-center pl-4 pr-4 gap-4" style={{ overflowY: 'auto' }}>
-              <CFGCard />
+              <CFGCard 
+                  showCyclomaticComplexity={showCyclomaticComplexity}
+                  cyclomaticComplexityValue={cyclomaticComplexityValue}
+                  showCodeCoverage={showCodeCoverage}
+                  codeCoveragePercentage={codeCoveragePercentage}
+                />
               <AddTestCaseCard />
               <FailCard />
             </div>
@@ -38,4 +49,4 @@ const ExecTestCaseFailPage = () => {
   );
 };
 
-export default ExecTestCaseFailPage;
+export default ExecutionTestCaseFailPage;

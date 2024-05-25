@@ -1,5 +1,6 @@
 import React from "react";
 import ReactFlow, { Controls, Background } from "reactflow";
+import PercentageCodeCoverage from "./PresentaseCodeCoverage";
 import "reactflow/dist/style.css";
 import {
   Card,
@@ -126,8 +127,20 @@ const calculateCyclomaticComplexity = (edgesCount: any, nodesCount: any) => {
   return edgesCount - nodesCount + 2;
 };
 
-const CFGCard = () => {
-  const cyclomaticComplexity = calculateCyclomaticComplexity(edges.length, nodes.length);
+type CFGCardProps = {
+  showCyclomaticComplexity?: boolean;
+  cyclomaticComplexityValue?: number;
+  showCodeCoverage?: boolean;
+  codeCoveragePercentage?: number;
+};
+
+const CFGCard: React.FC<CFGCardProps> = ({
+  showCyclomaticComplexity = false,
+  cyclomaticComplexityValue,
+  showCodeCoverage = false,
+  codeCoveragePercentage,
+}) => {
+  const cyclomaticComplexity = cyclomaticComplexityValue ?? calculateCyclomaticComplexity(edges.length, nodes.length);
   const cyclomaticComplexityFormula = `V(G) = Edges - Nodes + 2`;
 
   const parameterStyle = {
@@ -166,14 +179,24 @@ const CFGCard = () => {
               </div>
             </div>
             <div style={{ width: "40%", marginLeft: "20px" }}>
-              <p style={parameterStyle}>Nilai Cyclomatic Complexity</p>
-              <span style={{ fontSize: "13px" }}>
-                {cyclomaticComplexityFormula}
-              </span>
-              <br />
-              <span style={{ fontSize: "13px" }}>
-                Cyclomatic Complexity: {cyclomaticComplexity}
-              </span>
+              {showCodeCoverage && codeCoveragePercentage !== undefined && (
+                <>
+                  <p style={parameterStyle}>Presentase Code Coverage</p>
+                  <PercentageCodeCoverage percentage={codeCoveragePercentage} />
+                </>
+              )}
+              {showCyclomaticComplexity && (
+                <>
+                  <p style={parameterStyle}>Nilai Cyclomatic Complexity</p>
+                  <span style={{ fontSize: "13px" }}>
+                    {cyclomaticComplexityFormula}
+                  </span>
+                  <br />
+                  <span style={{ fontSize: "13px" }}>
+                    Cyclomatic Complexity: {cyclomaticComplexity}
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </CardContent>
