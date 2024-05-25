@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import "../../index.css";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { getAuthenticatedUser } from "@/lib/getAuthenticatedUser";
 
 interface DataModul {
   ms_id_modul: string;
@@ -40,16 +39,19 @@ const ModuleSpecificationCard = () => {
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
 
-  const MODULE_ID = '8b9d9c04-0fef-4ea1-963c-e65b5020e3c1';
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiKey = import.meta.env.VITE_API_KEY;
+  const modulId = import.meta.env.VITE_MODULE_ID;
+
 
   useEffect(() => {
     const fetchDataModule = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/modul/detail/${MODULE_ID}`, {
+        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
-            'Authorization': getAuthenticatedUser().token
+            'Authorization': `Bearer ${apiKey}`
           }
         });
 
@@ -76,11 +78,11 @@ const ModuleSpecificationCard = () => {
 
     const fetchSourceCodeText = async (modulId: string) => {
       try {
-        const response = await fetch(`http://localhost:8000/modul/getSourceCodeText/${modulId}`, {
+        const response = await fetch(`${apiUrl}/modul/getSourceCodeText/${modulId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
-            'Authorization': getAuthenticatedUser().token
+            'Authorization': `Bearer ${apiKey}`
           }
         });
 
