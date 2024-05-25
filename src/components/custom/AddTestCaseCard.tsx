@@ -18,9 +18,12 @@ import {
 } from "@/components/ui/table";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { getAuthenticatedUser } from "@/lib/getAuthenticatedUser";
 
 import "../../index.css";
+
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const modulId = import.meta.env.VITE_MODULE_ID;
 
 interface ParameterModul {
   ms_id_parameter: string;
