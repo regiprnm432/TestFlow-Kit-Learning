@@ -17,10 +17,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FaPlus } from "react-icons/fa";
-import {getAuthenticatedUser} from "@/lib/getAuthenticatedUser";
 import { get } from "http";
 
-const MODULE_ID = '8b9d9c04-0fef-4ea1-963c-e65b5020e3c1';
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const modulId = import.meta.env.VITE_MODULE_ID;
 
 interface FormDialogProps {
   isDialogOpen: boolean;
@@ -66,13 +67,13 @@ const TestCaseFormDialog = ({
     const fetchParameters = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/modul/detail/${MODULE_ID}`,
+          `${apiUrl}/modul/detail/${modulId}`,
           {
             // Menggunakan ID_MODUL dari variabel global
             method: "GET",
             headers: {
               Accept: "application/json",
-              Authorization: getAuthenticatedUser().token,
+              Authorization: `Bearer ${apiKey}`,
             },
           }
         );
@@ -105,7 +106,7 @@ const TestCaseFormDialog = ({
 
   const handleSubmit = async (data: any) => {
     const formattedData = {
-      id_modul: MODULE_ID, 
+      id_modul: modulId, 
       no: "1",
       object_pengujian: data.objective,
       data_test_input: parameters.map((param) => ({
@@ -117,11 +118,11 @@ const TestCaseFormDialog = ({
     };
 
     try {
-      const response = await fetch("http://localhost:8000/modul/addTestCase", {
+      const response = await fetch(`${apiUrl}/modul/addTestCase`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: getAuthenticatedUser().token,
+          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify(formattedData),
       });

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactFlow, { Controls, Background } from "reactflow";
 import PercentageCodeCoverage from "./PresentaseCodeCoverage";
 import "reactflow/dist/style.css";
@@ -11,120 +11,27 @@ import {
 } from "@/components/ui/card";
 import "../../index.css";
 
-// Data untuk edges dan nodes sesuai dengan program BilanganPrima
-const edges = [
-  { id: "e1-2", source: "1", target: "2" },
-  { id: "e2-3", source: "2", target: "3", label: "no" },
-  { id: "e2-4", source: "2", target: "4", label: "yes" },
-  { id: "e4-5", source: "4", target: "5" },
-  { id: "e5-6", source: "5", target: "6", label: "yes" },
-  { id: "e5-7", source: "5", target: "7", label: "no" },
-  { id: "e6-8", source: "6", target: "8", label: "yes" },
-  { id: "e7-8", source: "7", target: "8", label: "no" },
-  { id: "e8-5", source: "8", target: "5" },
-];
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const modulId = import.meta.env.VITE_MODULE_ID;
 
-const nodes = [
-  {
-    id: "1",
-    data: { label: "Start" },
-    position: { x: 250, y: 0 },
-    type: "input",
-    style: {
-      width: 50,
-      height: 50,
-      borderRadius: "50%",
-      backgroundColor: "lightblue",
-    },
-  },
-  {
-    id: "2",
-    data: { label: "bil > 1" },
-    position: { x: 250, y: 100 },
-    type: "default",
-    style: {
-      width: 100,
-      height: 50,
-      borderRadius: "50%",
-      backgroundColor: "lightblue",
-    },
-  },
-  {
-    id: "3",
-    data: { label: "return false" },
-    position: { x: 100, y: 200 },
-    type: "output",
-    style: {
-      width: 100,
-      height: 50,
-      borderRadius: "50%",
-      backgroundColor: "lightblue",
-    },
-  },
-  {
-    id: "4",
-    data: { label: "temp = bil - 1" },
-    position: { x: 400, y: 200 },
-    type: "default",
-    style: {
-      width: 120,
-      height: 50,
-      borderRadius: "50%",
-      backgroundColor: "lightblue",
-    },
-  },
-  {
-    id: "5",
-    data: { label: "temp > 1" },
-    position: { x: 250, y: 300 },
-    type: "default",
-    style: {
-      width: 100,
-      height: 50,
-      borderRadius: "50%",
-      backgroundColor: "lightblue",
-    },
-  },
-  {
-    id: "6",
-    data: { label: "bil % temp == 0" },
-    position: { x: 100, y: 400 },
-    type: "default",
-    style: {
-      width: 150,
-      height: 50,
-      borderRadius: "50%",
-      backgroundColor: "lightblue",
-    },
-  },
-  {
-    id: "7",
-    data: { label: "temp = temp - 1" },
-    position: { x: 400, y: 400 },
-    type: "default",
-    style: {
-      width: 150,
-      height: 50,
-      borderRadius: "50%",
-      backgroundColor: "lightblue",
-    },
-  },
-  {
-    id: "8",
-    data: { label: "return true" },
-    position: { x: 250, y: 500 },
-    type: "output",
-    style: {
-      width: 100,
-      height: 50,
-      borderRadius: "50%",
-      backgroundColor: "lightblue",
-    },
-  },
-];
-
-const calculateCyclomaticComplexity = (edgesCount: any, nodesCount: any) => {
+const calculateCyclomaticComplexity = (edgesCount: number, nodesCount: number) => {
   return edgesCount - nodesCount + 2;
+};
+
+type Node = {
+  id: string;
+  data: { label: string };
+  position: { x: number; y: number };
+  type: string;
+  style: object;
+};
+
+type Edge = {
+  id: string;
+  source: string;
+  target: string;
+  label?: string;
 };
 
 type CFGCardProps = {
@@ -140,6 +47,55 @@ const CFGCard: React.FC<CFGCardProps> = ({
   showCodeCoverage = false,
   codeCoveragePercentage,
 }) => {
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/modul/detail/${modulId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Data CFG:", data); // Cetak data CFG ke konsol
+      
+      const nodesData = data.data.data_cfg.nodes.map((node: any) => ({
+        id: node.ms_id_node,
+        data: { label: node.ms_line_number.toString() },
+        position: { x: 250+((node.ms_no%2)*50), y: 100 * node.ms_no },
+        type: "default",
+        style: {
+          width: 50,
+          height: 50,
+          borderRadius: "50%",
+          backgroundColor: "lightblue",
+        },
+      }));
+  
+      const edgesData = data.data.data_cfg.edges.map((edge: any) => ({
+        id: `${edge.id_node_start}-${edge.id_node_finish}`,
+        source: edge.id_node_start,
+        target: edge.id_node_finish,
+      }));
+  
+      setNodes(nodesData);
+      setEdges(edgesData);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Failed to fetch data:", error);
+    });
+  }, []);
+  
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   const cyclomaticComplexity = cyclomaticComplexityValue ?? calculateCyclomaticComplexity(edges.length, nodes.length);
   const cyclomaticComplexityFormula = `V(G) = Edges - Nodes + 2`;
 

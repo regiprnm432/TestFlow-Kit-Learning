@@ -113,33 +113,25 @@ const ModuleSpecificationCard = () => {
       <div className="max-h-[80vh] overflow-y-auto">
         {dataModule.data_modul && dataModule.data_parameter_modul && (
           <>
-            <h3 className="text-xl font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
-            <h4 className="text-xl font-semibold mb-3 text-gray-700">Deskripsi Modul</h4>
+            <h3 className="text-l font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
             <p className="mb-6 text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
             
-            <h4 className="text-xl font-semibold mb-3 text-gray-700">Detail Modul</h4>
-            <div className="mb-6 space-y-2 text-gray-600">
-              <p><span className="font-bold">Jenis Modul:</span> {dataModule.data_modul.ms_jenis_modul}</p>
-              <p><span className="font-bold">Class Name:</span> {dataModule.data_modul.ms_class_name}</p>
-              <p><span className="font-bold">Function Name:</span> {dataModule.data_modul.ms_function_name}</p>
-              <p><span className="font-bold">Return Type:</span> {dataModule.data_modul.ms_return_type}</p>
-              <p><span className="font-bold">Jumlah Parameter:</span> {dataModule.data_modul.ms_jml_parameter}</p>
-            </div>
-            
             <div className="rounded-lg mb-6">
-              <h4 className="text-xl font-semibold mb-3 text-gray-700">Parameter</h4>
+              <h4 className="text-l font-semibold mb-3 text-gray-700">Parameter</h4>
               <div className="text-gray-600"> 
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-300">
+                      <th className="text-left pb-2">No</th>
                       <th className="text-left pb-2">Nama Parameter</th>
                       <th className="text-left pb-2">Tipe Data</th>
                       <th className="text-left pb-2">Rules</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {dataModule.data_parameter_modul.map((parameter) => (
+                    {dataModule.data_parameter_modul.map((parameter, index) => (
                       <tr key={parameter.ms_id_parameter} className="border-b border-gray-300">
+                        <td className="py-2">{index + 1}</td>
                         <td className="py-2">{parameter.ms_nama_parameter}</td>
                         <td className="py-2">{parameter.ms_tipe_data}</td>
                         <td className="py-2">{parameter.ms_rules}</td>
@@ -149,8 +141,8 @@ const ModuleSpecificationCard = () => {
                 </table>
               </div>
             </div>
-
-            <h4 className="text-xl font-bold  mb-1  text-gray-800">Source Code (Java)</h4>
+            
+            <h4 className="text-l font-bold  mb-1  text-gray-800">Source Code (Java)</h4>
             <div className="p-4 rounded-lg">
               <SyntaxHighlighter language="java" style={docco}>
                 {sourceCode || 'Loading source code...'}

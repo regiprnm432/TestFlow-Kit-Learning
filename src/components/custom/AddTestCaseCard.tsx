@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TestCaseFormDialog from "./TestCaseFormDialog";
-import EditTestCaseFormDialog from "./EditTestCaseFormDialog"; 
+import { useNavigate } from "react-router-dom";
+import EditTestCaseFormDialog from "./EditTestCaseFormDialog";
 import {
   Card,
   CardContent,
@@ -20,10 +21,6 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 
 import "../../index.css";
-
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
 
 interface ParameterModul {
   ms_id_parameter: string;
@@ -57,25 +54,55 @@ const AddTestCaseCard: React.FC = () => {
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
   const [editingTestId, setEditingTestId] = useState<string | null>(null);
-  const [deletingTestId, setDeletingTestId] = useState<number | null>(null);
+  const [deletingTestId, setDeletingTestId] = useState<string | null>(null);
   const [executedTestCase, setExecutedTestCase] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [minimumCoverage, setMinimumCoverage] = useState<number>(0);
+  const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
 
-  const MODULE_ID = '8b9d9c04-0fef-4ea1-963c-e65b5020e3c1';
+  const navigate = useNavigate();
+
+  const DeleteConfirmationDialog: React.FC<{
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+  }> = ({ isOpen, onClose, onConfirm }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white p-4 rounded shadow-lg">
+          <h2 className="text-lg">Confirm Delete</h2>
+          <p>Are you sure you want to delete this test case?</p>
+          <div className="flex justify-end mt-4">
+            <Button onClick={onClose} className="mr-2">
+              Cancel
+            </Button>
+            <Button onClick={onConfirm} className="bg-red-500 text-white">
+              Delete
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiKey = import.meta.env.VITE_API_KEY;
+  const modulId = import.meta.env.VITE_MODULE_ID;
 
   useEffect(() => {
     const fetchParameters = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8000/modul/detail/${MODULE_ID}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              Authorization: getAuthenticatedUser().token
-            },
-          }
-        );
+        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
 
         if (!response.ok) {
           if (response.status === 403) {
@@ -100,16 +127,13 @@ const AddTestCaseCard: React.FC = () => {
   useEffect(() => {
     const fetchTestCases = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8000/modul/TestCase/${MODULE_ID}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              Authorization: getAuthenticatedUser().token,
-            },
-          }
-        );
+        const response = await fetch(`${apiUrl}/modul/TestCase/${modulId}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
 
         if (!response.ok) {
           if (response.status === 403) {
@@ -144,29 +168,75 @@ const AddTestCaseCard: React.FC = () => {
 
   const handleEdit = (id: string) => {
     setEditingTestId(id);
-    setIsFormDialogOpen(true);
+    // setIsFormDialogOpen(true);
   };
 
-  const handleDelete = () => {
-    setDeletingTestId(1);
+  const handleDelete = (id: string) => {
+    setDeletingTestId(id);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingTestId) return;
+
+    try {
+      console.log("Deleting test case with ID:", deletingTestId); // Menampilkan ID test case pada console.log
+
+      const response = await fetch(`${apiUrl}/modul/deleteTestCase`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({ id_test_case: deletingTestId }), // Menggunakan format yang diharapkan oleh API
+      });
+
+      const responseData = await response.json();
+      console.log("Response data:", responseData); // Log response data
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else if (response.status === 422) {
+          throw new Error(`Unprocessable Entity: ${responseData.detail}`);
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+
+      setTestCases((prevTestCases) =>
+        prevTestCases.filter((test) => test.tr_id_test_case !== deletingTestId)
+      );
+      setDeleteMessage("Test case deleted successfully.");
+      const timer = setTimeout(() => {
+        setDeleteMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error deleting test case:", error);
+        alert(`Error deleting test case: ${error.message}`);
+      } else {
+        console.error("Unknown error:", error);
+        alert("An unknown error occurred.");
+      }
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setDeletingTestId(null);
+    }
   };
 
   const handleExecuteTestCase = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/modul/run/${MODULE_ID}`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: getAuthenticatedUser().token,
-          },
-        }
-      );
-      // Retrieve the result and log it to the console
-      const result = await response.json();
-      console.log("Hasil eksekusi test case:", result);
-
+      const response = await fetch(`${apiUrl}/modul/run/${modulId}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+  
       if (!response.ok) {
         if (response.status === 403) {
           throw new Error("Forbidden: Access is denied");
@@ -174,7 +244,20 @@ const AddTestCaseCard: React.FC = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
       }
-
+  
+      const result = await response.json();
+      console.log("Hasil eksekusi test case:", result);
+      setPercentageCoverage(result.coverage_score);
+      setMinimumCoverage(result.minimum_coverage_score);
+  
+      if (result.coverage_score < result.minimum_coverage_score) {
+        // Kurang dari minimum coverage, arahkan ke halaman eksekusi test case fail page dengan menyertakan nilai coverage
+        navigate(`/fail?percentageCoverage=${result.coverage_score}&minimumCoverage=${result.minimum_coverage_score}`);
+      } else {
+        // Lebih dari atau sama dengan minimum coverage, arahkan ke halaman eksekusi test case pass page dengan menyertakan nilai coverage dan poin yang dihasilkan
+        navigate(`/pass?percentageCoverage=${result.coverage_score}&minimumCoverage=${result.minimum_coverage_score}&points=${result.points}`);
+      }
+  
       // Handle success message or other logic here
       setShowMessage(true);
       const timer = setTimeout(() => {
@@ -186,6 +269,8 @@ const AddTestCaseCard: React.FC = () => {
       // Handle error message or other logic here
     }
   };
+  
+
 
   return (
     <Card className="h-screen w-full flex-grow-1">
@@ -194,7 +279,7 @@ const AddTestCaseCard: React.FC = () => {
         <div className="flex space-x-2 items-center justify-end">
           <Button
             variant="outline"
-            className="text-blue-800 border-2 border-blue-800 rounded-[10]"
+            className="bg-white text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
             style={{ fontSize: "14px" }}
             onClick={handleExecuteTestCase}
           >
@@ -210,6 +295,12 @@ const AddTestCaseCard: React.FC = () => {
       {showMessage && (
         <div className="bg-red-100 text-red-700 p-2 text-sm">
           Test case terbaru belum dieksekusi
+        </div>
+      )}
+
+      {deleteMessage && (
+        <div className="bg-green-100 text-green-700 p-2 text-sm">
+          {deleteMessage}
         </div>
       )}
 
@@ -262,10 +353,14 @@ const AddTestCaseCard: React.FC = () => {
                     className="text-blue-500 p-0"
                     style={{ fontSize: "14px" }}
                   >
-                    <FaEdit />
+                    <EditTestCaseFormDialog
+                      editingTestId={editingTestId}
+                      isDialogOpen={isFormDialogOpen}
+                      setIsDialogOpen={setIsFormDialogOpen}
+                    />
                   </Button>
                   <Button
-                    onClick={() => handleDelete()}
+                    onClick={() => handleDelete(test.tr_id_test_case)}
                     className="text-red-500 p-0"
                     style={{ fontSize: "14px" }}
                   >
@@ -277,20 +372,16 @@ const AddTestCaseCard: React.FC = () => {
           </TableBody>
         </Table>
       </CardContent>
-      {editingTestId && (
-        <EditTestCaseFormDialog
-          isDialogOpen={true}
-          setIsDialogOpen={setIsFormDialogOpen}
-          testCase={
-            testCases.find((test) => test.tr_id_test_case === editingTestId) ||
-            null
-          }
-          parameters={parameters}
-        />
-      )}
+
       <CardFooter className="flex justify-between">
         {/* Konten footer card di sini */}
       </CardFooter>
+
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={confirmDelete}
+      />
     </Card>
   );
 };
