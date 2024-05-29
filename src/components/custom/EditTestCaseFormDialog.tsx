@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,9 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { FaEdit } from "react-icons/fa";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
+const apiUrl = import.meta.env.VITE_API_URL as string;
+const apiKey = import.meta.env.VITE_API_KEY as string;
+const modulId = import.meta.env.VITE_MODULE_ID as string;
 
 interface EditFormDialogProps {
   isDialogOpen: boolean;
@@ -40,6 +40,27 @@ interface ParameterModul {
   updated: string;
 }
 
+// interface TestCase {
+//   tr_id_test_case: string;
+//   object_pengujian: string;
+//   expected_result: string;
+//   data_test_input: {
+//     param_id: string;
+//     param_value: string;
+//   }[];
+// }
+
+interface TestCaseData {
+  tr_id_test_case: string;
+  tr_object_pengujian: string;
+  tr_expected_result: string;
+  tr_data_test_input: {
+    param_name: string;  
+    param_type: string;  
+    param_value: string;
+  }[];
+}
+
 interface DataResponse {
   message: string;
   data: {
@@ -52,6 +73,12 @@ interface DataResponse {
   };
 }
 
+interface FormValues {
+  objective: string;
+  expected: string;
+  [key: string]: string;
+}
+
 const EditTestCaseFormDialog = ({
   isDialogOpen,
   setIsDialogOpen,
@@ -60,23 +87,20 @@ const EditTestCaseFormDialog = ({
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     mode: "onBlur",
   });
 
   useEffect(() => {
     const fetchParameters = async () => {
       try {
-        const response = await fetch(
-          `${apiUrl}/modul/detail/${modulId}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${apiKey}`,
-            },
-          }
-        );
+        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
 
         if (!response.ok) {
           if (response.status === 403) {
@@ -87,7 +111,7 @@ const EditTestCaseFormDialog = ({
         }
 
         const responseData: DataResponse = await response.json();
-        setParameters(responseData.data.data_parameter_modul); // Ubah disini
+        setParameters(responseData.data.data_parameter_modul);
         console.log(responseData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -97,17 +121,67 @@ const EditTestCaseFormDialog = ({
     fetchParameters();
   }, []);
 
+  const fetchTestCaseData = async () => {
+    if (editingTestId) {
+      try {
+        const response = await fetch(`${apiUrl}/modul/TestCase/${modulId}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const responseData = await response.json();
+        const testCaseData = responseData.data.find(
+          (testCase: TestCaseData) => testCase.tr_id_test_case === editingTestId
+        );
+  
+        if (!testCaseData) {
+          throw new Error("Test case not found");
+        }
+
+        // Assume tr_data_test_input is a string that needs to be parsed
+        const dataTestInputParsed = JSON.parse(testCaseData.tr_data_test_input);
+  
+        const formValues: FormValues = {
+          objective: testCaseData.tr_object_pengujian,
+          expected: testCaseData.tr_expected_result,
+        };
+  
+        // Assume tr_data_test_input is a string that needs to be parsed
+        dataTestInputParsed.forEach((input: any) => {
+          const param = parameters.find(p => p.ms_nama_parameter === input.param_name);
+          if (param) {
+            formValues[`param_${param.ms_id_parameter}`] = input.param_value;
+          }
+        });
+
+        form.reset(formValues);
+      } catch (error) {
+        console.error("Error fetching test case data:", error);
+      }
+    }
+  };
+  
+  
   useEffect(() => {
-    if (!isDialogOpen) {
+    if (isDialogOpen && editingTestId) {
+      fetchTestCaseData();
+    } else {
       form.reset();
       setShowSuccessMessage(false);
     }
-  }, [isDialogOpen, form]);
+  }, [isDialogOpen, editingTestId, form]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit: SubmitHandler<FormValues> = async (data) => {
     const formattedData = {
       id_test_case: editingTestId,
-      id_modul: modulId, 
+      id_modul: modulId,
       no: "1",
       object_pengujian: data.objective,
       data_test_input: parameters.map((param) => ({
@@ -139,10 +213,10 @@ const EditTestCaseFormDialog = ({
       const responseData: DataResponse = await response.json();
       console.log(responseData);
       form.reset();
-      setShowSuccessMessage(true); // Tampilkan popup pesan
+      setShowSuccessMessage(true);
       setTimeout(() => {
-        setShowSuccessMessage(false); // Tutup popup pesan setelah 3 detik
-        setIsDialogOpen(false); // Tutup dialog
+        setShowSuccessMessage(false);
+        setIsDialogOpen(false);
       }, 3000);
     } catch (error) {
       console.error("Error saving data:", error);
@@ -153,19 +227,13 @@ const EditTestCaseFormDialog = ({
     <>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
-            <FaEdit />
+          <FaEdit />
         </DialogTrigger>
         <DialogContent className="bg-white rounded-[20] overflow-y-auto max-h-[80vh] p-6">
-          {/* Menambahkan overflow-y dan max-height */}
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold mb-4">
-            Edit Test Case
-            </DialogTitle>
+            <DialogTitle className="text-lg font-bold mb-4">Edit Test Case</DialogTitle>
             <Form {...form}>
-              <form
-                className="space-y-6"
-                onSubmit={form.handleSubmit(handleSubmit)}
-              >
+              <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
                 <FormField
                   control={form.control}
                   name="objective"
@@ -179,9 +247,7 @@ const EditTestCaseFormDialog = ({
                           className="rounded-md shadow-sm bg-gray-200 focus:ring-0 border-gray-300"
                         />
                       </FormControl>
-                      {error && (
-                        <p className="text-red-600 text-sm">{error.message}</p>
-                      )}
+                      {error && <p className="text-red-600 text-sm">{error.message}</p>}
                     </FormItem>
                   )}
                 />
@@ -192,9 +258,7 @@ const EditTestCaseFormDialog = ({
                       key={param.ms_id_parameter}
                       control={form.control}
                       name={`param_${param.ms_id_parameter}`}
-                      rules={{
-                        required: `${param.ms_nama_parameter} is required`,
-                      }}
+                      rules={{ required: `${param.ms_nama_parameter} is required` }}
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
                           <FormLabel>{param.ms_nama_parameter}</FormLabel>
@@ -204,11 +268,7 @@ const EditTestCaseFormDialog = ({
                               className="rounded-md shadow-sm bg-gray-200 focus:ring-0 border-gray-300"
                             />
                           </FormControl>
-                          {error && (
-                            <p className="text-red-600 text-sm">
-                              {error.message}
-                            </p>
-                          )}
+                          {error && <p className="text-red-600 text-sm">{error.message}</p>}
                         </FormItem>
                       )}
                     />
@@ -226,9 +286,7 @@ const EditTestCaseFormDialog = ({
                           className="rounded-md shadow-sm bg-gray-200 focus:ring-0 border-gray-300"
                         />
                       </FormControl>
-                      {error && (
-                        <p className="text-red-600 text-sm">{error.message}</p>
-                      )}
+                      {error && <p className="text-red-600 text-sm">{error.message}</p>}
                     </FormItem>
                   )}
                 />
@@ -239,10 +297,7 @@ const EditTestCaseFormDialog = ({
                   >
                     Kembali
                   </Button>
-                  <Button
-                    className="bg-blue-800 text-white border border-black hover:bg-gray-200"
-                    type="submit"
-                  >
+                  <Button className="bg-blue-800 text-white border border-black hover:bg-gray-200" type="submit">
                     Simpan
                   </Button>
                 </div>
@@ -252,9 +307,7 @@ const EditTestCaseFormDialog = ({
           {showSuccessMessage && (
             <div className="absolute inset-x-0 top-0 flex items-center justify-center h-full bg-black bg-opacity-30">
               <div className="bg-white p-4 rounded-lg shadow-lg">
-                <p className="text-2140AD font-bold">
-                  Test case berhasil diedit!
-                </p>
+                <p className="text-2140AD font-bold">Test case berhasil diedit!</p>
               </div>
             </div>
           )}

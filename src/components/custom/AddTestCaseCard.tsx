@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 
 import "../../index.css";
@@ -53,6 +53,7 @@ const AddTestCaseCard: React.FC = () => {
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
+  const [isEditFormDialogOpen, setIsEditFormDialogOpen] = useState(false);
   const [editingTestId, setEditingTestId] = useState<string | null>(null);
   const [deletingTestId, setDeletingTestId] = useState<string | null>(null);
   const [executedTestCase, setExecutedTestCase] = useState(false);
@@ -355,8 +356,8 @@ const AddTestCaseCard: React.FC = () => {
                   >
                     <EditTestCaseFormDialog
                       editingTestId={editingTestId}
-                      isDialogOpen={isFormDialogOpen}
-                      setIsDialogOpen={setIsFormDialogOpen}
+                      isDialogOpen={isEditFormDialogOpen}
+                      setIsDialogOpen={setIsEditFormDialogOpen}
                     />
                   </Button>
                   <Button

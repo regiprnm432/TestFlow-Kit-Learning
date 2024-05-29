@@ -113,12 +113,12 @@ const ModuleSpecificationCard = () => {
       <div className="max-h-[80vh] overflow-y-auto">
         {dataModule.data_modul && dataModule.data_parameter_modul && (
           <>
-            <h3 className="text-l font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
-            <p className="mb-6 text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
+            <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
+            <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
             
             <div className="rounded-lg mb-6">
-              <h4 className="text-l font-semibold mb-3 text-gray-700">Parameter</h4>
-              <div className="text-gray-600"> 
+              <h4 className="text-base font-semibold mb-3 text-gray-700">Parameter</h4>
+              <div className="text-sm text-gray-600"> 
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-300">
@@ -142,8 +142,8 @@ const ModuleSpecificationCard = () => {
               </div>
             </div>
             
-            <h4 className="text-l font-bold  mb-1  text-gray-800">Source Code (Java)</h4>
-            <div className="p-4 rounded-lg">
+            <h4 className="text-base font-bold  mb-1  text-gray-800">Source Code (Java)</h4>
+            <div className="text-sm p-4 rounded-lg">
               <SyntaxHighlighter language="java" style={docco}>
                 {sourceCode || 'Loading source code...'}
               </SyntaxHighlighter>
