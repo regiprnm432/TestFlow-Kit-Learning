@@ -40,6 +40,21 @@ const TestResultPage = () => {
                   codeCoveragePercentage={codeCoveragePercentage}
                 />
                 <TestResultCard />
+                    <div className="flex text-sm space-x-2 items-end justify-end">
+                        <Button
+                            variant="outline"
+                            className="bg-white text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
+                            style={{ fontSize: "14px" }}
+                        >
+                            Coverage Test
+                        </Button>
+                        <Button
+                            className="bg-blue-800 text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
+                            style={{ fontSize: "10px" }}
+                        >
+                            Test Report
+                        </Button>
+                    </div>
                 </div>
             </ResizablePanel>
             </ResizablePanelGroup>

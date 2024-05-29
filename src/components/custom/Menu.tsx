@@ -52,9 +52,9 @@ export function Menu() {
           Pembuatan Test Case
         </Link>
         <Link
-          to="/pass"
+          to="/test-result"
           className={
-            location.pathname === "/pass"
+            location.pathname === "/test-result"
               ? "buttonMenu activeButton"
               : "buttonMenu inactiveButton"
           }

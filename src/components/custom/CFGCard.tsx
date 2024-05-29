@@ -115,13 +115,13 @@ const CFGCard: React.FC<CFGCardProps> = ({
     <div className="h-full w-full">
       <Card>
         <CardHeader className="p-4">
-          <CardTitle className="module-title">Struktur Program</CardTitle>
+          <CardTitle className="text-base module-title">Struktur Program</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col">
           <div className="w-full" style={containerStyle}>
             <div style={{ width: "60%" }}>
               <p style={parameterStyle}>Control Flow Graph</p>
-              <div className="h-96 relative react-flow-container">
+              <div className="text-sm h-96 relative react-flow-container">
                 <ReactFlow
                   nodes={nodes}
                   edges={edges}

@@ -91,33 +91,33 @@ const EditTestCaseFormDialog = ({
     mode: "onBlur",
   });
 
-  useEffect(() => {
-    const fetchParameters = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-        });
+  const fetchParameters = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
 
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error("Forbidden: Access is denied");
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const responseData: DataResponse = await response.json();
-        setParameters(responseData.data.data_parameter_modul);
-        console.log(responseData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
       }
-    };
 
+      const responseData: DataResponse = await response.json();
+      setParameters(responseData.data.data_parameter_modul);
+      console.log(responseData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchParameters();
   }, []);
 
@@ -145,15 +145,12 @@ const EditTestCaseFormDialog = ({
           throw new Error("Test case not found");
         }
 
-        // Assume tr_data_test_input is a string that needs to be parsed
-        const dataTestInputParsed = JSON.parse(testCaseData.tr_data_test_input);
-  
         const formValues: FormValues = {
           objective: testCaseData.tr_object_pengujian,
           expected: testCaseData.tr_expected_result,
         };
-  
-        // Assume tr_data_test_input is a string that needs to be parsed
+
+        const dataTestInputParsed = JSON.parse(testCaseData.tr_data_test_input);
         dataTestInputParsed.forEach((input: any) => {
           const param = parameters.find(p => p.ms_nama_parameter === input.param_name);
           if (param) {
@@ -167,7 +164,6 @@ const EditTestCaseFormDialog = ({
       }
     }
   };
-  
   
   useEffect(() => {
     if (isDialogOpen && editingTestId) {

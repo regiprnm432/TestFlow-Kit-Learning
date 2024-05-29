@@ -276,7 +276,7 @@ const AddTestCaseCard: React.FC = () => {
   return (
     <Card className="h-screen w-full flex-grow-1">
       <CardHeader className="flex justify-between">
-        <CardTitle className="module-title m-0">Test Case</CardTitle>
+        <CardTitle className="text-base module-title m-0">Test Case</CardTitle>
         <div className="flex space-x-2 items-center justify-end">
           <Button
             variant="outline"
@@ -306,7 +306,7 @@ const AddTestCaseCard: React.FC = () => {
       )}
 
       <CardContent>
-        <Table>
+        <Table className="text-sm">
           <TableHeader>
             <TableRow
               className="bg-blue-800 text-white p-0"

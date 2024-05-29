@@ -52,12 +52,28 @@ interface DataResponse {
   };
 }
 
+interface RuleDetail {
+  nama_rule: string;
+  id_rule: string;
+  jml_param: string;
+  min_value?: string;
+  max_value?: string;
+  condition?: string;
+  value?: string;
+}
+
+interface ValidationRule {
+  label: string;
+  details: RuleDetail;
+}
+
 const TestCaseFormDialog = ({
   isDialogOpen,
   setIsDialogOpen,
 }: FormDialogProps) => {
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [validationRules, setValidationRules] = useState<any[]>([]);
 
   const form = useForm({
     mode: "onBlur",
@@ -94,9 +110,56 @@ const TestCaseFormDialog = ({
       }
     };
 
+    const fetchValidationRules = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/combo/validasi_parameter`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
+
+        const validationData = await response.json();
+        const parsedRules = parseValidationRules(validationData.data);
+        setValidationRules(parsedRules);
+        console.log("data validasi: ", validationData.data); 
+      } catch (error) {
+        console.error("Error fetching validation rules:", error);
+      }
+    };
+
     fetchParameters();
+    fetchValidationRules();
   }, []);
 
+  const parseValidationRules = (rules: any[]): ValidationRule[] => {
+    return rules.map(rule => ({
+      label: rule.label,
+      details: JSON.parse(rule.value) as RuleDetail
+    }));
+  };
+
+  const applyValidation = (details: RuleDetail) => {
+    switch (details.nama_rule) {
+      case "range":
+        return { validate: (value: string) => (details.min_value && value < details.min_value) || (details.max_value && value > details.max_value) ? `Please enter a value between ${details.min_value} and ${details.max_value}` : undefined };
+      case "condition":
+        return { validate: (value: string) => value === details.condition ? undefined : `Value must meet condition: ${details.condition}` };
+      case "enumerasi":
+        return { validate: (value: string) => details.value ? details.value.split(',').includes(value) : undefined };
+      case "countOfLength":
+        return { validate: (value: string) => value.length <= parseInt(details.value || '0') ? undefined : `Maximum length is ${details.value} characters` };
+      default:
+        return {};
+    }
+  };
+
+  const getValidationRule = (param: ParameterModul) => {
+    const rule = validationRules.find((r) => r.details.id_rule === param.ms_rules);
+    return rule ? applyValidation(rule.details) : {};
+  };
+  
   useEffect(() => {
     if (!isDialogOpen) {
       form.reset();
@@ -198,6 +261,7 @@ const TestCaseFormDialog = ({
                       name={`param_${param.ms_id_parameter}`}
                       rules={{
                         required: `${param.ms_nama_parameter} is required`,
+                        ...getValidationRule(param),
                       }}
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
