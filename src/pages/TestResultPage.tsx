@@ -40,17 +40,15 @@ const TestResultPage = () => {
                   codeCoveragePercentage={codeCoveragePercentage}
                 />
                 <TestResultCard />
-                    <div className="flex text-sm space-x-2 items-end justify-end">
+                    <div className="space-x-2 items-center justify-end">
                         <Button
                             variant="outline"
-                            className="bg-white text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
-                            style={{ fontSize: "14px" }}
+                            className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
                         >
                             Coverage Test
                         </Button>
                         <Button
-                            className="bg-blue-800 text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
-                            style={{ fontSize: "10px" }}
+                            className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
                         >
                             Test Report
                         </Button>

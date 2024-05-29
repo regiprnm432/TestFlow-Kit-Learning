@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,20 +52,20 @@ interface DataResponse {
   };
 }
 
-interface RuleDetail {
-  nama_rule: string;
-  id_rule: string;
-  jml_param: string;
-  min_value?: string;
-  max_value?: string;
-  condition?: string;
-  value?: string;
-}
+// interface RuleDetail {
+//   nama_rule: string;
+//   id_rule: string;
+//   jml_param: string;
+//   min_value?: string;
+//   max_value?: string;
+//   condition?: string;
+//   value?: string;
+// }
 
-interface ValidationRule {
-  label: string;
-  details: RuleDetail;
-}
+// interface ValidationRule {
+//   label: string;
+//   details: RuleDetail;
+// }
 
 const TestCaseFormDialog = ({
   isDialogOpen,
@@ -73,91 +73,125 @@ const TestCaseFormDialog = ({
 }: FormDialogProps) => {
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [validationRules, setValidationRules] = useState<any[]>([]);
+  // const [validationRules, setValidationRules] = useState<any[]>([]);
 
   const form = useForm({
     mode: "onBlur",
   });
 
-  useEffect(() => {
-    const fetchParameters = async () => {
-      try {
-        const response = await fetch(
-          `${apiUrl}/modul/detail/${modulId}`,
-          {
-            // Menggunakan ID_MODUL dari variabel global
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${apiKey}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error("Forbidden: Access is denied");
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-        }
-
-        const responseData: DataResponse = await response.json();
-        setParameters(responseData.data.data_parameter_modul); // Ubah disini
-        console.log(responseData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    const fetchValidationRules = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/combo/validasi_parameter`, {
+  const fetchParameters = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/modul/detail/${modulId}`,
+        {
+          // Menggunakan ID_MODUL dari variabel global
           method: "GET",
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${apiKey}`,
           },
-        });
+        }
+      );
 
-        const validationData = await response.json();
-        const parsedRules = parseValidationRules(validationData.data);
-        setValidationRules(parsedRules);
-        console.log("data validasi: ", validationData.data); 
-      } catch (error) {
-        console.error("Error fetching validation rules:", error);
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
       }
-    };
 
-    fetchParameters();
-    fetchValidationRules();
-  }, []);
-
-  const parseValidationRules = (rules: any[]): ValidationRule[] => {
-    return rules.map(rule => ({
-      label: rule.label,
-      details: JSON.parse(rule.value) as RuleDetail
-    }));
-  };
-
-  const applyValidation = (details: RuleDetail) => {
-    switch (details.nama_rule) {
-      case "range":
-        return { validate: (value: string) => (details.min_value && value < details.min_value) || (details.max_value && value > details.max_value) ? `Please enter a value between ${details.min_value} and ${details.max_value}` : undefined };
-      case "condition":
-        return { validate: (value: string) => value === details.condition ? undefined : `Value must meet condition: ${details.condition}` };
-      case "enumerasi":
-        return { validate: (value: string) => details.value ? details.value.split(',').includes(value) : undefined };
-      case "countOfLength":
-        return { validate: (value: string) => value.length <= parseInt(details.value || '0') ? undefined : `Maximum length is ${details.value} characters` };
-      default:
-        return {};
+      const responseData: DataResponse = await response.json();
+      setParameters(responseData.data.data_parameter_modul);
+      console.log(responseData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
+  // const fetchValidationRules = async () => {
+  //   try {
+  //     const response = await fetch(`${apiUrl}/combo/validasi_parameter`, {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/json",
+  //         Authorization: `Bearer ${apiKey}`,
+  //       },
+  //     });
+
+  //     const validationData = await response.json();
+  //     const parsedRules = parseValidationRules(validationData.data);
+  //     setValidationRules(parsedRules);
+  //     console.log("data validasi: ", validationData.data); 
+  //   } catch (error) {
+  //     console.error("Error fetching validation rules:", error);
+  //   }
+  // };
+
+  useEffect(() => {
+    fetchParameters();
+    // fetchValidationRules();
+  }, []);
+
+  // const parseValidationRules = (rules: any[]): ValidationRule[] => {
+  //   return rules.map(rule => ({
+  //     label: rule.label,
+  //     details: JSON.parse(rule.value) as RuleDetail
+  //   }));
+  // };
+
+  // const applyValidation = (details: RuleDetail) => {
+  //   switch (details.nama_rule) {
+  //     case "range":
+  //       return { validate: (value: string) => (details.min_value && value < details.min_value) || (details.max_value && value > details.max_value) ? `Please enter a value between ${details.min_value} and ${details.max_value}` : undefined };
+  //     case "condition":
+  //       return { validate: (value: string) => value === details.condition ? undefined : `Value must meet condition: ${details.condition}` };
+  //     case "enumerasi":
+  //       return { validate: (value: string) => details.value ? details.value.split(',').includes(value) : undefined };
+  //     case "countOfLength":
+  //       return { validate: (value: string) => value.length <= parseInt(details.value || '0') ? undefined : `Maximum length is ${details.value} characters` };
+  //     default:
+  //       return {};
+  //   }
+  // };
+
+  // const getValidationRule = (param: ParameterModul) => {
+  //   const rule = validationRules.find((r) => r.details.id_rule === param.ms_rules);
+  //   return rule ? applyValidation(rule.details) : {};
+  // };
+
   const getValidationRule = (param: ParameterModul) => {
-    const rule = validationRules.find((r) => r.details.id_rule === param.ms_rules);
-    return rule ? applyValidation(rule.details) : {};
+    switch (param.ms_rules) {
+      case "Integer":
+        return {
+          validate: (value: string) =>
+            /^-?\d+$/.test(value) ? undefined : "Value must be an integer",
+        };
+      case "Float":
+        return {
+          validate: (value: string) =>
+            /^-?\d+(\.\d+)?$/.test(value)
+              ? undefined
+              : "Value must be a number (integer or float)",
+        };
+      case "Boolean":
+        return {
+          validate: (value: string) =>
+            /^(true|false)$/.test(value) ? undefined : "Value must be true or false",
+        };
+      case "Char":
+        return {
+          validate: (value: string) =>
+            value.length === 1 ? undefined : "Value must be a single character",
+        };
+      case "String":
+        return {
+          validate: (value: string) =>
+            value.length >= 1 ? undefined : "Value must be a string with at least 1 character",
+        };
+      default:
+        return {};
+    }
   };
   
   useEffect(() => {
