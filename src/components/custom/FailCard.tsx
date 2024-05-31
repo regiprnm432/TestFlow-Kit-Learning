@@ -1,22 +1,31 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import "../../index.css";
+import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 import failIcon from "../../assets/logo/fail.png";
 import { Button } from "@/components/ui/button";
 
-const PassCard: React.FC = () => {
-  // Dummy data persentase coverage
-  const coveragePercentage: number = 70;
+interface FailCardProps {
+  percentageCoverage: number;
+  minimumCoverage: number;
+  statusEksekusi: boolean;
+  tanggalEksekusi: string;
+  modulId: string; // Added idModul prop
+}
 
-  // Mendapatkan tanggal saat ini
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleDateString();
+const FailCard: React.FC<FailCardProps> = ({
+  percentageCoverage,
+  minimumCoverage,
+  statusEksekusi,
+  tanggalEksekusi,
+  modulId, // Added idModul prop
+}) => {
+  const message = statusEksekusi
+    ? `Mohon maaf, belum bisa melanjutkan ke case berikutnya. Minimal coverage test ${minimumCoverage}%.`
+    : `Mohon maaf, belum bisa melanjutkan ke case berikutnya. Ubah kembali test case sampai semua hasil test result berstatus PASS.`;
+
+  const handleReportClick = () => {
+    const url = `/modul/generateTestUnitClass/${modulId}`;
+    window.open(url, '_blank');
+  };
 
   return (
     <div className="h-full w-full">
@@ -28,43 +37,33 @@ const PassCard: React.FC = () => {
               src={failIcon}
               alt="Blue Card"
               className="mr-4"
-              style={{ maxHeight: "150px" }}
+              style={{ maxHeight: "150px", width: "150px" }}
             />
             <div className="text-white">
-              <p className="font-semibold text-lg mb-2">
-                Hasil Coverage Test Case Anda
+              <p className="font-bold text-medium mb-2 pr-4">
+                {statusEksekusi
+                  ? `Hasil Coverage Test Case Anda ${percentageCoverage}%`
+                  : `Hasil Coverage Test Case Anda tidak dapat dihitung, karena terdapat test case yang berstatus FAILED.`}
               </p>
-              <p className="font-semibold text-4xl mb-2">
-                {coveragePercentage}%
-              </p>
+             
               <p
-                className="font-semibold text-base mb-2"
+                className="font-semibold mb-4"
                 style={{ fontSize: "14px" }}
               >
-                Mohon maaf, belum bisa melanjutkan ke case berikutnya. Minimal
-                coverage test 80%
+                {message}
               </p>
+                <p className="font-semibold mb-2" style={{ fontSize: "14px" }}>
+                  Tanggal Eksekusi: {tanggalEksekusi}
+                </p>
+                <div className="button-container-custom mt-4 pr-4" >
+            
+              </div>
             </div>
           </div>
         </div>
-        <CardFooter className="card-footer flex justify-between items-center">
-          <div>
-            <p
-              className="text-base mb-4 mt-4 font-semibold "
-              style={{ fontSize: "12px" }}
-            >
-              Tanggal Eksekusi: <span>{formattedDate}</span>
-            </p>
-          </div>
-          <div className="button-container-custom">
-            <Button className="bg-white text-red-700 hover:bg-red-700 button-custom">
-              Laporan Pengujian
-            </Button>
-          </div>
-        </CardFooter>
       </Card>
     </div>
   );
 };
 
-export default PassCard;
+export default FailCard;

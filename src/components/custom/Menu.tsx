@@ -1,26 +1,65 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PoinIcon from "/src/assets/logo/poin.png";
 
+interface ModuleData {
+  ms_tingkat_kesulitan: string;
+}
+
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const modulId = import.meta.env.VITE_MODULE_ID;
+
 export function Menu() {
   const location = useLocation();
+  const [moduleData, setModuleData] = useState<ModuleData | null>(null);
 
-  // Simulasi nilai difficultyLevel dari database (misalnya "mudah")
-  const difficultyLevel: string = "mudah";
+  useEffect(() => {
+    const fetchModuleData = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        setModuleData(responseData.data.data_modul);
+        // Tampilkan tingkat kesulitan yang terambil dari respons
+        console.log("Tingkat Kesulitan:", responseData.data.data_modul.ms_tingkat_kesulitan);
+      } catch (error) {
+        console.error("Error fetching module data:", error);
+      }
+    };
+
+    fetchModuleData();
+  }, []);
+
+  // Simulasi nilai difficultyLevel dari database
+  const difficultyLevel: string = moduleData?.ms_tingkat_kesulitan || "";
   const levels: { [key: string]: string } = {
-    sulit: "Sulit",
-    sedang: "Sedang",
-    mudah: "Mudah",
+    "1": "Sangat Mudah",
+    "2": "Mudah",
+    "3": "Sedang",
+    "4": "Sulit",
   };
 
   // Fungsi untuk menghitung poin maksimal
   const calculateMaxPoint = (level: number, difficulty: string): number => {
     switch (difficulty) {
-      case "sulit":
+      case "4":
+        return level * 4;
+      case "3":
         return level * 3;
-      case "sedang":
+      case "2":
         return level * 2;
-      case "mudah":
+      case "1":
         return level * 1;
       default:
         return 0;
@@ -44,7 +83,9 @@ export function Menu() {
         <Link
           to="/"
           className={
-            location.pathname === "/"
+            location.pathname === "/" ||
+            location.pathname === "/pass/" ||
+            location.pathname === "/fail/"
               ? "buttonMenu activeButton"
               : "buttonMenu inactiveButton"
           }
@@ -52,9 +93,9 @@ export function Menu() {
           Pembuatan Test Case
         </Link>
         <Link
-          to="/test-result"
+          to="/pass"
           className={
-            location.pathname === "/test-result"
+            location.pathname === "#"
               ? "buttonMenu activeButton"
               : "buttonMenu inactiveButton"
           }

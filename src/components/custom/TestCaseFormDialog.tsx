@@ -26,6 +26,8 @@ const modulId = import.meta.env.VITE_MODULE_ID;
 interface FormDialogProps {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
+  triggerRefresh: () => void;
+  onSuccess: () => void;
 }
 
 interface ParameterModul {
@@ -38,6 +40,17 @@ interface ParameterModul {
   created: string;
   updatedby: string;
   updated: string;
+}
+
+interface TestCase {
+  no: number;
+  object_pengujian: string;
+  data_test_input: {
+    param_name: string;
+    param_type: string;
+    param_value: string;
+  }[];
+  expected_result: string;
 }
 
 interface DataResponse {
@@ -70,10 +83,14 @@ interface RuleDetail {
 const TestCaseFormDialog = ({
   isDialogOpen,
   setIsDialogOpen,
+  triggerRefresh,
+  onSuccess,
+
 }: FormDialogProps) => {
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  // const [validationRules, setValidationRules] = useState<any[]>([]);
+  const [lastTestCaseNumber, setLastTestCaseNumber] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const form = useForm({
     mode: "onBlur",
@@ -84,7 +101,6 @@ const TestCaseFormDialog = ({
       const response = await fetch(
         `${apiUrl}/modul/detail/${modulId}`,
         {
-          // Menggunakan ID_MODUL dari variabel global
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -104,74 +120,27 @@ const TestCaseFormDialog = ({
       const responseData: DataResponse = await response.json();
       setParameters(responseData.data.data_parameter_modul);
       console.log(responseData);
+
+      // Set lastTestCaseNumber to the highest existing test case number
+      const lastNumber = responseData.data.data_modul.test_cases?.length
+      ? Math.max(
+          ...responseData.data.data_modul.test_cases.map(
+            (tc: TestCase) => tc.no
+          )
+        )
+      : 0;
+      setLastTestCaseNumber(lastNumber);
+      console.log("Fetched lastTestCaseNumber:", lastNumber);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  // const fetchValidationRules = async () => {
-  //   try {
-  //     const response = await fetch(`${apiUrl}/combo/validasi_parameter`, {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //         Authorization: `Bearer ${apiKey}`,
-  //       },
-  //     });
-
-  //     const validationData = await response.json();
-  //     const parsedRules = parseValidationRules(validationData.data);
-  //     setValidationRules(parsedRules);
-  //     console.log("data validasi: ", validationData.data); 
-  //   } catch (error) {
-  //     console.error("Error fetching validation rules:", error);
-  //   }
-  // };
-
   useEffect(() => {
     fetchParameters();
-    // fetchValidationRules();
   }, []);
 
-  // const parseValidationRules = (rules: any[]): ValidationRule[] => {
-  //   return rules.map(rule => ({
-  //     label: rule.label,
-  //     details: JSON.parse(rule.value) as RuleDetail
-  //   }));
-  // };
-
-  // const applyValidation = (details: RuleDetail) => {
-  //   switch (details.nama_rule) {
-  //     case "range":
-  //       return { validate: (value: string) => (details.min_value && value < details.min_value) || (details.max_value && value > details.max_value) ? `Please enter a value between ${details.min_value} and ${details.max_value}` : undefined };
-  //     case "condition":
-  //       return { validate: (value: string) => value === details.condition ? undefined : `Value must meet condition: ${details.condition}` };
-  //     case "enumerasi":
-  //       return { validate: (value: string) => details.value ? details.value.split(',').includes(value) : undefined };
-  //     case "countOfLength":
-  //       return { validate: (value: string) => value.length <= parseInt(details.value || '0') ? undefined : `Maximum length is ${details.value} characters` };
-  //     default:
-  //       return {};
-  //   }
-  // };
-
-  // const getValidationRule = (param: ParameterModul) => {
-  //   const rule = validationRules.find((r) => r.details.id_rule === param.ms_rules);
-  //   return rule ? applyValidation(rule.details) : {};
-  // };
-
   //   const getValidationRule = (param: ParameterModul) => {
-  //     // let rules: RuleDetail;
-  //     // if (typeof param.ms_rules === "string") {
-  //     //   try {
-  //     //     rules = JSON.parse(param.ms_rules);
-  //     //   } catch {
-  //     //     rules = { nama_rule: param.ms_rules, id_rule: "", jml_param: "" };
-  //     //   }
-  //     // } else {
-  //     //   rules = param.ms_rules;
-  //     // }
-
   //     switch (param.ms_rules) {
   //       case "range":
   //         return {
@@ -219,13 +188,14 @@ const TestCaseFormDialog = ({
     if (!isDialogOpen) {
       form.reset();
       setShowSuccessMessage(false);
+      setErrorMessage("");
     }
   }, [isDialogOpen, form]);
 
   const handleSubmit = async (data: any) => {
     const formattedData = {
       id_modul: modulId, 
-      no: "1",
+      no: lastTestCaseNumber + 1,
       object_pengujian: data.objective,
       data_test_input: parameters.map((param) => ({
         param_name: param.ms_nama_parameter,
@@ -236,6 +206,7 @@ const TestCaseFormDialog = ({
     };
 
     try {
+      form.reset();
       const response = await fetch(`${apiUrl}/modul/addTestCase`, {
         method: "POST",
         headers: {
@@ -253,78 +224,85 @@ const TestCaseFormDialog = ({
         }
       }
 
-      const responseData: DataResponse = await response.json();
+      const responseData = await response.json();
       console.log(responseData);
       form.reset();
-      setShowSuccessMessage(true); // Tampilkan popup pesan
+      setShowSuccessMessage(true);
       setTimeout(() => {
-        setShowSuccessMessage(false); // Tutup popup pesan setelah 3 detik
-        setIsDialogOpen(false); // Tutup dialog
+        setShowSuccessMessage(false);
+        setIsDialogOpen(false);
       }, 3000);
+
+      triggerRefresh();
+
+      setLastTestCaseNumber((prev) => {
+        const newNumber = prev + 1;
+        console.log("Updated lastTestCaseNumber:", newNumber);
+        return newNumber;
+      });
     } catch (error) {
       console.error("Error saving data:", error);
+      setErrorMessage("Error saving data. Please try again.");
     }
   };
 
   return (
     <>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTrigger asChild>
-          <Button
-            className="bg-blue-800 text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
-            style={{ fontSize: "10px" }}
-          >
-            <FaPlus className="mr-1" />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="bg-white rounded-[20] overflow-y-auto max-h-[80vh] p-6">
-          {/* Menambahkan overflow-y dan max-height */}
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold mb-4">
-              Tambah Test Case
-            </DialogTitle>
-            <Form {...form}>
-              <form
-                className="space-y-6"
-                onSubmit={form.handleSubmit(handleSubmit)}
-              >
-                <FormField
-                  control={form.control}
-                  name="objective"
-                  rules={{ required: "Objektif Pengujian is required" }}
-                  render={({ field, fieldState: { error } }) => (
-                    <FormItem>
-                      <FormLabel>Objektif Pengujian</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="rounded-md shadow-sm bg-gray-200 focus:ring-0 border-gray-300"
-                        />
-                      </FormControl>
-                      {error && (
-                        <p className="text-red-600 text-sm">{error.message}</p>
-                      )}
-                    </FormItem>
-                  )}
-                />
-                {parameters &&
-                  parameters.length > 0 &&
-                  parameters.map((param) => (
-                    <FormField
-                      key={param.ms_id_parameter}
-                      control={form.control}
-                      name={`param_${param.ms_id_parameter}`}
-                      rules={{
-                        required: `${param.ms_nama_parameter} is required`,
-                        // ...getValidationRule(param),
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <FormItem>
-                          <FormLabel>{param.ms_nama_parameter}</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              className="rounded-md shadow-sm bg-gray-200 focus:ring-0 border-gray-300"
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>
+        <Button
+          className="bg-blue-800 text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
+          style={{ fontSize: "10px" }}
+        >
+          <FaPlus className="mr-1" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="bg-white rounded-[20] overflow-y-auto max-h-[80vh] p-6">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-bold mb-4">
+            Tambah Test Case
+          </DialogTitle>
+          <Form {...form}>
+            <form
+              className="space-y-6"
+              onSubmit={form.handleSubmit(handleSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name="objective"
+                rules={{ required: "Objektif Pengujian is required" }}
+                render={({ field, fieldState: { error } }) => (
+                  <FormItem>
+                    <FormLabel>Objektif Pengujian</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="rounded-md shadow-sm bg-gray-200 focus:ring-0 border-gray-300"
+                      />
+                    </FormControl>
+                    {error && (
+                      <p className="text-red-600 text-sm">{error.message}</p>
+                    )}
+                  </FormItem>
+                )}
+              />
+              {parameters &&
+                parameters.length > 0 &&
+                parameters.map((param) => (
+                  <FormField
+                    key={param.ms_id_parameter}
+                    control={form.control}
+                    name={`param_${param.ms_id_parameter}`}
+                    rules={{
+                      required: `${param.ms_nama_parameter} is required`,
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <FormItem>
+                        <FormLabel>{param.ms_nama_parameter}</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            className="rounded-md shadow-sm bg-gray-200 focus :ring-0 border-gray-300"
                             />
                           </FormControl>
                           {error && (
@@ -355,6 +333,11 @@ const TestCaseFormDialog = ({
                     </FormItem>
                   )}
                 />
+                {errorMessage && (
+                  <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
+                    {errorMessage}
+                  </div>
+                )}
                 <div className="flex justify-end gap-4">
                   <Button
                     onClick={() => setIsDialogOpen(false)}
@@ -374,8 +357,8 @@ const TestCaseFormDialog = ({
           </DialogHeader>
           {showSuccessMessage && (
             <div className="absolute inset-x-0 top-0 flex items-center justify-center h-full bg-black bg-opacity-30">
-              <div className="bg-white p-4 rounded-lg shadow-lg">
-                <p className="text-2140AD font-bold">
+              <div className="bg-blue-800 p-4 rounded-lg shadow-lg">
+                <p className="text-white font-bold">
                   Test case berhasil disimpan!
                 </p>
               </div>
@@ -384,6 +367,7 @@ const TestCaseFormDialog = ({
         </DialogContent>
       </Dialog>
     </>
+
   );
 };
 

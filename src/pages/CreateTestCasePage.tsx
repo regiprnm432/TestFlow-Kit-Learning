@@ -14,6 +14,9 @@ import MinimalCard from "@/components/custom/MinimalCard";
 
 const CreateTestCasePage: React.FC = () => {
   const [showCyclomaticComplexity, setShowCyclomaticComplexity] = useState(true);
+  const [showCodeCoverage, setShowCodeCoverage] = useState(false);
+  const cyclomaticComplexityValue = 5;
+  const codeCoveragePercentage = 80;
 
   return (
     <Layout>
@@ -30,12 +33,22 @@ const CreateTestCasePage: React.FC = () => {
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={50}>
-            <div className="flex flex-col h-full items-center pl-4 pr-4 gap-4" style={{ overflowY: 'auto' }}>
-              <CFGCard 
-                  showCyclomaticComplexity={showCyclomaticComplexity}
-                />
-              <AddTestCaseCard />
-              <MinimalCard />
+          <div
+              className="flex flex-col h-full items-center pl-4 pr-4 gap-4"
+              style={{ overflowY: "auto" }}
+            >
+              <CFGCard
+                showCyclomaticComplexity={showCyclomaticComplexity}
+                cyclomaticComplexityValue={cyclomaticComplexityValue}
+                showCodeCoverage={showCodeCoverage}
+                codeCoveragePercentage={codeCoveragePercentage}
+              />
+              <div className="flex-grow">
+                <AddTestCaseCard />
+              </div>
+              <div className="mt-6 w-full">
+                <MinimalCard />
+              </div>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

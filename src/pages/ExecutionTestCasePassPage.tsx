@@ -1,5 +1,6 @@
 import Layout from "./Layout";
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { Menu } from "@/components/custom/Menu";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
 import AddTestCaseCard from "@/components/custom/AddTestCaseCard";
@@ -15,8 +16,52 @@ import PassCard from "@/components/custom/PassCard";
 const ExecutionTestCasePassPage: React.FC = () => {
   const [showCyclomaticComplexity, setShowCyclomaticComplexity] = useState(true);
   const [showCodeCoverage, setShowCodeCoverage] = useState(false);
-  const cyclomaticComplexityValue = 5; 
-  const codeCoveragePercentage = 80; 
+  const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
+  const [minimumCoverage, setMinimumCoverage] = useState<number>(0);
+  const [points, setPoints] = useState<number>(0);
+  const [cyclomaticComplexityValue, setCyclomaticComplexityValue] = useState(5);
+  const [codeCoveragePercentage, setCodeCoveragePercentage] = useState(80);
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+  const { state: navigationData } = location;
+
+  
+  const [failCardData, setFailCardData] = useState<{
+    percentageCoverage: number;
+    minimumCoverage: number;
+    statusEksekusi: boolean;
+    tanggalEksekusi: string;
+    poin: number;
+    modulId: string;
+  }>({
+    percentageCoverage: 0,
+    minimumCoverage: 0,
+    statusEksekusi: false,
+    tanggalEksekusi: "",
+    poin: 0,
+    modulId: ""
+  });
+
+  useEffect(() => {
+    // Scroll ke bagian paling bawah saat komponen dimount
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+
+
+  useEffect(() => {
+    // Mendapatkan nilai percentageCoverage, minimumCoverage, dan points dari URL query params
+    const searchParams = new URLSearchParams(location.search);
+    const percentage = Number(searchParams.get("percentageCoverage"));
+    const minimum = Number(searchParams.get("minimumCoverage"));
+    const pointsValue = Number(searchParams.get("points"));
+
+    // Set nilai percentageCoverage, minimumCoverage, dan points
+    setPercentageCoverage(percentage);
+    setMinimumCoverage(minimum);
+    setPoints(pointsValue);
+  }, []);
 
   return (
     <Layout>
@@ -31,16 +76,32 @@ const ExecutionTestCasePassPage: React.FC = () => {
               <ModuleSpecificationCard />
             </div>
           </ResizablePanel>
+          <ResizableHandle />
           <ResizablePanel defaultSize={50}>
-            <div className="flex flex-col h-full items-center p-6 gap-6" style={{ overflowY: 'auto' }}>
+            <div  className="flex flex-col h-full items-center pl-4 pr-4 gap-4"
+              style={{ overflowY: "auto" }}>
               <CFGCard 
                   showCyclomaticComplexity={showCyclomaticComplexity}
                   cyclomaticComplexityValue={cyclomaticComplexityValue}
                   showCodeCoverage={showCodeCoverage}
                   codeCoveragePercentage={codeCoveragePercentage}
                 />
-              <AddTestCaseCard />
-              <PassCard />
+             <div className="flex-grow">
+                <AddTestCaseCard />
+              </div>
+              <div className="mt-6 w-full">
+                <PassCard
+                  percentageCoverage={navigationData?.coverage_score || 0}
+                  minimumCoverage={navigationData?.minimum_coverage_score || 0}
+                  statusEksekusi={navigationData?.status_eksekusi || false}
+                  tanggalEksekusi={navigationData?.tgl_eksekusi || ""}
+                  modulId={navigationData?.modul_id||""}
+                  poin={navigationData?.point||0}
+
+                />
+              </div>
+              {/* Penanda untuk scroll ke bagian paling bawah */}
+              <div ref={bottomRef}></div>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
