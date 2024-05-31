@@ -1,7 +1,7 @@
 import Layout from "./Layout";
 import { useState } from "react";
 import { Menu } from "@/components/custom/Menu";
-import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
+import LeftContentCard from "@/components/custom/LeftContentCard";
 import CFGCard from "@/components/custom/CFGCard";
 import {
   ResizableHandle,
@@ -28,7 +28,7 @@ const TestResultPage = () => {
             >
             <ResizablePanel defaultSize={50}>
                 <div className="flex h-full flex-col">
-                <ModuleSpecificationCard />
+                <LeftContentCard />
                 </div>
             </ResizablePanel>
             <ResizablePanel defaultSize={50}>

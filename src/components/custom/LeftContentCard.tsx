@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react';
 import "../../index.css";
-import { CopyBlock, dracula } from 'react-code-blocks';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
@@ -45,7 +38,7 @@ interface Data {
   };
 }
 
-const ModuleSpecificationCard = () => {
+const LeftContentCard = () => {
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
@@ -120,43 +113,14 @@ const ModuleSpecificationCard = () => {
       <div className="max-h-[80vh] overflow-y-auto">
         {dataModule.data_modul && dataModule.data_parameter_modul && (
           <>
-            <h3 className="text-base font-bold mb-4 text-gray-800">Spesifikasi Modul</h3>
-            <p className="mb-6 text-sm  text-gray-600">Modul : {dataModule.data_modul.ms_nama_modul}</p>
+            <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
             <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
             
-            <div className="rounded-lg mb-6">
-              <h4 className="text-base font-semibold mb-3 text-gray-700">Daftar Parameter</h4>
-              <Table className="text-sm border-collapse border  border-black">
-                <TableHeader>
-                  <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
-                    <TableHead className="border border-black">No</TableHead>
-                    <TableHead className="border border-black">Nama Parameter</TableHead>
-                    <TableHead className="border border-black">Tipe Data</TableHead>
-                    <TableHead className="border border-black">Rules</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {dataModule.data_parameter_modul.map((parameter, index) => (
-                    <TableRow key={parameter.ms_id_parameter} className={`${index % 2 === 0 ? "bg-blue-100" : "bg-blue-200"} text-sm leading-tight`}>
-                      <TableCell className="py-2 border border-black">{index + 1}</TableCell>
-                      <TableCell className="py-2 border border-black">{parameter.ms_nama_parameter}</TableCell>
-                      <TableCell className="py-2 border border-black">{parameter.ms_tipe_data}</TableCell>
-                      <TableCell className="py-2 border border-black">{parameter.ms_rules}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-            
-            <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
-            <div className="text-sm p-4 rounded-lg">
-              <CopyBlock
-                language="java"
-                text={sourceCode || 'Loading source code...'}
-                showLineNumbers={true}
-                theme={dracula}
-                codeBlock
-              />
+            <h4 className="text-base font-bold  mb-1  text-gray-800">Code Coverage</h4>
+            <div className="text-xs p-4 rounded-lg">
+              <SyntaxHighlighter language="java" style={docco}>
+                {sourceCode || 'Loading source code...'}
+              </SyntaxHighlighter>
             </div>
           </>
         )}
@@ -165,4 +129,4 @@ const ModuleSpecificationCard = () => {
   );
 };
 
-export default ModuleSpecificationCard;
+export default LeftContentCard;

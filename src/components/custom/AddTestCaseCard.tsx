@@ -306,53 +306,46 @@ const AddTestCaseCard: React.FC = () => {
       )}
 
       <CardContent>
-        <Table className="text-sm">
+        <Table className="text-sm border-collapse border border-black">
           <TableHeader>
-            <TableRow
-              className="bg-blue-800 text-white p-0"
-              style={{ fontSize: "14px" }}
-            >
-              <TableHead>No</TableHead>
-              <TableHead style={{ width: "200px" }}>
-                Objective Testing
-              </TableHead>
+            <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
+              <TableHead className="border border-black">No</TableHead>
+              <TableHead className="border border-black w-52">Objective Testing</TableHead>
               {parameters.map((param) => (
-                <TableHead key={`param_${param.ms_id_parameter}`}>
+                <TableHead key={`param_${param.ms_id_parameter}`} className="border border-black">
                   {param.ms_nama_parameter}
                 </TableHead>
               ))}
-              <TableHead style={{ width: "250px" }}>Expected</TableHead>
-              <TableHead>Aksi</TableHead>
+              <TableHead className="border border-black w-64">Expected</TableHead>
+              <TableHead className="border border-black">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {testCases.map((test, index) => (
               <TableRow
                 key={test.tr_id_test_case}
-                className={index % 2 === 0 ? "bg-blue-100" : "bg-blue-200"}
-                style={{ fontSize: "14px" }}
+                className={`${index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'} text-sm leading-tight`}
               >
-                <TableCell>{test.tr_no}</TableCell>
-                <TableCell style={{ width: "250px", whiteSpace: "nowrap" }}>
+                <TableCell className="py-2 border border-black">{test.tr_no}</TableCell>
+                <TableCell className="py-2 border border-black w-64 whitespace-nowrap">
                   {test.tr_object_pengujian}
                 </TableCell>
                 {JSON.parse(test.tr_data_test_input).map(
                   (paramData: { param_value: string }, i: number) => (
-                    <TableCell key={i} style={{ whiteSpace: "nowrap" }}>
+                    <TableCell key={i} className="py-2 border border-black whitespace-nowrap">
                       <div>
                         <span>{paramData.param_value}</span>
                       </div>
                     </TableCell>
                   )
                 )}
-                <TableCell style={{ width: "200px", whiteSpace: "nowrap" }}>
+                <TableCell className="py-2 border border-black w-52 whitespace-nowrap">
                   {test.tr_expected_result}
                 </TableCell>
-                <TableCell className="flex items-center space-x-2">
+                <TableCell className="py-2 border-t border-black flex items-center justify-between px-2">
                   <Button
                     onClick={() => handleEdit(test.tr_id_test_case)}
-                    className="text-blue-500 p-0"
-                    style={{ fontSize: "14px" }}
+                    className="text-blue-500 text-base p-1"
                   >
                     <EditTestCaseFormDialog
                       editingTestId={editingTestId}
@@ -362,8 +355,7 @@ const AddTestCaseCard: React.FC = () => {
                   </Button>
                   <Button
                     onClick={() => handleDelete(test.tr_id_test_case)}
-                    className="text-red-500 p-0"
-                    style={{ fontSize: "14px" }}
+                    className="text-red-500 text-base p-1"
                   >
                     <FaTrash />
                   </Button>

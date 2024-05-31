@@ -33,7 +33,7 @@ interface ParameterModul {
   ms_id_modul: string;
   ms_nama_parameter: string;
   ms_tipe_data: string;
-  ms_rules: string;
+  ms_rules: RuleDetail | string;
   createdby: string;
   created: string;
   updatedby: string;
@@ -52,15 +52,15 @@ interface DataResponse {
   };
 }
 
-// interface RuleDetail {
-//   nama_rule: string;
-//   id_rule: string;
-//   jml_param: string;
-//   min_value?: string;
-//   max_value?: string;
-//   condition?: string;
-//   value?: string;
-// }
+interface RuleDetail {
+  nama_rule: string;
+  id_rule: string;
+  jml_param: string;
+  min_value?: string;
+  max_value?: string;
+  condition?: string;
+  value?: string;
+}
 
 // interface ValidationRule {
 //   label: string;
@@ -160,39 +160,60 @@ const TestCaseFormDialog = ({
   //   return rule ? applyValidation(rule.details) : {};
   // };
 
-  const getValidationRule = (param: ParameterModul) => {
-    switch (param.ms_rules) {
-      case "Integer":
-        return {
-          validate: (value: string) =>
-            /^-?\d+$/.test(value) ? undefined : "Value must be an integer",
-        };
-      case "Float":
-        return {
-          validate: (value: string) =>
-            /^-?\d+(\.\d+)?$/.test(value)
-              ? undefined
-              : "Value must be a number (integer or float)",
-        };
-      case "Boolean":
-        return {
-          validate: (value: string) =>
-            /^(true|false)$/.test(value) ? undefined : "Value must be true or false",
-        };
-      case "Char":
-        return {
-          validate: (value: string) =>
-            value.length === 1 ? undefined : "Value must be a single character",
-        };
-      case "String":
-        return {
-          validate: (value: string) =>
-            value.length >= 1 ? undefined : "Value must be a string with at least 1 character",
-        };
-      default:
-        return {};
-    }
-  };
+  //   const getValidationRule = (param: ParameterModul) => {
+  //     // let rules: RuleDetail;
+  //     // if (typeof param.ms_rules === "string") {
+  //     //   try {
+  //     //     rules = JSON.parse(param.ms_rules);
+  //     //   } catch {
+  //     //     rules = { nama_rule: param.ms_rules, id_rule: "", jml_param: "" };
+  //     //   }
+  //     // } else {
+  //     //   rules = param.ms_rules;
+  //     // }
+
+  //     switch (param.ms_rules) {
+  //       case "range":
+  //         return {
+  //           validate: (value: string) =>
+  //             (rules.min_value && value < rules.min_value) || 
+  //             (rules.max_value && value > rules.max_value) 
+  //             ? `Please enter a value between ${rules.min_value} and ${rules.max_value}`
+  //             : undefined,
+  //         };
+  //       case "Integer":
+  //         return {
+  //           validate: (value: string) =>
+  //             /^-?\d+$/.test(value) ? undefined : "Value must be an integer",
+  //         };
+  //       case "Float":
+  //         return {
+  //           validate: (value: string) =>
+  //             /^-?\d+(\.\d+)?$/.test(value)
+  //               ? undefined
+  //               : "Value must be a number (integer or float)",
+  //         };
+  //       case "Boolean":
+  //         return {
+  //           validate: (value: string) =>
+  //             /^(true|false)$/.test(value) ? undefined : "Value must be true or false",
+  //         };
+  //       case "Char":
+  //         return {
+  //           validate: (value: string) =>
+  //             value.length === 1 ? undefined : "Value must be a single character",
+  //         };
+  //       case "String":
+  //         return {
+  //           validate: (value: string) =>
+  //             value.length >= 1 ? undefined : "Value must be a string with at least 1 character",
+  //         };
+  //       default:
+  //         return {};
+  
+  //     return {};
+  //   }
+  // };
   
   useEffect(() => {
     if (!isDialogOpen) {
@@ -295,7 +316,7 @@ const TestCaseFormDialog = ({
                       name={`param_${param.ms_id_parameter}`}
                       rules={{
                         required: `${param.ms_nama_parameter} is required`,
-                        ...getValidationRule(param),
+                        // ...getValidationRule(param),
                       }}
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
