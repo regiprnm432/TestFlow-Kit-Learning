@@ -106,7 +106,7 @@ const ExecutionTestCaseFailPage: React.FC = () => {
                 </div>
                 {/* Tombol untuk navigasi ke halaman /test-result dengan ID modul */}
                 <Button
-                    className="bg-white font-bold text-red-700 hover:bg-red-700 button-custom "
+                    className="bg-white rounded-lg font-bold text-red-700 border border-red-700 hover:bg-red-700 hover:text-white button-custom "
                     onClick={handleNavigateToTestResult}
                     style={{ fontSize: "14px" }}
                   >

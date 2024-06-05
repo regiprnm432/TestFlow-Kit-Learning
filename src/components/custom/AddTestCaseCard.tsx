@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import TestCaseFormDialog from "./TestCaseFormDialog";
 import { useNavigate } from "react-router-dom";
 import EditTestCaseFormDialog from "./EditTestCaseFormDialog";
+import { ClipLoader } from "react-spinners";
 import {
   Card,
   CardContent,
@@ -64,6 +65,8 @@ const AddTestCaseCard: React.FC = () => {
   const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [hasUnexecutedChanges, setHasUnexecutedChanges] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [previouslyExecuted, setPreviouslyExecuted] = useState(false);
 
   type NavigationData = {
     status_eksekusi: boolean;
@@ -78,7 +81,6 @@ const AddTestCaseCard: React.FC = () => {
     null
   );
   const navigate = useNavigate();
-
 
   const DeleteConfirmationDialog: React.FC<{
     isOpen: boolean;
@@ -104,6 +106,15 @@ const AddTestCaseCard: React.FC = () => {
       </div>
     );
   };
+
+  const LoadingOverlay: React.FC = () => (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-4 rounded shadow-lg flex items-center">
+        <ClipLoader size={35} color={"#123abc"} loading={true} />
+        <span className="ml-2">Loading...</span>
+      </div>
+    </div>
+  );
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const apiKey = import.meta.env.VITE_API_KEY;
@@ -169,7 +180,6 @@ const AddTestCaseCard: React.FC = () => {
     fetchTestCases();
   }, []);
 
-
   const handleEdit = (id: string) => {
     setEditingTestId(id);
     setHasUnexecutedChanges(true);
@@ -178,14 +188,13 @@ const AddTestCaseCard: React.FC = () => {
   const handleDelete = (id: string) => {
     setDeletingTestId(id);
     setIsDeleteDialogOpen(true);
-    setHasUnexecutedChanges(true);
   };
 
   const confirmDelete = async () => {
     if (!deletingTestId) return;
 
     try {
-      console.log("Deleting test case with ID:", deletingTestId); // Menampilkan ID test case pada console.log
+      console.log("Deleting test case with ID:", deletingTestId);
 
       const response = await fetch(`${apiUrl}/modul/deleteTestCase`, {
         method: "DELETE",
@@ -194,11 +203,11 @@ const AddTestCaseCard: React.FC = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ id_test_case: deletingTestId }), // Menggunakan format yang diharapkan oleh API
+        body: JSON.stringify({ id_test_case: deletingTestId }),
       });
 
       const responseData = await response.json();
-      console.log("Response data:", responseData); // Log response data
+      console.log("Response data:", responseData);
 
       if (!response.ok) {
         if (response.status === 403) {
@@ -241,6 +250,8 @@ const AddTestCaseCard: React.FC = () => {
       return () => clearTimeout(timer);
     }
 
+    setIsLoading(true); // Set loading state to true
+
     try {
       const response = await fetch(`${apiUrl}/modul/run/${modulId}`, {
         method: "POST",
@@ -270,84 +281,85 @@ const AddTestCaseCard: React.FC = () => {
         minimum_coverage_score: result.minimum_coverage_score,
         points: result.point,
         modul_id: result.modul,
-        };
-  
-        setNavigationData(dataToPass);
-        setHasUnexecutedChanges(false);
-  
-        if (result.coverage_score < result.minimum_coverage_score) {
-          navigate("/fail", { state: dataToPass });
-        } else {
-          navigate("/pass", { state: dataToPass });
-        }
-  
-        // Handle success message or other logic here
-        setShowMessage(true);
-        const timer = setTimeout(() => {
-          setShowMessage(false);
-        }, 5000);
-        return () => clearTimeout(timer);
-      } catch (error) {
-        console.error("Error executing test case:", error);
-        // Handle error message or other logic here
+      };
+
+      setNavigationData(dataToPass);
+      setHasUnexecutedChanges(false);
+      setPreviouslyExecuted(true);
+
+      if (result.coverage_score < result.minimum_coverage_score) {
+        navigate("/fail", { state: dataToPass });
+      } else {
+        navigate("/pass", { state: dataToPass });
       }
-    };
 
- return (
-  <Card className="h-screen w-full flex flex-col">
-    <CardHeader className="flex justify-between">
-      <CardTitle className="text-base module-title m-0">Test Case</CardTitle>
-      <div className="flex space-x-2 items-center justify-end">
-        <Button
-          variant="outline"
-          className="bg-white text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
-          style={{ fontSize: "14px" }}
-          onClick={handleExecuteTestCase}
-        >
-          Eksekusi Test Case
-        </Button>
-        <TestCaseFormDialog
-          isDialogOpen={isFormDialogOpen}
-          setIsDialogOpen={setIsFormDialogOpen}
-          triggerRefresh={fetchTestCases}
-          onSuccess={() => setHasUnexecutedChanges(true)}
-        />
-      </div>
-    </CardHeader>
+      setShowMessage(true);
+      const timer = setTimeout(() => {
+        setShowMessage(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    } catch (error) {
+      console.error("Error executing test case:", error);
+    } finally {
+      setIsLoading(false); // Set loading state to false
+    }
+  };
 
-    {hasUnexecutedChanges && (
-      <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
-        Test case terbaru belum dieksekusi
-      </div>
-    )}
+  return (
+    <Card className="w-full flex flex-col">
+      <CardHeader className="flex justify-between">
+        <CardTitle className="text-base module-title m-0">Test Case</CardTitle>
+        <div className="flex space-x-2 items-center justify-end">
+          <Button
+            variant="outline"
+            className="bg-white text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
+            style={{ fontSize: "14px" }}
+            onClick={handleExecuteTestCase}
+          >
+            Eksekusi Test Case
+          </Button>
+          <TestCaseFormDialog
+            isDialogOpen={isFormDialogOpen}
+            setIsDialogOpen={setIsFormDialogOpen}
+            triggerRefresh={fetchTestCases}
+            onSuccess={() => setHasUnexecutedChanges(true)}
+          />
+        </div>
+      </CardHeader>
 
-    {deleteMessage && (
-      <div className="bg-blue-800 text-white font-bold p-2 pt-4 mb-4 pb-4 text-sm">
-        {deleteMessage}
-      </div>
-    )}
+      {hasUnexecutedChanges && previouslyExecuted && (
+        <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
+          Test case terbaru belum dieksekusi
+        </div>
+      )}
 
-    {errorMessage && (
-      <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
-        {errorMessage}
-      </div>
-    )}
+      {deleteMessage && (
+        <div className="bg-blue-800 text-white font-bold p-2 pt-4 mb-4 pb-4 text-sm">
+          {deleteMessage}
+        </div>
+      )}
 
-    <CardContent className="flex-grow overflow-y-auto">
-      <Table className="text-sm border-collapse border border-black w-full">
-        <TableHeader>
-          <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
-            <TableHead className="border border-black">No</TableHead>
-            <TableHead className="border border-black w-52">Objective Testing</TableHead>
-            {parameters.map((param) => (
-              <TableHead key={`param_${param.ms_id_parameter}`} className="border border-black">
-                {param.ms_nama_parameter}
-              </TableHead>
-            ))}
-            <TableHead className="border border-black w-64">Expected</TableHead>
-            <TableHead className="border border-black">Aksi</TableHead>
-          </TableRow>
-        </TableHeader>
+      {errorMessage && (
+        <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
+          {errorMessage}
+        </div>
+      )}
+
+      <CardContent className="flex-grow overflow-y-auto">
+        <Table className="text-sm border-collapse border border-black w-full">
+          <TableHeader>
+            <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
+              <TableHead className="border border-black">No</TableHead>
+              <TableHead className="border border-black w-52">Objective Testing</TableHead>
+              {parameters.map((param) => (
+                <TableHead key={`param_${param.ms_id_parameter}`} className="border border-black">
+                  {param.ms_nama_parameter}
+                </TableHead>
+              ))}
+              <TableHead className="border border-black w-64">Expected</TableHead>
+              <TableHead className="border border-black">Aksi</TableHead>
+            </TableRow>
+          </TableHeader>
         <TableBody>
           {testCases.map((test, index) => (
             <TableRow
@@ -403,6 +415,7 @@ const AddTestCaseCard: React.FC = () => {
       onClose={() => setIsDeleteDialogOpen(false)}
       onConfirm={confirmDelete}
     />
+    {isLoading && <LoadingOverlay />}
   </Card>
 );
 

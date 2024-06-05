@@ -1,6 +1,7 @@
 import Layout from "./Layout";
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/custom/Menu";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
 import AddTestCaseCard from "@/components/custom/AddTestCaseCard";
@@ -23,9 +24,18 @@ const ExecutionTestCasePassPage: React.FC = () => {
   const [codeCoveragePercentage, setCodeCoveragePercentage] = useState(80);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+
   const location = useLocation();
   const { state: navigationData } = location;
+  type NavigationDataModul = {
+    modul_id: string;
+  };
 
+  const [dataIdModul, SetDataIdModul] = useState<NavigationDataModul | null>(
+    null
+  );
+
+  const navigate = useNavigate(); 
   
   const [failCardData, setFailCardData] = useState<{
     percentageCoverage: number;
@@ -48,6 +58,15 @@ const ExecutionTestCasePassPage: React.FC = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+    // Fungsi untuk menavigasi ke halaman /test-result dengan ID modul sebagai parameter
+    const handleNavigateToTestResult = () => {
+      const dataToPass: NavigationDataModul = {
+        modul_id: navigationData?.modul_id,
+        };
+  
+        SetDataIdModul(dataToPass);
+        navigate("/test-result", { state: dataToPass });
+      }  
 
 
   useEffect(() => {
@@ -102,6 +121,20 @@ const ExecutionTestCasePassPage: React.FC = () => {
               </div>
               {/* Penanda untuk scroll ke bagian paling bawah */}
               <div ref={bottomRef}></div>
+              <div className="space-x-2 items-center justify-end">
+                        <Button
+                            variant="outline"
+                            className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
+                            onClick={handleNavigateToTestResult}
+                        >
+                            Hasil Pengujian 
+                        </Button>
+                        <Button
+                            className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
+                        >
+                            Kasus Selanjutnya
+                        </Button>
+                    </div>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
