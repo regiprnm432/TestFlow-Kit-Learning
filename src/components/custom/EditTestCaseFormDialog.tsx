@@ -140,7 +140,10 @@ const EditTestCaseFormDialog = ({
         const testCaseData = responseData.data.find(
           (testCase: TestCaseData) => testCase.tr_id_test_case === editingTestId
         );
-  
+        
+        console.log("editingTestId", editingTestId);
+        console.log("testCaseData", testCaseData.tr_id_test_case);
+
         if (!testCaseData) {
           throw new Error("Test case not found");
         }
@@ -162,40 +165,6 @@ const EditTestCaseFormDialog = ({
       } catch (error) {
         console.error("Error fetching test case data:", error);
       }
-    }
-  };
-
-  const getValidationRule = (param: ParameterModul) => {
-    switch (param.ms_rules) {
-      case "Integer":
-        return {
-          validate: (value: string) =>
-            /^-?\d+$/.test(value) ? undefined : "Value must be an integer",
-        };
-      case "Float":
-        return {
-          validate: (value: string) =>
-            /^-?\d+(\.\d+)?$/.test(value)
-              ? undefined
-              : "Value must be a number (integer or float)",
-        };
-      case "Boolean":
-        return {
-          validate: (value: string) =>
-            /^(true|false)$/.test(value) ? undefined : "Value must be true or false",
-        };
-      case "Char":
-        return {
-          validate: (value: string) =>
-            value.length === 1 ? undefined : "Value must be a single character",
-        };
-      case "String":
-        return {
-          validate: (value: string) =>
-            value.length >= 1 ? undefined : "Value must be a string with at least 1 character",
-        };
-      default:
-        return {};
     }
   };
   
@@ -288,9 +257,7 @@ const EditTestCaseFormDialog = ({
                       key={param.ms_id_parameter}
                       control={form.control}
                       name={`param_${param.ms_id_parameter}`}
-                      rules={{ required: `${param.ms_nama_parameter} is required`,
-                               ...getValidationRule(param), 
-                              }}
+                      rules={{ required: `${param.ms_nama_parameter} is required` }}
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
                           <FormLabel>{param.ms_nama_parameter}</FormLabel>
