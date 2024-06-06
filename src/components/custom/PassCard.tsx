@@ -74,16 +74,7 @@ const PassCard: React.FC<PassCardProps> = ({
           </div>
         </div>
         <CardFooter className="card-footer flex justify-end items-center">
-  <div className="button-container-custom">
-    <Button className="font-bold bg-white text-blue-800 hover:bg-blue-800 button-custom mr-6">
-      Laporan Pengujian
-    </Button>
-  </div>
-  <div className="button-container-custom">
-    <Button className="font-bold bg-white text-blue-800 hover:bg-blue-800 button-custom">
-      Kasus Selanjutnya
-    </Button>
-  </div>
+
 </CardFooter>
 
       </Card>
