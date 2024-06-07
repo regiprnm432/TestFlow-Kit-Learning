@@ -50,60 +50,60 @@ const ModuleSpecificationCard = () => {
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchDataModule = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          }
-        });
-
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error('Forbidden: Access is denied');
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
+  const fetchDataModule = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         }
+      });
 
-        const data = await response.json();
-        console.log(data);
-        setDataModule(data.data || null);
-
-        if (data.data) {
-          fetchSourceCodeText(data.data.data_modul.ms_id_modul);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError((error as Error).message);
-      }
-    };
-
-    const fetchSourceCodeText = async (modulId: string) => {
-      try {
-        const response = await fetch(`${apiUrl}/modul/getSourceCodeText/${modulId}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          }
-        });
-
-        if (!response.ok) {
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error('Forbidden: Access is denied');
+        } else {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const data = await response.json();
-        setSourceCode(data.data);
-      } catch (error) {
-        console.error('Error fetching source code text:', error);
-        setError((error as Error).message);
       }
-    };
 
+      const data = await response.json();
+      console.log(data);
+      setDataModule(data.data || null);
+
+      if (data.data) {
+        fetchSourceCodeText(data.data.data_modul.ms_id_modul);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError((error as Error).message);
+    }
+  };
+
+  const fetchSourceCodeText = async (modulId: string) => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/getSourceCodeText/${modulId}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setSourceCode(data.data);
+    } catch (error) {
+      console.error('Error fetching source code text:', error);
+      setError((error as Error).message);
+    }
+  };
+  
+  useEffect(() => {
     fetchDataModule();
   }, []);
 

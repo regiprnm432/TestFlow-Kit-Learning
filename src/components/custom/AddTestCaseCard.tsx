@@ -120,34 +120,34 @@ const AddTestCaseCard: React.FC = () => {
   const apiKey = import.meta.env.VITE_API_KEY;
   const modulId = import.meta.env.VITE_MODULE_ID;
 
-  useEffect(() => {
-    const fetchParameters = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-        });
+  const fetchParameters = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
 
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error("Forbidden: Access is denied");
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const responseData: {
-          data: { data_parameter_modul: ParameterModul[] };
-        } = await response.json();
-        setParameters(responseData.data.data_parameter_modul);
-      } catch (error) {
-        console.error("Error fetching data:", error);
       }
-    };
 
+      const responseData: {
+        data: { data_parameter_modul: ParameterModul[] };
+      } = await response.json();
+      setParameters(responseData.data.data_parameter_modul);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+  useEffect(() => {
     fetchParameters();
   }, []);
 
@@ -182,7 +182,6 @@ const AddTestCaseCard: React.FC = () => {
 
   const handleEdit = (id: string) => {
     setEditingTestId(id);
-    setHasUnexecutedChanges(true);
   };
 
   const handleDelete = (id: string) => {
@@ -383,7 +382,7 @@ const AddTestCaseCard: React.FC = () => {
                 {test.tr_expected_result}
               </TableCell>
               <TableCell className="py-2 flex items-center justify-between px-2">
-                <Button
+              <Button
                   onClick={() => handleEdit(test.tr_id_test_case)}
                   className="text-blue-500 text-base p-1"
                 >

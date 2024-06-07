@@ -38,7 +38,7 @@ interface Data {
   };
 }
 
-const LeftContentCard = () => {
+const ModuleCoverage = () => {
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
@@ -129,4 +129,4 @@ const LeftContentCard = () => {
   );
 };
 
-export default LeftContentCard;
+export default ModuleCoverage;

@@ -165,8 +165,6 @@ const TestCaseFormDialog = ({
     fetchParameters();
   }, []);
   
-
-
   const getValidationRule = (param: ParameterModul) => {
     let rules;
     try {
@@ -262,20 +260,48 @@ const TestCaseFormDialog = ({
   };
 
 
+  const getValidationDataType = (param: ParameterModul) => {
+    switch (param.ms_tipe_data) {
+      case "int":
+        return {
+          pattern: {
+            value: /^[0-9]+$/,
+            message: "Masukkan angka",
+          },
+        };
+      case "float":
+        return {
+          pattern: {
+            value: /^[0-9]+(\.[0-9]+)?$/,
+            message: "Masukkan angka desimal",
+          },
+        };
+      case "string":
+        return {
+          pattern: {
+            value: /^[a-zA-Z0-9\s]+$/,
+            message: "Masukkan huruf atau angka",
+          },
+        };
+      default:
+        return {};
+    }
+  }
+
   useEffect(() => {
     if (!isDialogOpen) {
       form.reset();
       setShowSuccessMessage(false);
       setErrorMessage("");
     } else {
-      fetchParameters(); // Ensure objectives are fetched every time the dialog opens
+      fetchParameters();
     }
   }, [isDialogOpen, form]);
 
   const handleSubmit = async (data: any) => {
     // Validasi objective testing
     if (!data.objective) {
-      setErrorMessage("Objective Testing is required");
+      setErrorMessage("Objective Testing harus terisi");
       return;
     }
 
@@ -365,7 +391,7 @@ const TestCaseFormDialog = ({
                   control={form.control}
                   name="objective"
                   rules={{
-                    required: "Objective is required",
+                    required: "Objective harus terisi",
                     validate: (value) =>
                       existingObjectives.includes(value)
                         ? "Objective already exists"
@@ -395,7 +421,8 @@ const TestCaseFormDialog = ({
                       name={`param_${param.ms_id_parameter}`}
                       rules={{
                         required: `${param.ms_nama_parameter} harus terisi`,
-                        ...getValidationRule(param),
+                        ...getValidationDataType(param)
+                        // ...getValidationRule(param),
                       }}
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>

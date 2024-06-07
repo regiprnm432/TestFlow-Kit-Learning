@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -86,6 +86,8 @@ const EditTestCaseFormDialog = ({
 }: EditFormDialogProps) => {
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [editingTestCaseData, setEditingTestCaseData] = useState<TestCaseData | null>(null);
+  const isSubmitted = useRef(false);
 
   const form = useForm<FormValues>({
     mode: "onBlur",
@@ -117,10 +119,6 @@ const EditTestCaseFormDialog = ({
     }
   };
 
-  useEffect(() => {
-    fetchParameters();
-  }, []);
-
   const fetchTestCaseData = async () => {
     if (editingTestId) {
       try {
@@ -140,28 +138,30 @@ const EditTestCaseFormDialog = ({
         const testCaseData = responseData.data.find(
           (testCase: TestCaseData) => testCase.tr_id_test_case === editingTestId
         );
-        
-        console.log("editingTestId", editingTestId);
-        console.log("testCaseData", testCaseData.tr_id_test_case);
-
+  
         if (!testCaseData) {
           throw new Error("Test case not found");
         }
+    
+          // Cek apakah data test case yang diambil berbeda dengan data sebelumnya
+        if (editingTestCaseData && editingTestCaseData.tr_id_test_case === testCaseData.tr_id_test_case) {
+          return;
+        }
 
-        const formValues: FormValues = {
-          objective: testCaseData.tr_object_pengujian,
-          expected: testCaseData.tr_expected_result,
-        };
-
+        form.setValue("no", testCaseData.tr_no);
+        form.setValue("objective", testCaseData.tr_object_pengujian);
+        form.setValue("expected", testCaseData.tr_expected_result);
+  
         const dataTestInputParsed = JSON.parse(testCaseData.tr_data_test_input);
         dataTestInputParsed.forEach((input: any) => {
-          const param = parameters.find(p => p.ms_nama_parameter === input.param_name);
+          const param = parameters.find((p) => p.ms_nama_parameter === input.param_name);
           if (param) {
-            formValues[`param_${param.ms_id_parameter}`] = input.param_value;
+            form.setValue(`param_${param.ms_id_parameter}`, input.param_value);
           }
         });
-
-        form.reset(formValues);
+  
+        setEditingTestCaseData(testCaseData);
+        console.log(testCaseData.tr_id_test_case)
       } catch (error) {
         console.error("Error fetching test case data:", error);
       }
@@ -169,58 +169,190 @@ const EditTestCaseFormDialog = ({
   };
   
   useEffect(() => {
+    fetchParameters();
+  }, []);
+
+
+  const getValidationRule = (param: ParameterModul) => {
+    let rules;
+    try {
+      rules = JSON.parse(param.ms_rules as string);
+    } catch (error) {
+      console.error("Error parsing JSON rules:", error);
+      return {
+        validate: () =>
+          `Aturan JSON tidak valid untuk parameter ${param.ms_nama_parameter}`,
+      };
+    }
+
+    switch (rules.nama_rule) {
+      case "range":
+        return {
+          validate: (value: string) => {
+            const numericValue = parseFloat(value);
+            if (rules.min_value && numericValue < parseFloat(rules.min_value)) {
+              return `Masukkan nilai yang lebih besar atau sama dengan ${rules.min_value}`;
+            }
+            if (rules.max_value && numericValue > parseFloat(rules.max_value)) {
+              return `Masukkan nilai yang lebih kecil atau sama dengan ${rules.max_value}`;
+            }
+            return true;
+          },
+        };
+      case "condition":
+        return {
+          validate: (value: string) => {
+            const numericValue = parseFloat(value);
+            const conditionValue = parseFloat(rules.value);
+            switch (rules.condition) {
+              case ">":
+                if (!(numericValue > conditionValue)) {
+                  return `Masukkan nilai lebih besar dari ${conditionValue}`;
+                }
+                break;
+              case "<":
+                if (!(numericValue < conditionValue)) {
+                  return `Masukkan nilai lebih kecil dari ${conditionValue}`;
+                }
+                break;
+              case ">=":
+                if (!(numericValue >= conditionValue)) {
+                  return `Masukkan nilai lebih besar dari atau sama dengan ${conditionValue}`;
+                }
+                break;
+              case "<=":
+                if (!(numericValue <= conditionValue)) {
+                  return `Masukkan nilai lebih kecil dari atau sama dengan ${conditionValue}`;
+                }
+                break;
+              case "==":
+                if (!(numericValue === conditionValue)) {
+                  return `Masukkan nilai sama dengan ${conditionValue}`;
+                }
+                break;
+              case "!=":
+                if (!(numericValue !== conditionValue)) {
+                  return `Masukkan nilai tidak sama dengan ${conditionValue}`;
+                }
+                break;
+              default:
+                return "Kondisi tidak valid";
+            }
+            return true;
+          },
+        };
+      case "enumerasi":
+        return {
+          validate: (value: string) => {
+            const allowedValues = rules.value.split(",");
+            if (!allowedValues.includes(value)) {
+              return `Masukkan salah satu dari nilai berikut: ${allowedValues.join(
+                ", "
+              )}`;
+            }
+            return true;
+          },
+        };
+      case "countOfLength":
+        return {
+          validate: (value: string) => {
+            if (value.length !== parseInt(rules.value)) {
+              return `Nilai harus tepat ${rules.value} karakter`;
+            }
+            return true;
+          },
+        };
+      default:
+        return {};
+    }
+  };
+
+
+  const getValidationDataType = (param: ParameterModul) => {
+    switch (param.ms_tipe_data) {
+      case "int":
+        return {
+          pattern: {
+            value: /^[0-9]+$/,
+            message: "Masukkan angka",
+          },
+        };
+      case "float":
+        return {
+          pattern: {
+            value: /^[0-9]+(\.[0-9]+)?$/,
+            message: "Masukkan angka desimal",
+          },
+        };
+      case "string":
+        return {
+          pattern: {
+            value: /^[a-zA-Z0-9\s]+$/,
+            message: "Masukkan huruf atau angka",
+          },
+        };
+      default:
+        return {};
+    }
+  }
+
+
+  useEffect(() => {
     if (isDialogOpen && editingTestId) {
       fetchTestCaseData();
     } else {
-      form.reset();
-      setShowSuccessMessage(false);
+      setEditingTestCaseData(null); // Reset data test case
+      form.reset(); // Reset form
     }
-  }, [isDialogOpen, editingTestId, form]);
+  }, [isDialogOpen, editingTestId]);
 
   const handleSubmit: SubmitHandler<FormValues> = async (data) => {
-    const formattedData = {
-      id_test_case: editingTestId,
-      id_modul: modulId,
-      no: "1",
-      object_pengujian: data.objective,
-      data_test_input: parameters.map((param) => ({
-        param_name: param.ms_nama_parameter,
-        param_type: param.ms_tipe_data,
-        param_value: data[`param_${param.ms_id_parameter}`],
-      })),
-      expected_result: data.expected,
-    };
+    isSubmitted.current = true;
+    if (editingTestCaseData) {
+      const formattedData = {
+        id_test_case: editingTestCaseData.tr_id_test_case,
+        id_modul: modulId,
+        no: data.no,
+        object_pengujian: data.objective,
+        data_test_input: parameters.map((param) => ({
+          param_name: param.ms_nama_parameter,
+          param_type: param.ms_tipe_data,
+          param_value: data[`param_${param.ms_id_parameter}`],
+        })),
+        expected_result: data.expected,
+      };
 
-    try {
-      const response = await fetch(`${apiUrl}/modul/editTestCase`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(formattedData),
-      });
+      try {
+        const response = await fetch(`${apiUrl}/modul/editTestCase`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(formattedData),
+        });
 
-      if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error("Forbidden: Access is denied");
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error("Forbidden: Access is denied");
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
         }
-      }
 
-      const responseData: DataResponse = await response.json();
-      console.log(responseData);
-      form.reset();
-      setShowSuccessMessage(true);
-      setTimeout(() => {
-        setShowSuccessMessage(false);
-        setIsDialogOpen(false);
-      }, 3000);
-    } catch (error) {
-      console.error("Error saving data:", error);
+        const responseData: DataResponse = await response.json();
+        console.log(responseData);
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+          setIsDialogOpen(false);
+        }, 3000);
+      } catch (error) {
+        console.error("Error saving data:", error);
+      }
     }
   };
+  
 
   return (
     <>
@@ -236,7 +368,7 @@ const EditTestCaseFormDialog = ({
                 <FormField
                   control={form.control}
                   name="objective"
-                  rules={{ required: "Objektif Pengujian is required" }}
+                  rules={{ required: "Objektif Pengujian harus terisi" }}
                   render={({ field, fieldState: { error } }) => (
                     <FormItem>
                       <FormLabel>Objektif Pengujian</FormLabel>
@@ -257,7 +389,11 @@ const EditTestCaseFormDialog = ({
                       key={param.ms_id_parameter}
                       control={form.control}
                       name={`param_${param.ms_id_parameter}`}
-                      rules={{ required: `${param.ms_nama_parameter} is required` }}
+                      rules={{
+                        required: `${param.ms_nama_parameter} harus terisi`,
+                        ...getValidationDataType(param),
+                        ...getValidationRule(param)
+                      }}
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
                           <FormLabel>{param.ms_nama_parameter}</FormLabel>
@@ -275,7 +411,7 @@ const EditTestCaseFormDialog = ({
                 <FormField
                   control={form.control}
                   name="expected"
-                  rules={{ required: "Expected result is required" }}
+                  rules={{ required: "Expected result harus terisi" }}
                   render={({ field, fieldState: { error } }) => (
                     <FormItem>
                       <FormLabel>Expected</FormLabel>
@@ -291,7 +427,11 @@ const EditTestCaseFormDialog = ({
                 />
                 <div className="flex justify-end gap-4">
                   <Button
-                    onClick={() => setIsDialogOpen(false)}
+                     onClick={() => {
+                      setIsDialogOpen(false);
+                      form.reset(); // Reset form
+                      isSubmitted.current = false; // Set isSubmitted menjadi false
+                    }}
                     className="border border-black hover:bg-gray-200"
                   >
                     Kembali
