@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import "../../index.css";
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { CopyBlock, dracula } from 'react-code-blocks';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
@@ -116,11 +115,15 @@ const ModuleCoverage = () => {
             <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
             <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
             
-            <h4 className="text-base font-bold  mb-1  text-gray-800">Code Coverage</h4>
-            <div className="text-xs p-4 rounded-lg">
-              <SyntaxHighlighter language="java" style={docco}>
-                {sourceCode || 'Loading source code...'}
-              </SyntaxHighlighter>
+            <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
+            <div className="text-sm p-4 rounded-lg">
+              <CopyBlock
+                language="java"
+                text={sourceCode || 'Loading source code...'}
+                showLineNumbers={true}
+                theme={dracula}
+                codeBlock
+              />
             </div>
           </>
         )}
