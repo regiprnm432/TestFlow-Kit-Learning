@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,14 +17,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FaPlus } from "react-icons/fa";
-import {getAuthenticatedUser} from "@/lib/getAuthenticatedUser";
-import { get } from "http";
 
-const MODULE_ID = '8b9d9c04-0fef-4ea1-963c-e65b5020e3c1';
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const modulId = import.meta.env.VITE_MODULE_ID;
 
 interface FormDialogProps {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
+  triggerRefresh: () => void;
+  onSuccess: () => void;
 }
 
 interface ParameterModul {
@@ -32,11 +34,22 @@ interface ParameterModul {
   ms_id_modul: string;
   ms_nama_parameter: string;
   ms_tipe_data: string;
-  ms_rules: string;
+  ms_rules: RuleDetail | string;
   createdby: string;
   created: string;
   updatedby: string;
   updated: string;
+}
+
+interface TestCase {
+  tr_no: number;
+  tr_object_pengujian: string;
+  data_test_input: {
+    param_name: string;
+    param_type: string;
+    param_value: string;
+  }[];
+  expected_result: string;
 }
 
 interface DataResponse {
@@ -51,62 +64,256 @@ interface DataResponse {
   };
 }
 
+interface RuleDetail {
+  nama_rule: string;
+  id_rule: string;
+  jml_param: string;
+  min_value?: string;
+  max_value?: string;
+  condition?: string;
+  value?: string;
+}
+
 const TestCaseFormDialog = ({
   isDialogOpen,
   setIsDialogOpen,
+  triggerRefresh,
+  onSuccess,
 }: FormDialogProps) => {
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [existingObjectives, setExistingObjectives] = useState<string[]>([]);
+  const [lastTestCaseNumber, setLastTestCaseNumber] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const form = useForm({
     mode: "onBlur",
   });
 
-  useEffect(() => {
-    const fetchParameters = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8000/modul/detail/${MODULE_ID}`,
-          {
-            // Menggunakan ID_MODUL dari variabel global
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              Authorization: getAuthenticatedUser().token,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error("Forbidden: Access is denied");
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
+  const fetchParameters = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/modul/detail/${modulId}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
         }
-
-        const responseData: DataResponse = await response.json();
-        setParameters(responseData.data.data_parameter_modul); // Ubah disini
-        console.log(responseData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      );
+  
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
       }
-    };
+  
+      const responseData: DataResponse = await response.json();
+      setParameters(responseData.data.data_parameter_modul);
+      console.log(responseData);
+  
+      // const lastNumber = responseData.data.data_modul.test_cases?.length
+      //   ? Math.max(
+      //       ...responseData.data.data_modul.test_cases.map(
+      //         (tr: TestCase) => tr.tr_no
+      //       )
+      //     )
+      //   : 0;
+      // setLastTestCaseNumber(lastNumber);
+      // console.log("Fetched lastTestCaseNumber:", lastNumber);
+  
+      const objectivesResponse = await fetch(
+        `${apiUrl}/modul/TestCase/${modulId}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
+  
+      if (!objectivesResponse.ok) {
+        if (objectivesResponse.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${objectivesResponse.status}`);
+        }
+      }
 
+      const objectivesData: { data: TestCase[] } = await objectivesResponse.json();
+      console.log(objectivesData);
+      const objectives = objectivesData.data.map((data) => data.tr_object_pengujian);
+      console.log("ini objectives:", objectives);
+      setExistingObjectives(objectives);
+
+      const lastNumber = objectivesData.data.length
+      ? Math.max(...objectivesData.data.map((testCase) => testCase.tr_no))
+      : 0;
+    setLastTestCaseNumber(lastNumber);
+    console.log("Fetched lastTestCaseNumber:", lastNumber)
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+  useEffect(() => {
     fetchParameters();
   }, []);
+  
+  const getValidationRule = (param: ParameterModul) => {
+    let rules;
+    try {
+      rules = JSON.parse(param.ms_rules as string);
+    } catch (error) {
+      console.error("Error parsing JSON rules:", error);
+      return {
+        validate: () =>
+          `Aturan JSON tidak valid untuk parameter ${param.ms_nama_parameter}`,
+      };
+    }
+
+    switch (rules.nama_rule) {
+      case "range":
+        return {
+          validate: (value: string) => {
+            const numericValue = parseFloat(value);
+            if (rules.min_value && numericValue < parseFloat(rules.min_value)) {
+              return `Masukkan nilai yang lebih besar atau sama dengan ${rules.min_value}`;
+            }
+            if (rules.max_value && numericValue > parseFloat(rules.max_value)) {
+              return `Masukkan nilai yang lebih kecil atau sama dengan ${rules.max_value}`;
+            }
+            return true;
+          },
+        };
+      case "condition":
+        return {
+          validate: (value: string) => {
+            const numericValue = parseFloat(value);
+            const conditionValue = parseFloat(rules.value);
+            switch (rules.condition) {
+              case ">":
+                if (!(numericValue > conditionValue)) {
+                  return `Masukkan nilai lebih besar dari ${conditionValue}`;
+                }
+                break;
+              case "<":
+                if (!(numericValue < conditionValue)) {
+                  return `Masukkan nilai lebih kecil dari ${conditionValue}`;
+                }
+                break;
+              case ">=":
+                if (!(numericValue >= conditionValue)) {
+                  return `Masukkan nilai lebih besar dari atau sama dengan ${conditionValue}`;
+                }
+                break;
+              case "<=":
+                if (!(numericValue <= conditionValue)) {
+                  return `Masukkan nilai lebih kecil dari atau sama dengan ${conditionValue}`;
+                }
+                break;
+              case "==":
+                if (!(numericValue === conditionValue)) {
+                  return `Masukkan nilai sama dengan ${conditionValue}`;
+                }
+                break;
+              case "!=":
+                if (!(numericValue !== conditionValue)) {
+                  return `Masukkan nilai tidak sama dengan ${conditionValue}`;
+                }
+                break;
+              default:
+                return "Kondisi tidak valid";
+            }
+            return true;
+          },
+        };
+      case "enumerasi":
+        return {
+          validate: (value: string) => {
+            const allowedValues = rules.value.split(",");
+            if (!allowedValues.includes(value)) {
+              return `Masukkan salah satu dari nilai berikut: ${allowedValues.join(
+                ", "
+              )}`;
+            }
+            return true;
+          },
+        };
+      case "countOfLength":
+        return {
+          validate: (value: string) => {
+            if (value.length !== parseInt(rules.value)) {
+              return `Nilai harus tepat ${rules.value} karakter`;
+            }
+            return true;
+          },
+        };
+      default:
+        return {};
+    }
+  };
+
+
+  const getValidationDataType = (param: ParameterModul) => {
+    switch (param.ms_tipe_data) {
+      case "int":
+        return {
+          pattern: {
+            value: /^[0-9]+$/,
+            message: "Masukkan angka",
+          },
+        };
+      case "float":
+        return {
+          pattern: {
+            value: /^[0-9]+(\.[0-9]+)?$/,
+            message: "Masukkan angka desimal",
+          },
+        };
+      case "string":
+        return {
+          pattern: {
+            value: /^[a-zA-Z0-9\s]+$/,
+            message: "Masukkan huruf atau angka",
+          },
+        };
+      default:
+        return {};
+    }
+  }
 
   useEffect(() => {
     if (!isDialogOpen) {
       form.reset();
       setShowSuccessMessage(false);
+      setErrorMessage("");
+    } else {
+      fetchParameters();
     }
   }, [isDialogOpen, form]);
 
   const handleSubmit = async (data: any) => {
+    // Validasi objective testing
+    if (!data.objective) {
+      setErrorMessage("Objective Testing harus terisi");
+      return;
+    }
+
+    // Cek apakah objective sudah ada
+    if (existingObjectives.includes(data.objective)) {
+      setErrorMessage("Objective Testing sudah tersedia");
+      return;
+    }
+
     const formattedData = {
-      id_modul: MODULE_ID, 
-      no: "1",
+      id_modul: modulId, 
+      no: lastTestCaseNumber + 1,
       object_pengujian: data.objective,
       data_test_input: parameters.map((param) => ({
         param_name: param.ms_nama_parameter,
@@ -117,11 +324,12 @@ const TestCaseFormDialog = ({
     };
 
     try {
-      const response = await fetch("http://localhost:8000/modul/addTestCase", {
+      form.reset();
+      const response = await fetch(`${apiUrl}/modul/addTestCase`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: getAuthenticatedUser().token,
+          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify(formattedData),
       });
@@ -134,16 +342,27 @@ const TestCaseFormDialog = ({
         }
       }
 
-      const responseData: DataResponse = await response.json();
+      const responseData = await response.json();
       console.log(responseData);
       form.reset();
-      setShowSuccessMessage(true); // Tampilkan popup pesan
+      setShowSuccessMessage(true);
       setTimeout(() => {
-        setShowSuccessMessage(false); // Tutup popup pesan setelah 3 detik
-        setIsDialogOpen(false); // Tutup dialog
+        setShowSuccessMessage(false);
+        setIsDialogOpen(false);
       }, 3000);
+
+      triggerRefresh();
+      fetchParameters(); 
+      onSuccess();
+
+      setLastTestCaseNumber((prev) => {
+        const newNumber = prev + 1;
+        console.log("Updated lastTestCaseNumber:", newNumber);
+        return newNumber;
+      });
     } catch (error) {
       console.error("Error saving data:", error);
+      setErrorMessage("Error saving data");
     }
   };
 
@@ -159,7 +378,6 @@ const TestCaseFormDialog = ({
           </Button>
         </DialogTrigger>
         <DialogContent className="bg-white rounded-[20] overflow-y-auto max-h-[80vh] p-6">
-          {/* Menambahkan overflow-y dan max-height */}
           <DialogHeader>
             <DialogTitle className="text-lg font-bold mb-4">
               Tambah Test Case
@@ -172,7 +390,13 @@ const TestCaseFormDialog = ({
                 <FormField
                   control={form.control}
                   name="objective"
-                  rules={{ required: "Objektif Pengujian is required" }}
+                  rules={{
+                    required: "Objective harus terisi",
+                    validate: (value) =>
+                      existingObjectives.includes(value)
+                        ? "Objective already exists"
+                        : true,
+                  }}
                   render={({ field, fieldState: { error } }) => (
                     <FormItem>
                       <FormLabel>Objektif Pengujian</FormLabel>
@@ -196,7 +420,9 @@ const TestCaseFormDialog = ({
                       control={form.control}
                       name={`param_${param.ms_id_parameter}`}
                       rules={{
-                        required: `${param.ms_nama_parameter} is required`,
+                        required: `${param.ms_nama_parameter} harus terisi`,
+                        ...getValidationDataType(param)
+                        // ...getValidationRule(param),
                       }}
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
@@ -219,7 +445,7 @@ const TestCaseFormDialog = ({
                 <FormField
                   control={form.control}
                   name="expected"
-                  rules={{ required: "Expected result is required" }}
+                  rules={{ required: "Expected result harus terisi" }}
                   render={({ field, fieldState: { error } }) => (
                     <FormItem>
                       <FormLabel>Expected</FormLabel>
@@ -235,6 +461,11 @@ const TestCaseFormDialog = ({
                     </FormItem>
                   )}
                 />
+                {errorMessage && (
+                  <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
+                    {errorMessage}
+                  </div>
+                )}
                 <div className="flex justify-end gap-4">
                   <Button
                     onClick={() => setIsDialogOpen(false)}
@@ -254,8 +485,8 @@ const TestCaseFormDialog = ({
           </DialogHeader>
           {showSuccessMessage && (
             <div className="absolute inset-x-0 top-0 flex items-center justify-center h-full bg-black bg-opacity-30">
-              <div className="bg-white p-4 rounded-lg shadow-lg">
-                <p className="text-2140AD font-bold">
+              <div className="bg-blue-800 p-4 rounded-lg shadow-lg">
+                <p className="text-white font-bold">
                   Test case berhasil disimpan!
                 </p>
               </div>

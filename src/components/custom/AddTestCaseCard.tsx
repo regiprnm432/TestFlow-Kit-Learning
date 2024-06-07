@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TestCaseFormDialog from "./TestCaseFormDialog";
-import EditTestCaseFormDialog from "./EditTestCaseFormDialog"; 
+import { useNavigate } from "react-router-dom";
+import EditTestCaseFormDialog from "./EditTestCaseFormDialog";
+import { ClipLoader } from "react-spinners";
 import {
   Card,
   CardContent,
@@ -16,9 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { getAuthenticatedUser } from "@/lib/getAuthenticatedUser";
 
 import "../../index.css";
 
@@ -54,115 +55,80 @@ const AddTestCaseCard: React.FC = () => {
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
   const [editingTestId, setEditingTestId] = useState<string | null>(null);
-  const [deletingTestId, setDeletingTestId] = useState<number | null>(null);
+  const [isEditFormDialogOpen, setIsEditFormDialogOpen] = useState(false);
+  const [deletingTestId, setDeletingTestId] = useState<string | null>(null);
   const [executedTestCase, setExecutedTestCase] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState("");
+  const [minimumCoverage, setMinimumCoverage] = useState<number>(0);
+  const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [hasUnexecutedChanges, setHasUnexecutedChanges] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [previouslyExecuted, setPreviouslyExecuted] = useState(false);
 
-  const MODULE_ID = '8b9d9c04-0fef-4ea1-963c-e65b5020e3c1';
-
-  useEffect(() => {
-    const fetchParameters = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8000/modul/detail/${MODULE_ID}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              Authorization: getAuthenticatedUser().token
-            },
-          }
-        );
-
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error("Forbidden: Access is denied");
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-        }
-
-        const responseData: {
-          data: { data_parameter_modul: ParameterModul[] };
-        } = await response.json();
-        setParameters(responseData.data.data_parameter_modul);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchParameters();
-  }, []);
-
-  useEffect(() => {
-    const fetchTestCases = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8000/modul/TestCase/${MODULE_ID}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              Authorization: getAuthenticatedUser().token,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error("Forbidden: Access is denied");
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-        }
-
-        const responseData: { data: TestCase[] } = await response.json();
-        setTestCases(responseData.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchTestCases();
-  }, []);
-
-  useEffect(() => {
-    if (
-      (editingTestId || deletingTestId || testCases.length > 2) &&
-      executedTestCase
-    ) {
-      setShowMessage(true);
-      const timer = setTimeout(() => {
-        setShowMessage(false);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [editingTestId, deletingTestId, testCases, executedTestCase]);
-
-  const handleEdit = (id: string) => {
-    setEditingTestId(id);
-    setIsFormDialogOpen(true);
+  type NavigationData = {
+    status_eksekusi: boolean;
+    tgl_eksekusi: string;
+    coverage_score: number;
+    minimum_coverage_score: number;
+    points: number;
+    modul_id: string;
   };
 
-  const handleDelete = () => {
-    setDeletingTestId(1);
+  const [navigationData, setNavigationData] = useState<NavigationData | null>(
+    null
+  );
+  const navigate = useNavigate();
+
+  const DeleteConfirmationDialog: React.FC<{
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+  }> = ({ isOpen, onClose, onConfirm }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white p-4 rounded shadow-lg">
+          <h2 className="text-lg">Konfirmasi Penghapusan</h2>
+          <p>Apakah kamu yakin akan menghapus test case ini?</p>
+          <div className="flex justify-end mt-4">
+            <Button onClick={onClose} className="mr-2">
+              Cancel
+            </Button>
+            <Button onClick={onConfirm} className="bg-red-500 text-white">
+              Delete
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
-  const handleExecuteTestCase = async () => {
+  const LoadingOverlay: React.FC = () => (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-4 rounded shadow-lg flex items-center">
+        <ClipLoader size={35} color={"#123abc"} loading={true} />
+        <span className="ml-2">Loading...</span>
+      </div>
+    </div>
+  );
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiKey = import.meta.env.VITE_API_KEY;
+  const modulId = import.meta.env.VITE_MODULE_ID;
+
+  const fetchParameters = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/modul/run/${MODULE_ID}`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: getAuthenticatedUser().token,
-          },
-        }
-      );
-      // Retrieve the result and log it to the console
-      const result = await response.json();
-      console.log("Hasil eksekusi test case:", result);
+      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
 
       if (!response.ok) {
         if (response.status === 403) {
@@ -172,7 +138,160 @@ const AddTestCaseCard: React.FC = () => {
         }
       }
 
-      // Handle success message or other logic here
+      const responseData: {
+        data: { data_parameter_modul: ParameterModul[] };
+      } = await response.json();
+      setParameters(responseData.data.data_parameter_modul);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchParameters();
+  }, []);
+
+  const fetchTestCases = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/TestCase/${modulId}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+
+      const responseData: { data: TestCase[] } = await response.json();
+      setTestCases(responseData.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTestCases();
+  }, []);
+
+  const handleEdit = (id: string) => {
+    setEditingTestId(id);
+  };
+
+  const handleDelete = (id: string) => {
+    setDeletingTestId(id);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingTestId) return;
+
+    try {
+      console.log("Deleting test case with ID:", deletingTestId);
+
+      const response = await fetch(`${apiUrl}/modul/deleteTestCase`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({ id_test_case: deletingTestId }),
+      });
+
+      const responseData = await response.json();
+      console.log("Response data:", responseData);
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else if (response.status === 422) {
+          throw new Error(`Unprocessable Entity: ${responseData.detail}`);
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+
+      setTestCases((prevTestCases) =>
+        prevTestCases.filter((test) => test.tr_id_test_case !== deletingTestId)
+      );
+      setDeleteMessage("Test case deleted successfully.");
+      const timer = setTimeout(() => {
+        setDeleteMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error deleting test case:", error);
+        alert(`Error deleting test case: ${error.message}`);
+      } else {
+        console.error("Unknown error:", error);
+        alert("An unknown error occurred.");
+      }
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setDeletingTestId(null);
+    }
+  };
+
+  const handleExecuteTestCase = async () => {
+    if (testCases.length === 0) {
+      setErrorMessage("Belum ada test case yang dapat dieksekusi");
+      const timer = setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+
+    setIsLoading(true); // Set loading state to true
+
+    try {
+      const response = await fetch(`${apiUrl}/modul/run/${modulId}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+
+      const result = await response.json();
+      console.log("Hasil eksekusi test case:", result);
+      setPercentageCoverage(result.coverage_score);
+      setMinimumCoverage(result.minimum_coverage_score);
+
+      const dataToPass: NavigationData = {
+        status_eksekusi: result.result_test.status_eksekusi,
+        tgl_eksekusi: result.result_test.tgl_eksekusi,
+        coverage_score: result.coverage_score,
+        minimum_coverage_score: result.minimum_coverage_score,
+        points: result.point,
+        modul_id: result.modul,
+      };
+
+      setNavigationData(dataToPass);
+      setHasUnexecutedChanges(false);
+      setPreviouslyExecuted(true);
+
+      if (result.coverage_score < result.minimum_coverage_score) {
+        navigate("/fail", { state: dataToPass });
+      } else {
+        navigate("/pass", { state: dataToPass });
+      }
+
       setShowMessage(true);
       const timer = setTimeout(() => {
         setShowMessage(false);
@@ -180,18 +299,19 @@ const AddTestCaseCard: React.FC = () => {
       return () => clearTimeout(timer);
     } catch (error) {
       console.error("Error executing test case:", error);
-      // Handle error message or other logic here
+    } finally {
+      setIsLoading(false); // Set loading state to false
     }
   };
 
   return (
-    <Card className="h-screen w-full flex-grow-1">
+    <Card className="w-full flex flex-col">
       <CardHeader className="flex justify-between">
-        <CardTitle className="module-title m-0">Test Case</CardTitle>
+        <CardTitle className="text-base module-title m-0">Test Case</CardTitle>
         <div className="flex space-x-2 items-center justify-end">
           <Button
             variant="outline"
-            className="text-blue-800 border-2 border-blue-800 rounded-[10]"
+            className="bg-white text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
             style={{ fontSize: "14px" }}
             onClick={handleExecuteTestCase}
           >
@@ -200,96 +320,104 @@ const AddTestCaseCard: React.FC = () => {
           <TestCaseFormDialog
             isDialogOpen={isFormDialogOpen}
             setIsDialogOpen={setIsFormDialogOpen}
+            triggerRefresh={fetchTestCases}
+            onSuccess={() => setHasUnexecutedChanges(true)}
           />
         </div>
       </CardHeader>
 
-      {showMessage && (
-        <div className="bg-red-100 text-red-700 p-2 text-sm">
+      {hasUnexecutedChanges && previouslyExecuted && (
+        <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
           Test case terbaru belum dieksekusi
         </div>
       )}
 
-      <CardContent>
-        <Table>
+      {deleteMessage && (
+        <div className="bg-blue-800 text-white font-bold p-2 pt-4 mb-4 pb-4 text-sm">
+          {deleteMessage}
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
+          {errorMessage}
+        </div>
+      )}
+
+      <CardContent className="flex-grow overflow-y-auto">
+        <Table className="text-sm border-collapse border border-black w-full">
           <TableHeader>
-            <TableRow
-              className="bg-blue-800 text-white p-0"
-              style={{ fontSize: "14px" }}
-            >
-              <TableHead>No</TableHead>
-              <TableHead style={{ width: "200px" }}>
-                Objective Testing
-              </TableHead>
+            <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
+              <TableHead className="border border-black">No</TableHead>
+              <TableHead className="border border-black w-52">Objective Testing</TableHead>
               {parameters.map((param) => (
-                <TableHead key={`param_${param.ms_id_parameter}`}>
+                <TableHead key={`param_${param.ms_id_parameter}`} className="border border-black">
                   {param.ms_nama_parameter}
                 </TableHead>
               ))}
-              <TableHead style={{ width: "250px" }}>Expected</TableHead>
-              <TableHead>Aksi</TableHead>
+              <TableHead className="border border-black w-64">Expected</TableHead>
+              <TableHead className="border border-black">Aksi</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {testCases.map((test, index) => (
-              <TableRow
-                key={test.tr_id_test_case}
-                className={index % 2 === 0 ? "bg-blue-100" : "bg-blue-200"}
-                style={{ fontSize: "14px" }}
-              >
-                <TableCell>{test.tr_no}</TableCell>
-                <TableCell style={{ width: "250px", whiteSpace: "nowrap" }}>
-                  {test.tr_object_pengujian}
-                </TableCell>
-                {JSON.parse(test.tr_data_test_input).map(
-                  (paramData: { param_value: string }, i: number) => (
-                    <TableCell key={i} style={{ whiteSpace: "nowrap" }}>
-                      <div>
-                        <span>{paramData.param_value}</span>
-                      </div>
-                    </TableCell>
-                  )
-                )}
-                <TableCell style={{ width: "200px", whiteSpace: "nowrap" }}>
-                  {test.tr_expected_result}
-                </TableCell>
-                <TableCell className="flex items-center space-x-2">
-                  <Button
-                    onClick={() => handleEdit(test.tr_id_test_case)}
-                    className="text-blue-500 p-0"
-                    style={{ fontSize: "14px" }}
-                  >
-                    <FaEdit />
-                  </Button>
-                  <Button
-                    onClick={() => handleDelete()}
-                    className="text-red-500 p-0"
-                    style={{ fontSize: "14px" }}
-                  >
-                    <FaTrash />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-      {editingTestId && (
-        <EditTestCaseFormDialog
-          isDialogOpen={true}
-          setIsDialogOpen={setIsFormDialogOpen}
-          testCase={
-            testCases.find((test) => test.tr_id_test_case === editingTestId) ||
-            null
-          }
-          parameters={parameters}
-        />
-      )}
-      <CardFooter className="flex justify-between">
-        {/* Konten footer card di sini */}
-      </CardFooter>
-    </Card>
-  );
+        <TableBody>
+          {testCases.map((test, index) => (
+            <TableRow
+              key={test.tr_id_test_case}
+              className={`${index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'} text-sm leading-tight`}
+            >
+              <TableCell className="py-2 border border-black">{index + 1}</TableCell>
+              <TableCell className="py-2 border border-black w-64 whitespace-nowrap">
+                {test.tr_object_pengujian}
+              </TableCell>
+              {JSON.parse(test.tr_data_test_input).map(
+                (paramData: { param_value: string }, i: number) => (
+                  <TableCell key={i} className="py-2 border border-black whitespace-nowrap">
+                    <div>
+                      <span>{paramData.param_value}</span>
+                    </div>
+                  </TableCell>
+                )
+              )}
+              <TableCell className="py-2 border border-black w-52 whitespace-nowrap">
+                {test.tr_expected_result}
+              </TableCell>
+              <TableCell className="py-2 flex items-center justify-between px-2">
+              <Button
+                  onClick={() => handleEdit(test.tr_id_test_case)}
+                  className="text-blue-500 text-base p-1"
+                >
+                  <EditTestCaseFormDialog
+                    editingTestId={editingTestId}
+                    isDialogOpen={isEditFormDialogOpen}
+                    setIsDialogOpen={setIsEditFormDialogOpen}
+                  />
+                </Button>
+                <Button
+                  onClick={() => handleDelete(test.tr_id_test_case)}
+                  className="text-red-500 text-base p-1"
+                >
+                  <FaTrash />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </CardContent>
+
+    <CardFooter className="flex justify-between">
+      {/* Konten footer card di sini */}
+    </CardFooter>
+
+    <DeleteConfirmationDialog
+      isOpen={isDeleteDialogOpen}
+      onClose={() => setIsDeleteDialogOpen(false)}
+      onConfirm={confirmDelete}
+    />
+    {isLoading && <LoadingOverlay />}
+  </Card>
+);
+
 };
 
 export default AddTestCaseCard;

@@ -40,13 +40,13 @@ const TestResultCard = () => {
   return (
     <Card className="h-full w-full flex-grow-1">
       <CardHeader className="flex justify-between">
-        <CardTitle className="module-title m-0">HasiL Pengujian 50% Pass</CardTitle>
+        <CardTitle className="text base module-title m-0">HasiL Pengujian 50% Pass</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="mb-2 text-gray-600">
-            <p><span className="font-bold">Jumlah Test Case:</span>2</p>
-            <p><span className="font-bold">Jumlah Test Case Pass:</span>1</p>
-            <p><span className="font-bold">Jumlah Test Case Not Pass:</span>2</p>
+        <div className="mb-6 text-sm  text-gray-600">
+            <p><span className="text-sm">Jumlah Test Case :</span>2</p>
+            <p><span className="text-sm">Jumlah Test Case Pass :</span>1</p>
+            <p><span className="text-sm">Jumlah Test Case Not Pass :</span>2</p>
         </div>
 
         <Table>

@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react';
 import "../../index.css";
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { getAuthenticatedUser } from "@/lib/getAuthenticatedUser";
+import { CopyBlock, dracula } from 'react-code-blocks';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const modulId = import.meta.env.VITE_MODULE_ID;
 
 interface DataModul {
   ms_id_modul: string;
@@ -40,62 +50,60 @@ const ModuleSpecificationCard = () => {
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
 
-  const MODULE_ID = '8b9d9c04-0fef-4ea1-963c-e65b5020e3c1';
-
-  useEffect(() => {
-    const fetchDataModule = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/modul/detail/${MODULE_ID}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': getAuthenticatedUser().token
-          }
-        });
-
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error('Forbidden: Access is denied');
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
+  const fetchDataModule = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         }
+      });
 
-        const data = await response.json();
-        console.log(data);
-        setDataModule(data.data || null);
-
-        if (data.data) {
-          fetchSourceCodeText(data.data.data_modul.ms_id_modul);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError((error as Error).message);
-      }
-    };
-
-    const fetchSourceCodeText = async (modulId: string) => {
-      try {
-        const response = await fetch(`http://localhost:8000/modul/getSourceCodeText/${modulId}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': getAuthenticatedUser().token
-          }
-        });
-
-        if (!response.ok) {
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error('Forbidden: Access is denied');
+        } else {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const data = await response.json();
-        setSourceCode(data.data);
-      } catch (error) {
-        console.error('Error fetching source code text:', error);
-        setError((error as Error).message);
       }
-    };
 
+      const data = await response.json();
+      console.log(data);
+      setDataModule(data.data || null);
+
+      if (data.data) {
+        fetchSourceCodeText(data.data.data_modul.ms_id_modul);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError((error as Error).message);
+    }
+  };
+
+  const fetchSourceCodeText = async (modulId: string) => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/getSourceCodeText/${modulId}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setSourceCode(data.data);
+    } catch (error) {
+      console.error('Error fetching source code text:', error);
+      setError((error as Error).message);
+    }
+  };
+  
+  useEffect(() => {
     fetchDataModule();
   }, []);
 
@@ -112,48 +120,43 @@ const ModuleSpecificationCard = () => {
       <div className="max-h-[80vh] overflow-y-auto">
         {dataModule.data_modul && dataModule.data_parameter_modul && (
           <>
-            <h3 className="text-xl font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
-            <h4 className="text-xl font-semibold mb-3 text-gray-700">Deskripsi Modul</h4>
-            <p className="mb-6 text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
-            
-            <h4 className="text-xl font-semibold mb-3 text-gray-700">Detail Modul</h4>
-            <div className="mb-6 space-y-2 text-gray-600">
-              <p><span className="font-bold">Jenis Modul:</span> {dataModule.data_modul.ms_jenis_modul}</p>
-              <p><span className="font-bold">Class Name:</span> {dataModule.data_modul.ms_class_name}</p>
-              <p><span className="font-bold">Function Name:</span> {dataModule.data_modul.ms_function_name}</p>
-              <p><span className="font-bold">Return Type:</span> {dataModule.data_modul.ms_return_type}</p>
-              <p><span className="font-bold">Jumlah Parameter:</span> {dataModule.data_modul.ms_jml_parameter}</p>
-            </div>
+            <h3 className="text-base font-bold mb-4 text-gray-800">Spesifikasi Modul</h3>
+            <p className="mb-6 text-sm  text-gray-600">Modul : {dataModule.data_modul.ms_nama_modul}</p>
+            <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
             
             <div className="rounded-lg mb-6">
-              <h4 className="text-xl font-semibold mb-3 text-gray-700">Parameter</h4>
-              <div className="text-gray-600"> 
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-300">
-                      <th className="text-left pb-2">Nama Parameter</th>
-                      <th className="text-left pb-2">Tipe Data</th>
-                      <th className="text-left pb-2">Rules</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dataModule.data_parameter_modul.map((parameter) => (
-                      <tr key={parameter.ms_id_parameter} className="border-b border-gray-300">
-                        <td className="py-2">{parameter.ms_nama_parameter}</td>
-                        <td className="py-2">{parameter.ms_tipe_data}</td>
-                        <td className="py-2">{parameter.ms_rules}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <h4 className="text-base font-semibold mb-3 text-gray-700">Daftar Parameter</h4>
+              <Table className="text-sm border-collapse border  border-black">
+                <TableHeader>
+                  <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
+                    <TableHead className="border border-black">No</TableHead>
+                    <TableHead className="border border-black">Nama Parameter</TableHead>
+                    <TableHead className="border border-black">Tipe Data</TableHead>
+                    <TableHead className="border border-black">Rules</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {dataModule.data_parameter_modul.map((parameter, index) => (
+                    <TableRow key={parameter.ms_id_parameter} className={`${index % 2 === 0 ? "bg-blue-100" : "bg-blue-200"} text-sm leading-tight`}>
+                      <TableCell className="py-2 border border-black">{index + 1}</TableCell>
+                      <TableCell className="py-2 border border-black">{parameter.ms_nama_parameter}</TableCell>
+                      <TableCell className="py-2 border border-black">{parameter.ms_tipe_data}</TableCell>
+                      <TableCell className="py-2 border border-black">{parameter.ms_rules}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
-
-            <h4 className="text-xl font-bold  mb-1  text-gray-800">Source Code (Java)</h4>
-            <div className="p-4 rounded-lg">
-              <SyntaxHighlighter language="java" style={docco}>
-                {sourceCode || 'Loading source code...'}
-              </SyntaxHighlighter>
+            
+            <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
+            <div className="text-sm p-4 rounded-lg">
+              <CopyBlock
+                language="java"
+                text={sourceCode || 'Loading source code...'}
+                showLineNumbers={true}
+                theme={dracula}
+                codeBlock
+              />
             </div>
           </>
         )}

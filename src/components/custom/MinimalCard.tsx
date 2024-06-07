@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 
 const PassCard: React.FC = () => {
   return (
-    <div className="h-full w-full ">
+    <div className=" h-full w-full">
       <Card className="pass-card bg-blue-800 text-white">
       <CardTitle className="module-title-white">Hasil Pengujian</CardTitle>
         <div>

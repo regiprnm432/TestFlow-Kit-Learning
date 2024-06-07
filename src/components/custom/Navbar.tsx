@@ -1,12 +1,11 @@
+import React, { useState, useEffect } from "react";
 import {
   NavigationMenu,
   NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-
 import { FaSignOutAlt, FaAngleRight } from "react-icons/fa";
-
 import {
   Breadcrumb,
   BreadcrumbSeparator,
@@ -16,7 +15,43 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+const modulId = import.meta.env.VITE_MODULE_ID;
+
 export function Navbar() {
+  const [moduleName, setModuleName] = useState("");
+
+  useEffect(() => {
+    const fetchModuleName = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error("Forbidden: Access is denied");
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+        }
+
+        const data = await response.json();
+        setModuleName(data.data.data_modul.ms_nama_modul); // Assuming the API response has a `name` field
+        console.log(data)
+      } catch (error) {
+        console.error("Error fetching module name:", error);
+      }
+    };
+
+    fetchModuleName();
+  }, []);
+
   const handleLogout = () => {
     // Lakukan proses logout di sini
     console.log("Logout clicked");
@@ -40,30 +75,30 @@ export function Navbar() {
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/Home"
-                className="block px-4 py-2 text-base font-medium text-white hover:text-black"
+                className="block px-4 py-2 text-xl font-medium text-white hover:text-black"
               >
                 Coverage Test
               </NavigationMenuLink>
             </NavigationMenuItem>
             <Breadcrumb className="flex items-center ml-4">
-              <BreadcrumbSeparator className="text-white mx-2">
+              <BreadcrumbSeparator className="text-white text-xl mx-2">
                 |
               </BreadcrumbSeparator>
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink href="/">
-                    <span className="text-white hover:text-gray-300">
+                    <span className="text-white text-l hover:text-gray-300">
                       Topik Pengujian
                     </span>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="text-white mx-2">
+                <BreadcrumbSeparator className="text-white text-xl mx-2">
                   <FaAngleRight />
                 </BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbLink href="/components">
                     <span className="text-white hover:text-gray-300">
-                      Modul Program
+                      {moduleName || "Modul Program"}
                     </span>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
