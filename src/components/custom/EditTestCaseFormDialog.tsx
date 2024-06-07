@@ -25,6 +25,7 @@ const modulId = import.meta.env.VITE_MODULE_ID as string;
 interface EditFormDialogProps {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
+  triggerRefresh: () => void;
   editingTestId: string | null;
 }
 
@@ -83,6 +84,7 @@ const EditTestCaseFormDialog = ({
   isDialogOpen,
   setIsDialogOpen,
   editingTestId,
+  triggerRefresh
 }: EditFormDialogProps) => {
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -323,6 +325,7 @@ const EditTestCaseFormDialog = ({
       };
 
       try {
+        form.reset(); // Reset form
         const response = await fetch(`${apiUrl}/modul/editTestCase`, {
           method: "PUT",
           headers: {
@@ -339,6 +342,8 @@ const EditTestCaseFormDialog = ({
             throw new Error(`HTTP error! status: ${response.status}`);
           }
         }
+
+        triggerRefresh();
 
         const responseData: DataResponse = await response.json();
         console.log(responseData);
@@ -392,7 +397,7 @@ const EditTestCaseFormDialog = ({
                       rules={{
                         required: `${param.ms_nama_parameter} harus terisi`,
                         ...getValidationDataType(param),
-                        ...getValidationRule(param)
+                        // ...getValidationRule(param)
                       }}
                       render={({ field, fieldState: { error } }) => (
                         <FormItem>
