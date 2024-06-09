@@ -57,7 +57,7 @@ const AddTestCaseCard: React.FC = () => {
   const [editingTestId, setEditingTestId] = useState<string | null>(null);
   const [isEditFormDialogOpen, setIsEditFormDialogOpen] = useState(false);
   const [deletingTestId, setDeletingTestId] = useState<string | null>(null);
-  const [executedTestCase, setExecutedTestCase] = useState(false);
+  // const [executedTestCase, setExecutedTestCase] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState("");
@@ -77,10 +77,10 @@ const AddTestCaseCard: React.FC = () => {
     modul_id: string;
   };
 
-  const [navigationData, setNavigationData] = useState<NavigationData | null>(
-    null
-  );
-  const navigate = useNavigate();
+  // const [navigationData, setNavigationData] = useState<NavigationData | null>(
+  //   null
+  // );
+  // const navigate = useNavigate();
 
   const DeleteConfirmationDialog: React.FC<{
     isOpen: boolean;
@@ -118,11 +118,13 @@ const AddTestCaseCard: React.FC = () => {
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const apiKey = import.meta.env.VITE_API_KEY;
-  const modulId = import.meta.env.VITE_MODULE_ID;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
 
   const fetchParameters = async () => {
     try {
-      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+      const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -287,9 +289,9 @@ const AddTestCaseCard: React.FC = () => {
       setPreviouslyExecuted(true);
 
       if (result.coverage_score < result.minimum_coverage_score) {
-        navigate("/fail", { state: dataToPass });
+        navigate("/fail?topikModulId="+modulId, { state: dataToPass });
       } else {
-        navigate("/pass", { state: dataToPass });
+        navigate("/pass?topikModulId="+modulId, { state: dataToPass });
       }
 
       setShowMessage(true);

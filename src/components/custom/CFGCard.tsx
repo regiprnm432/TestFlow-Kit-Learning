@@ -13,7 +13,9 @@ import "../../index.css";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
+// const modulId = import.meta.env.VITE_MODULE_ID;
+const queryParameters = new URLSearchParams(window.location.search)
+const modulId = queryParameters.get("topikModulId")
 
 const calculateCyclomaticComplexity = (edgesCount: number, nodesCount: number) => {
   return edgesCount - nodesCount + 2;
@@ -52,7 +54,7 @@ const CFGCard: React.FC<CFGCardProps> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${apiUrl}/modul/detail/${modulId}`, {
+    fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -61,7 +63,7 @@ const CFGCard: React.FC<CFGCardProps> = ({
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Data CFG:", data); // Cetak data CFG ke konsol
+      console.log("Data CFG:", data.data.data_cfg.nodes); // Cetak data CFG ke konsol
       
       const nodesData = data.data.data_cfg.nodes.map((node: any) => ({
         id: node.ms_id_node,

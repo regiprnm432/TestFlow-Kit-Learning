@@ -9,13 +9,13 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
+//import { ScrollArea } from "@/components/ui/scroll-area";
 import MinimalCard from "@/components/custom/MinimalCard";
 
 const CreateTestCasePage: React.FC = () => {
-  const [showCyclomaticComplexity, setShowCyclomaticComplexity] = useState(true);
-  const [showCodeCoverage, setShowCodeCoverage] = useState(false);
-  const cyclomaticComplexityValue = 5;
+  const [showCyclomaticComplexity] = useState(true);
+  const [showCodeCoverage] = useState(false);
+  const cyclomaticComplexityValue = 0;
   const codeCoveragePercentage = 80;
 
   return (

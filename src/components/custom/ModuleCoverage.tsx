@@ -4,7 +4,9 @@ import { CopyBlock, dracula } from 'react-code-blocks';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
+// const modulId = import.meta.env.VITE_MODULE_ID;
+const queryParameters = new URLSearchParams(window.location.search)
+const modulId = queryParameters.get("topikModulId")
 
 interface DataModul {
   ms_id_modul: string;
@@ -36,8 +38,30 @@ interface Data {
     edges: any[];
   };
 }
+interface DataResultTest {
+  coverageScore: number;
+  point: number;
+  totalTestCase: number;
+  totalPassTestCase: number;
+  totalFailedTestCase: number;
+  executionDate: string;
+  linkReportTesting: string;
+  linkReportCoverage: string;
+  linkSourceCoverage: string;
+  data_cfg: {
+    nodes: any[];
+    edges: any[];
+  };
+}
 
-const ModuleCoverage = () => {
+type ModuleCoverageProps = {
+  dataResultTest: DataResultTest;
+};
+
+
+const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
+  dataResultTest
+}) => {
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
@@ -45,7 +69,7 @@ const ModuleCoverage = () => {
   useEffect(() => {
     const fetchDataModule = async () => {
       try {
-        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+        const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -106,30 +130,51 @@ const ModuleCoverage = () => {
   if (!dataModule) {
     return <div className="p-4 bg-white rounded-lg shadow-md h-screen">Loading...</div>;
   }
-
-  return (
-    <div className="p-6 bg-white rounded-lg shadow-lg h-screen">
-      <div className="max-h-[80vh] overflow-y-auto">
-        {dataModule.data_modul && dataModule.data_parameter_modul && (
-          <>
-            <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
-            <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
-            
-            <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
-            <div className="text-sm p-4 rounded-lg">
-              <CopyBlock
-                language="java"
-                text={sourceCode || 'Loading source code...'}
-                showLineNumbers={true}
-                theme={dracula}
-                codeBlock
-              />
-            </div>
-          </>
-        )}
+  if (dataResultTest.totalTestCase == dataResultTest.totalPassTestCase){
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-lg h-screen">
+        <div className="max-h-[80vh] overflow-y-auto">
+          {dataModule.data_modul && dataModule.data_parameter_modul && (
+            <>
+              <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
+              <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
+              
+              <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
+              <div className="text-sm p-4 rounded-lg">
+                <iframe src="http://localhost:8000/static/07501030/3f194aef-3267-4bba-a31a-0f27099a3db2/jacoco_report_test/html/default/BilanganPrima.java.html" width={1000} height={500}>
+                </iframe>
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }else{
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-lg h-screen">
+        <div className="max-h-[80vh] overflow-y-auto">
+          {dataModule.data_modul && dataModule.data_parameter_modul && (
+            <>
+              <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
+              <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
+              
+              <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
+              <div className="text-sm p-4 rounded-lg">
+                <CopyBlock
+                  language="java"
+                  text={sourceCode || 'Loading source code...'}
+                  showLineNumbers={true}
+                  theme={dracula}
+                  codeBlock
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+  
 };
 
 export default ModuleCoverage;

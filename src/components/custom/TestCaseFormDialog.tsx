@@ -20,7 +20,9 @@ import { FaPlus } from "react-icons/fa";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
+// const modulId = import.meta.env.VITE_MODULE_ID;
+const queryParameters = new URLSearchParams(window.location.search)
+const modulId = queryParameters.get("topikModulId")
 
 interface FormDialogProps {
   isDialogOpen: boolean;
@@ -93,7 +95,7 @@ const TestCaseFormDialog = ({
   const fetchParameters = async () => {
     try {
       const response = await fetch(
-        `${apiUrl}/modul/detail/${modulId}`,
+        `${apiUrl}/modul/detailByIdTopikModul/${modulId}`,
         {
           method: "GET",
           headers: {
@@ -312,7 +314,7 @@ const TestCaseFormDialog = ({
     }
 
     const formattedData = {
-      id_modul: modulId, 
+      id_topik_modul: modulId, 
       no: lastTestCaseNumber + 1,
       object_pengujian: data.objective,
       data_test_input: parameters.map((param) => ({

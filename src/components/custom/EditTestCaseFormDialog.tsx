@@ -20,7 +20,9 @@ import { FaEdit } from "react-icons/fa";
 
 const apiUrl = import.meta.env.VITE_API_URL as string;
 const apiKey = import.meta.env.VITE_API_KEY as string;
-const modulId = import.meta.env.VITE_MODULE_ID as string;
+// const modulId = import.meta.env.VITE_MODULE_ID as string;
+const queryParameters = new URLSearchParams(window.location.search)
+const modulId = queryParameters.get("topikModulId")
 
 interface EditFormDialogProps {
   isDialogOpen: boolean;
@@ -97,7 +99,7 @@ const EditTestCaseFormDialog = ({
 
   const fetchParameters = async () => {
     try {
-      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+      const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -313,7 +315,7 @@ const EditTestCaseFormDialog = ({
     if (editingTestCaseData) {
       const formattedData = {
         id_test_case: editingTestCaseData.tr_id_test_case,
-        id_modul: modulId,
+        id_topik_modul: modulId,
         no: data.no,
         object_pengujian: data.objective,
         data_test_input: parameters.map((param) => ({

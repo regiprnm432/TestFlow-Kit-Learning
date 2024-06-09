@@ -12,7 +12,10 @@ import {
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
+// const modulId = import.meta.env.VITE_MODULE_ID;
+
+const queryParameters = new URLSearchParams(window.location.search)
+const modulId = queryParameters.get("topikModulId")
 
 interface DataModul {
   ms_id_modul: string;
@@ -52,7 +55,7 @@ const ModuleSpecificationCard = () => {
 
   const fetchDataModule = async () => {
     try {
-      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+      const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

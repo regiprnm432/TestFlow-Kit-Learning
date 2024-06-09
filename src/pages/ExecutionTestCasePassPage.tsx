@@ -34,6 +34,8 @@ const ExecutionTestCasePassPage: React.FC = () => {
   const [dataIdModul, SetDataIdModul] = useState<NavigationDataModul | null>(
     null
   );
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
 
   const navigate = useNavigate(); 
   
@@ -65,7 +67,7 @@ const ExecutionTestCasePassPage: React.FC = () => {
         };
   
         SetDataIdModul(dataToPass);
-        navigate("/test-result", { state: dataToPass });
+        navigate("/test-result?topikModulId="+modulId, { state: dataToPass });
       }  
 
 

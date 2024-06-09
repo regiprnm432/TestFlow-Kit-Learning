@@ -8,8 +8,9 @@ interface ModuleData {
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
-
+// const modulId = import.meta.env.VITE_MODULE_ID;
+const queryParameters = new URLSearchParams(window.location.search)
+const modulId = queryParameters.get("topikModulId")
 export function Menu() {
   const location = useLocation();
   const [moduleData, setModuleData] = useState<ModuleData | null>(null);
@@ -17,7 +18,7 @@ export function Menu() {
   useEffect(() => {
     const fetchModuleData = async () => {
       try {
-        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+        const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -67,7 +68,8 @@ export function Menu() {
   };
 
   const maxPoint: number = calculateMaxPoint(100, difficultyLevel); // Misalnya level kesulitan adalah 100
-
+  const linkPembuatanTestCase = "/?topikModulId="+modulId
+  const linkTestResult = "/test-result?topikModulId="+modulId
   return (
     <div
       className="menu"
@@ -81,7 +83,7 @@ export function Menu() {
     >
       <div className="buttons" style={{ display: "flex" }}>
         <Link
-          to="/"
+          to={linkPembuatanTestCase}
           className={
             location.pathname === "/" ||
             location.pathname === "/pass/" ||
@@ -93,7 +95,7 @@ export function Menu() {
           Pembuatan Test Case
         </Link>
         <Link
-          to="/test-result"
+          to={linkTestResult}
           className={
             location.pathname === "#"
               ? "buttonMenu activeButton"

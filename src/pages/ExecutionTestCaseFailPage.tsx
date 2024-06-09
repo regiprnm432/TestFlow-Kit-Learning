@@ -23,7 +23,10 @@ const ExecutionTestCaseFailPage: React.FC = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const { state: navigationData } = location;
-  const { idModul } = useParams<{ idModul: string }>(); // Dapatkan ID modul dari URL
+  // const { idModul } = useParams<{ idModul: string }>(); // Dapatkan ID modul dari URL
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
+
   type NavigationDataModul = {
     modul_id: string;
   };
@@ -62,7 +65,7 @@ const ExecutionTestCaseFailPage: React.FC = () => {
       };
 
       SetDataIdModul(dataToPass);
-      navigate("/test-result", { state: dataToPass });
+      navigate("/test-result?topikModulId="+modulId, { state: dataToPass });
 
   };
 
