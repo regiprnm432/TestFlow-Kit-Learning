@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -12,7 +12,7 @@ import {
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbPage,
+  // BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 
 const apiUrl = import.meta.env.VITE_API_URL;

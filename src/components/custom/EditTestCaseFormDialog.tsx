@@ -177,99 +177,99 @@ const EditTestCaseFormDialog = ({
   }, []);
 
 
-  const getValidationRule = (param: ParameterModul) => {
-    let rules;
-    try {
-      rules = JSON.parse(param.ms_rules as string);
-    } catch (error) {
-      console.error("Error parsing JSON rules:", error);
-      return {
-        validate: () =>
-          `Aturan JSON tidak valid untuk parameter ${param.ms_nama_parameter}`,
-      };
-    }
+  // const getValidationRule = (param: ParameterModul) => {
+  //   let rules;
+  //   try {
+  //     rules = JSON.parse(param.ms_rules as string);
+  //   } catch (error) {
+  //     console.error("Error parsing JSON rules:", error);
+  //     return {
+  //       validate: () =>
+  //         `Aturan JSON tidak valid untuk parameter ${param.ms_nama_parameter}`,
+  //     };
+  //   }
 
-    switch (rules.nama_rule) {
-      case "range":
-        return {
-          validate: (value: string) => {
-            const numericValue = parseFloat(value);
-            if (rules.min_value && numericValue < parseFloat(rules.min_value)) {
-              return `Masukkan nilai yang lebih besar atau sama dengan ${rules.min_value}`;
-            }
-            if (rules.max_value && numericValue > parseFloat(rules.max_value)) {
-              return `Masukkan nilai yang lebih kecil atau sama dengan ${rules.max_value}`;
-            }
-            return true;
-          },
-        };
-      case "condition":
-        return {
-          validate: (value: string) => {
-            const numericValue = parseFloat(value);
-            const conditionValue = parseFloat(rules.value);
-            switch (rules.condition) {
-              case ">":
-                if (!(numericValue > conditionValue)) {
-                  return `Masukkan nilai lebih besar dari ${conditionValue}`;
-                }
-                break;
-              case "<":
-                if (!(numericValue < conditionValue)) {
-                  return `Masukkan nilai lebih kecil dari ${conditionValue}`;
-                }
-                break;
-              case ">=":
-                if (!(numericValue >= conditionValue)) {
-                  return `Masukkan nilai lebih besar dari atau sama dengan ${conditionValue}`;
-                }
-                break;
-              case "<=":
-                if (!(numericValue <= conditionValue)) {
-                  return `Masukkan nilai lebih kecil dari atau sama dengan ${conditionValue}`;
-                }
-                break;
-              case "==":
-                if (!(numericValue === conditionValue)) {
-                  return `Masukkan nilai sama dengan ${conditionValue}`;
-                }
-                break;
-              case "!=":
-                if (!(numericValue !== conditionValue)) {
-                  return `Masukkan nilai tidak sama dengan ${conditionValue}`;
-                }
-                break;
-              default:
-                return "Kondisi tidak valid";
-            }
-            return true;
-          },
-        };
-      case "enumerasi":
-        return {
-          validate: (value: string) => {
-            const allowedValues = rules.value.split(",");
-            if (!allowedValues.includes(value)) {
-              return `Masukkan salah satu dari nilai berikut: ${allowedValues.join(
-                ", "
-              )}`;
-            }
-            return true;
-          },
-        };
-      case "countOfLength":
-        return {
-          validate: (value: string) => {
-            if (value.length !== parseInt(rules.value)) {
-              return `Nilai harus tepat ${rules.value} karakter`;
-            }
-            return true;
-          },
-        };
-      default:
-        return {};
-    }
-  };
+  //   switch (rules.nama_rule) {
+  //     case "range":
+  //       return {
+  //         validate: (value: string) => {
+  //           const numericValue = parseFloat(value);
+  //           if (rules.min_value && numericValue < parseFloat(rules.min_value)) {
+  //             return `Masukkan nilai yang lebih besar atau sama dengan ${rules.min_value}`;
+  //           }
+  //           if (rules.max_value && numericValue > parseFloat(rules.max_value)) {
+  //             return `Masukkan nilai yang lebih kecil atau sama dengan ${rules.max_value}`;
+  //           }
+  //           return true;
+  //         },
+  //       };
+  //     case "condition":
+  //       return {
+  //         validate: (value: string) => {
+  //           const numericValue = parseFloat(value);
+  //           const conditionValue = parseFloat(rules.value);
+  //           switch (rules.condition) {
+  //             case ">":
+  //               if (!(numericValue > conditionValue)) {
+  //                 return `Masukkan nilai lebih besar dari ${conditionValue}`;
+  //               }
+  //               break;
+  //             case "<":
+  //               if (!(numericValue < conditionValue)) {
+  //                 return `Masukkan nilai lebih kecil dari ${conditionValue}`;
+  //               }
+  //               break;
+  //             case ">=":
+  //               if (!(numericValue >= conditionValue)) {
+  //                 return `Masukkan nilai lebih besar dari atau sama dengan ${conditionValue}`;
+  //               }
+  //               break;
+  //             case "<=":
+  //               if (!(numericValue <= conditionValue)) {
+  //                 return `Masukkan nilai lebih kecil dari atau sama dengan ${conditionValue}`;
+  //               }
+  //               break;
+  //             case "==":
+  //               if (!(numericValue === conditionValue)) {
+  //                 return `Masukkan nilai sama dengan ${conditionValue}`;
+  //               }
+  //               break;
+  //             case "!=":
+  //               if (!(numericValue !== conditionValue)) {
+  //                 return `Masukkan nilai tidak sama dengan ${conditionValue}`;
+  //               }
+  //               break;
+  //             default:
+  //               return "Kondisi tidak valid";
+  //           }
+  //           return true;
+  //         },
+  //       };
+  //     case "enumerasi":
+  //       return {
+  //         validate: (value: string) => {
+  //           const allowedValues = rules.value.split(",");
+  //           if (!allowedValues.includes(value)) {
+  //             return `Masukkan salah satu dari nilai berikut: ${allowedValues.join(
+  //               ", "
+  //             )}`;
+  //           }
+  //           return true;
+  //         },
+  //       };
+  //     case "countOfLength":
+  //       return {
+  //         validate: (value: string) => {
+  //           if (value.length !== parseInt(rules.value)) {
+  //             return `Nilai harus tepat ${rules.value} karakter`;
+  //           }
+  //           return true;
+  //         },
+  //       };
+  //     default:
+  //       return {};
+  //   }
+  // };
 
 
   const getValidationDataType = (param: ParameterModul) => {

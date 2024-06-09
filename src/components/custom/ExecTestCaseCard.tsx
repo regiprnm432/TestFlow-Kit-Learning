@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 
 import "../../index.css";
@@ -38,8 +38,8 @@ const AddTestCaseCard = () => {
   ];
 
   // State untuk menyimpan ID tes yang sedang diedit atau dihapus
-  const [editingTestId, setEditingTestId] = useState(null);
-  const [deletingTestId, setDeletingTestId] = useState(null);
+  // const [editingTestId, setEditingTestId] = useState(null);
+  // const [deletingTestId, setDeletingTestId] = useState(null);
 
   // Handle edit test case
   const handleEdit = () => {
@@ -70,7 +70,7 @@ const AddTestCaseCard = () => {
               </TableHead>
               {testData.length > 0 &&
                 testData[0].parameters.map((param, index) => (
-                  <TableHead key={index}>Parameter {index + 1}</TableHead>
+                  <TableHead key={param}>Parameter {index + 1}</TableHead>
                 ))}
               <TableHead style={{ width: "250px" }}>Expected</TableHead>
               <TableHead>Aksi</TableHead>

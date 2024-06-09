@@ -1,14 +1,14 @@
 import React from "react";
 import {
   Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
+  // CardContent,
+  // CardFooter,
+  // CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import "../../index.css";
-import passIcon from "../../assets/logo/pass.png";
-import { Button } from "@/components/ui/button";
+// import passIcon from "../../assets/logo/pass.png";
+// import { Button } from "@/components/ui/button";
 
 const PassCard: React.FC = () => {
   return (

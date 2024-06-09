@@ -1,6 +1,6 @@
 import Layout from "./Layout";
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useParams, useNavigate } from "react-router-dom"; // Import hooks
+import { useLocation, useNavigate } from "react-router-dom"; // Import hooks
 import { Menu } from "@/components/custom/Menu";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
 import AddTestCaseCard from "@/components/custom/AddTestCaseCard";
@@ -11,14 +11,14 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// import { ScrollArea } from "@/components/ui/scroll-area";
 import FailCard from "@/components/custom/FailCard";
 
 const ExecutionTestCaseFailPage: React.FC = () => {
-  const [showCyclomaticComplexity, setShowCyclomaticComplexity] =useState(true);
-  const [showCodeCoverage, setShowCodeCoverage] = useState(false);
-  const [cyclomaticComplexityValue, setCyclomaticComplexityValue] = useState(5);
-  const [codeCoveragePercentage, setCodeCoveragePercentage] = useState(80);
+  const [showCyclomaticComplexity] =useState(true);
+  const [showCodeCoverage] = useState(false);
+  const [cyclomaticComplexityValue] = useState(5);
+  const [codeCoveragePercentage] = useState(80);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -31,27 +31,27 @@ const ExecutionTestCaseFailPage: React.FC = () => {
     modul_id: string;
   };
 
-  const [dataIdModul, SetDataIdModul] = useState<NavigationDataModul | null>(
-    null
-  );
+  // const [dataIdModul, SetDataIdModul] = useState<NavigationDataModul | null>(
+  //   null
+  // );
 
   const navigate = useNavigate(); // Gunakan useNavigate hook
 
-  const [failCardData, setFailCardData] = useState<{
-    percentageCoverage: number;
-    minimumCoverage: number;
-    statusEksekusi: boolean;
-    tanggalEksekusi: string;
-    poin: number;
-    modulId: string;
-  }>({
-    percentageCoverage: 0,
-    minimumCoverage: 0,
-    statusEksekusi: false,
-    tanggalEksekusi: "",
-    poin: 0,
-    modulId: ""
-  });
+  // const [failCardData, setFailCardData] = useState<{
+  //   percentageCoverage: number;
+  //   minimumCoverage: number;
+  //   statusEksekusi: boolean;
+  //   tanggalEksekusi: string;
+  //   poin: number;
+  //   modulId: string;
+  // }>({
+  //   percentageCoverage: 0,
+  //   minimumCoverage: 0,
+  //   statusEksekusi: false,
+  //   tanggalEksekusi: "",
+  //   poin: 0,
+  //   modulId: ""
+  // });
 
   useEffect(() => {
     // Scroll ke bagian paling bawah saat komponen dimount
@@ -64,7 +64,7 @@ const ExecutionTestCaseFailPage: React.FC = () => {
       modul_id: navigationData?.modul_id,
       };
 
-      SetDataIdModul(dataToPass);
+      // SetDataIdModul(dataToPass);
       navigate("/test-result?topikModulId="+modulId, { state: dataToPass });
 
   };
