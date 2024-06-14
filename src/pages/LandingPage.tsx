@@ -1,6 +1,7 @@
-import React from 'react';
+//import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import logo_polban from "../assets/logo/polban.png";
+import logo_landing from "../assets/logo/landing.png";
 const LandingPage = () => {
   const navigate = useNavigate();
 
@@ -13,7 +14,8 @@ const LandingPage = () => {
       <header className="flex items-center w-full p-5">
         {/* Logo */}
         <img
-          src="/src/assets/logo/polban.png"
+          // src="./src/assets/logo/polban.png"
+          src={logo_polban}
           alt="Polban Logo"
           className="w-20 h-20 mr-4"
         />
@@ -32,7 +34,7 @@ const LandingPage = () => {
         </div>
         <div className="flex flex-[3] justify-center items-start">
           <img
-            src="src/assets/logo/landing.png"
+            src={logo_landing}
             alt="Illustration"
             style={{ width: '450px', height: 'auto' }}
           />

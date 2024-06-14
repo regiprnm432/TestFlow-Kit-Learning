@@ -14,16 +14,23 @@ import {
   BreadcrumbLink,
   // BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
+import logo_polban from "../../assets/logo/polban.png";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-// const modulId = import.meta.env.VITE_MODULE_ID;
-const queryParameters = new URLSearchParams(window.location.search)
-const modulId = queryParameters.get("topikModulId")
+
 
 export function Navbar() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
   const [moduleName, setModuleName] = useState("");
-
+  const linkTopikModul = "/topikModul?topikModulId="+modulId
   useEffect(() => {
     const fetchModuleName = async () => {
       try {
@@ -67,7 +74,7 @@ export function Navbar() {
       <div className="flex items-center">
         {/* Logo */}
         <img
-          src="/src/assets/logo/polban.png"
+          src={logo_polban}
           alt="Polban Logo"
           className="w-12 h-12 mr-4"
         />
@@ -88,7 +95,7 @@ export function Navbar() {
               </BreadcrumbSeparator>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/">
+                  <BreadcrumbLink href={linkTopikModul}>
                     <span className="text-white text-l hover:text-gray-300">
                       Topik Pengujian
                     </span>

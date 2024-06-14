@@ -18,12 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { FaPlus } from "react-icons/fa";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-// const modulId = import.meta.env.VITE_MODULE_ID;
-const queryParameters = new URLSearchParams(window.location.search)
-const modulId = queryParameters.get("topikModulId")
-
 interface FormDialogProps {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
@@ -82,6 +76,16 @@ const TestCaseFormDialog = ({
   triggerRefresh,
   onSuccess,
 }: FormDialogProps) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [existingObjectives, setExistingObjectives] = useState<string[]>([]);

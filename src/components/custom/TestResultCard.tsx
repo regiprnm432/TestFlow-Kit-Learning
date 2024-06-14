@@ -16,11 +16,6 @@ import {
 } from "@/components/ui/table";
 
 import "../../index.css";
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-// const modulId = import.meta.env.VITE_MODULE_ID;
-const queryParameters = new URLSearchParams(window.location.search)
-const modulId = queryParameters.get("topikModulId")
 
 interface ParameterModul {
   ms_id_parameter: string;
@@ -71,6 +66,16 @@ type TestResultCardProps = {
 const TestResultCard: React.FC<TestResultCardProps> = ({
   dataResultTest
 }) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const fetchParameters = async () => {

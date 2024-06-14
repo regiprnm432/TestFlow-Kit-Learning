@@ -12,13 +12,6 @@ import TestResultCard from "@/components/custom/TestResultCard";
 import { Button } from "@/components/ui/button";
 //import PercentageCodeCoverage from "@/components/custom/PresentaseCodeCoverage";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-// const modulId = import.meta.env.VITE_MODULE_ID;
-
-const queryParameters = new URLSearchParams(window.location.search)
-const modulId = queryParameters.get("topikModulId")
-
 interface DataResultTest {
     coverageScore: number;
     point: number;
@@ -36,6 +29,17 @@ interface DataResultTest {
   }
 
 const TestResultPage = () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    let apiKey = import.meta.env.VITE_API_KEY;
+    // const modulId = import.meta.env.VITE_MODULE_ID;
+    const sessionData = localStorage.getItem('session')
+    if (sessionData != null){
+        const session = JSON.parse(sessionData);
+        apiKey = session.token
+    }
+
+    const queryParameters = new URLSearchParams(window.location.search)
+    const modulId = queryParameters.get("topikModulId")
     const defaultData: DataResultTest = {
         coverageScore: 0,
         point: 0,

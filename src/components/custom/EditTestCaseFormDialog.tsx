@@ -18,11 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { FaEdit } from "react-icons/fa";
 
-const apiUrl = import.meta.env.VITE_API_URL as string;
-const apiKey = import.meta.env.VITE_API_KEY as string;
-// const modulId = import.meta.env.VITE_MODULE_ID as string;
-const queryParameters = new URLSearchParams(window.location.search)
-const modulId = queryParameters.get("topikModulId")
 
 interface EditFormDialogProps {
   isDialogOpen: boolean;
@@ -88,6 +83,16 @@ const EditTestCaseFormDialog = ({
   editingTestId,
   triggerRefresh
 }: EditFormDialogProps) => {
+  const apiUrl = import.meta.env.VITE_API_URL as string;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [editingTestCaseData, setEditingTestCaseData] = useState<TestCaseData | null>(null);

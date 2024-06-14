@@ -117,8 +117,15 @@ const AddTestCaseCard: React.FC = () => {
   );
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  const apiKey = import.meta.env.VITE_API_KEY;
+  let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData == null){
+      navigate('/login');
+  }else{
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
   const queryParameters = new URLSearchParams(window.location.search)
   const modulId = queryParameters.get("topikModulId")
 

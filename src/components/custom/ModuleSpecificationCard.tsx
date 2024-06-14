@@ -10,12 +10,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-// const modulId = import.meta.env.VITE_MODULE_ID;
-
-const queryParameters = new URLSearchParams(window.location.search)
-const modulId = queryParameters.get("topikModulId")
 
 interface DataModul {
   ms_id_modul: string;
@@ -49,6 +43,18 @@ interface Data {
 }
 
 const ModuleSpecificationCard = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
+  
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);

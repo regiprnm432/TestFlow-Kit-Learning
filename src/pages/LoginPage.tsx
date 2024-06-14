@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { FaEyeSlash, FaEye, FaPhoneAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import logo_polban from "../assets/logo/polban.png";
+import logo_login from "../assets/logo/login.png";
+
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -10,7 +13,32 @@ const LoginPage = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  const login =  async (username:string, password:string) => {
+    const dataLogin = {
+      nis_or_nip: username,
+      password: password
+    };
+    try {
+        const response = await fetch(`${apiUrl}/login`, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(dataLogin),
+        });
+
+        let result = await response.json();
+        result.status = response.status
+        return result
+      } catch (error) {
+        console.error("login:", error);
+      }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let formIsValid = true;
     let errors = { username: "", password: "" };
@@ -26,24 +54,40 @@ const LoginPage = () => {
     }
 
     if (formIsValid) {
-      // Check if the provided username and password match the hardcoded credentials
-      if (username === "07501030" && password === "admin123!!") {
-        console.log("Login successful");
-        // Navigate to CreateTestCasePage
-        navigate("/");
-      } else if (username === "KO067N" && password === "admin123!!") {
-        console.log("Login successful");
-        // Navigate to CreateTestCasePage
-        navigate("/");
-      } else {
-        if (username !== "07501030" && username !== "KO067N") {
-          errors.username = "Username tidak valid";
-        }
-        if (password !== "admin123!!") {
-          errors.password = "Password tidak valid";
-        }
+      // call api auth
+      let result_login = await login(username, password);
+      console.log(result_login)
+      if (result_login.status == 200){
+        localStorage.setItem('session',JSON.stringify(result_login.data));
+        navigate({
+          pathname: '/topikModul',
+          search: '?topikModulId=3f194aef-3267-4bba-a31a-0f27099a3db2',
+        });
+        
+      }else if (result_login.status == 400){
+        errors.username = result_login.message ;
+        errors.password = result_login.message ;
         formIsValid = false;
       }
+
+      // // Check if the provided username and password match the hardcoded credentials
+      // if (username === "07501030" && password === "admin123!!") {
+      //   console.log("Login successful");
+      //   // Navigate to CreateTestCasePage
+      //   navigate("/");
+      // } else if (username === "KO067N" && password === "admin123!!") {
+      //   console.log("Login successful");
+      //   // Navigate to CreateTestCasePage
+      //   navigate("/");
+      // } else {
+      //   if (username !== "07501030" && username !== "KO067N") {
+      //     errors.username = "Username tidak valid";
+      //   }
+      //   if (password !== "admin123!!") {
+      //     errors.password = "Password tidak valid";
+      //   }
+      //   formIsValid = false;
+      // }
     }
 
     setErrors(errors);
@@ -66,7 +110,7 @@ const LoginPage = () => {
       <div className="w-full md:w-1/2 bg-white text-black p-8 flex flex-col justify-start items-center">
         <div className="flex items-center mb-4">
           <img
-            src="src/assets/logo/polban.png"
+            src={logo_polban}
             alt="Logo"
             className="w-28 mr-4"
           />
@@ -175,7 +219,7 @@ const LoginPage = () => {
             Testing
           </p>
           <img
-            src="src/assets/logo/login.png"
+            src={logo_login}
             alt="Illustration"
             className="w-auto max-h-96"
           />

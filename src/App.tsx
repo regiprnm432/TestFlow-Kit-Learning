@@ -11,9 +11,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/home" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<CreateTestCasePage />} />
+        <Route path="/topikModul" element={<CreateTestCasePage />} />
         <Route path="/pass" element={<ExecutionTestCasePassPage />} />
         <Route path="/fail" element={<ExecutionTestCaseFailPage />} />
         <Route path="/test-result" element={<TestResultPage/>}/>

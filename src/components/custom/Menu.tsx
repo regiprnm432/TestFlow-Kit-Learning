@@ -6,12 +6,18 @@ interface ModuleData {
   ms_tingkat_kesulitan: string;
 }
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-// const modulId = import.meta.env.VITE_MODULE_ID;
-const queryParameters = new URLSearchParams(window.location.search)
-const modulId = queryParameters.get("topikModulId")
+
 export function Menu() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
   const location = useLocation();
   const [moduleData, setModuleData] = useState<ModuleData | null>(null);
 
@@ -68,7 +74,7 @@ export function Menu() {
   };
 
   const maxPoint: number = calculateMaxPoint(100, difficultyLevel); // Misalnya level kesulitan adalah 100
-  const linkPembuatanTestCase = "/?topikModulId="+modulId
+  const linkPembuatanTestCase = "/topikModul?topikModulId="+modulId
   const linkTestResult = "/test-result?topikModulId="+modulId
   return (
     <div
@@ -85,7 +91,7 @@ export function Menu() {
         <Link
           to={linkPembuatanTestCase}
           className={
-            location.pathname === "/" ||
+            location.pathname === "/topikModul" ||
             location.pathname === "/pass/" ||
             location.pathname === "/fail/"
               ? "buttonMenu activeButton"
