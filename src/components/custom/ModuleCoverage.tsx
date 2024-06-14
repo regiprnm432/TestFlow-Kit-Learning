@@ -72,7 +72,8 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
-
+  const linkReportSourceCoverage = apiUrl+"/"+dataResultTest.linkSourceCoverage
+  
   useEffect(() => {
     const fetchDataModule = async () => {
       try {
@@ -148,7 +149,7 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
               
               <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
               <div className="text-sm p-4 rounded-lg">
-                <iframe src="http://localhost:8000/static/07501030/3f194aef-3267-4bba-a31a-0f27099a3db2/jacoco_report_test/html/default/BilanganPrima.java.html" width={1000} height={500}>
+                <iframe src={linkReportSourceCoverage} width={1000} height={500}>
                 </iframe>
               </div>
             </>
