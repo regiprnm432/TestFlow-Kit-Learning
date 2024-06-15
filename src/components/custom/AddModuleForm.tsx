@@ -64,7 +64,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormItem>
                             <FormLabel>Nama Modul</FormLabel>
                             <FormControl>
-                                <Input {...field} className="border rounded p-2 w-full" />
+                                <Input {...field} className="border rounded p-2 w-full bg-gray-50" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -77,7 +77,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormItem>
                             <FormLabel>Jenis Modul</FormLabel>
                             <FormControl>
-                                <Input {...field} className="border rounded p-2 w-full" />
+                                <Input {...field} className="border rounded p-2 w-full bg-gray-50" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -90,7 +90,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormItem>
                             <FormLabel>Jumlah Parameter</FormLabel>
                             <FormControl>
-                                <Input type="number" {...field} className="border rounded p-2 w-full" />
+                                <Input type="number" {...field} className="border rounded p-2 w-full bg-gray-50" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -105,7 +105,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormItem className="flex-grow">
                             <FormLabel>Deskripsi Modul</FormLabel>
                             <FormControl className="h-full">
-                                <Input {...field} className="border rounded p-2 w-full h-full" />
+                                <Input {...field} className="border rounded p-2 w-full h-full bg-gray-50" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -188,7 +188,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormLabel>Tipe Data Kembalian</FormLabel>
                         <FormControl>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-gray-50">
                                 <SelectValue placeholder="Pilih" />
                             </SelectTrigger>
                             <SelectContent  className="bg-white">
@@ -213,7 +213,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormItem>
                         <FormLabel>Source Code</FormLabel>
                         <FormControl>
-                            <Input type="file" onChange={(e) => field.onChange(e.target.files?.[0]?.name || '')} className="border rounded p-2 w-full" />
+                            <Input type="file" onChange={(e) => field.onChange(e.target.files?.[0]?.name || '')} className="border rounded p-2 w-full bg-gray-50" />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -227,10 +227,10 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormLabel>Tingkat Kesulitan</FormLabel>
                         <FormControl>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-gray-50">
                                 <SelectValue placeholder="Pilih" />
                             </SelectTrigger>
-                            <SelectContent  className="bg-white">
+                            <SelectContent  className="bg-gray-50">
                                 <SelectGroup>
                                 <SelectItem value="easy">Mudah</SelectItem>
                                 <SelectItem value="medium">Sedang</SelectItem>
@@ -252,7 +252,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormItem>
                         <FormLabel>Nama Class</FormLabel>
                         <FormControl>
-                            <Input {...field} className="border rounded p-2 w-full" />
+                            <Input {...field} className="border rounded p-2 w-full bg-gray-50" />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -265,7 +265,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                         <FormItem>
                         <FormLabel>Nama Fungsi</FormLabel>
                         <FormControl>
-                            <Input {...field} className="border rounded p-2 w-full" />
+                            <Input {...field} className="border rounded p-2 w-full bg-gray-50" />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
