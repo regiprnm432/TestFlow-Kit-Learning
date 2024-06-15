@@ -1,25 +1,20 @@
-import React from "react";
-import AddModuleDialog from "@/components/custom/AddModuleDialog";
+import AddModuleForm from "@/components/custom/AddModuleForm";
 import Layout from "./Layout";
-import ModuleList from "@/components/custom/ModuleList";
-import SearchModule from "@/components/custom/SearchModule";
 
 const ModuleTestPage = () => {
-    const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
+    const handleAddModule = (module: any) => {
+        console.log("New module added:", module);
+        // Tambahkan logika untuk menangani penambahan modul di sini
+    };
 
     return (
         <Layout>
-            <div className="flex flex-col h-screen w-screen p-6">
-                <div className="flex justify-end mb-4 gap-3">
-                    <SearchModule />
-                    <AddModuleDialog
-                        isDialogOpen={isFormDialogOpen} 
-                        setIsDialogOpen={setIsFormDialogOpen} 
-                    />
-                </div>
-                <ModuleList/>
+            <div className="min-h-screen w-screen flex items-center justify-center bg-gray-100">
+                <AddModuleForm onAddModule={handleAddModule} />
             </div>
         </Layout>
     );
 };
+
 export default ModuleTestPage;
+
