@@ -11,6 +11,7 @@ import {
 import TestResultCard from "@/components/custom/TestResultCard";
 import { Button } from "@/components/ui/button";
 //import PercentageCodeCoverage from "@/components/custom/PresentaseCodeCoverage";
+import { useNavigate } from "react-router-dom";
 
 interface DataResultTest {
     coverageScore: number;
@@ -29,6 +30,7 @@ interface DataResultTest {
   }
 
 const TestResultPage = () => {
+    const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
     let apiKey = import.meta.env.VITE_API_KEY;
     // const modulId = import.meta.env.VITE_MODULE_ID;
@@ -73,7 +75,8 @@ const TestResultPage = () => {
     
           if (!response.ok) {
             if (response.status === 403) {
-              throw new Error('Forbidden: Access is denied');
+              // throw new Error('Forbidden: Access is denied');
+              navigate("/error")
             } else {
               throw new Error(`HTTP error! status: ${response.status}`);
             }

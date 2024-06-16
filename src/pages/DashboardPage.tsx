@@ -6,8 +6,13 @@ const DashboardPage: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Dummy account
-  const accountName = "Asri Maspupah";
-
+  let accountName = "Asri Maspupah";
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      accountName = session.name;
+  }
+  
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };

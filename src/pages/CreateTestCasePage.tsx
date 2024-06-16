@@ -11,12 +11,18 @@ import {
 } from "@/components/ui/resizable";
 //import { ScrollArea } from "@/components/ui/scroll-area";
 import MinimalCard from "@/components/custom/MinimalCard";
+import { useNavigate } from "react-router-dom";
 
 const CreateTestCasePage: React.FC = () => {
+  const navigate = useNavigate();
   const [showCyclomaticComplexity] = useState(true);
   const [showCodeCoverage] = useState(false);
   const cyclomaticComplexityValue = 0;
   const codeCoveragePercentage = 80;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData == null){
+      navigate('/login');
+  }
 
   return (
     <Layout>

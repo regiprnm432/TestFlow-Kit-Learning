@@ -25,7 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
 
   const handleLogout = () => {
     // Clear user session (this can vary depending on how you handle authentication)
-    localStorage.removeItem('userToken'); // Example for token stored in localStorage
+    localStorage.removeItem('session'); // Example for token stored in localStorage
     // Redirect to login page
     navigate("/login");
   };
