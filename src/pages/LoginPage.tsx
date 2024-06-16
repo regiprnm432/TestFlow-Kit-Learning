@@ -3,6 +3,7 @@ import { FaEyeSlash, FaEye, FaPhoneAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import logo_polban from "../assets/logo/polban.png";
 import logo_login from "../assets/logo/login.png";
+import logo_default from "../assets/logo/default.png";
 
 
 const LoginPage = () => {
@@ -114,7 +115,11 @@ const LoginPage = () => {
             alt="Logo"
             className="w-28 mr-4"
           />
-          <img src="path-to-logo.png" alt="Logo" className="w-28" />
+          <img
+            src={logo_default}
+            alt="Logo"
+            className="w-20 mr-4"
+          />
         </div>
         <h2 className="text-2xl font-bold mb-6">Selamat Datang Kembali</h2>
         <h3 className="text-xl font-medium text-gray-700 mb-6">
