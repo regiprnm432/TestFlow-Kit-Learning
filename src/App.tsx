@@ -9,6 +9,9 @@ import TestResultPage from "./pages/TestResultPage";
 import DashboardPage from "./pages/DashboardPage";
 import DashboardStudentPage from "./pages/DashboardStudentPage";
 import ErrorPage from "./pages/ErrorSessionPage";
+import ListTopicsPage from "./pages/ListTopicsPage";
+import ListModulesPage from "./pages/ListModulesPage";
+import AccessTopicsPage from "./pages/AccessTopicsPage";
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
         <Route path="/dashboard-teacher" element={<DashboardPage />} />
         <Route path="/dashboard-student" element={<DashboardStudentPage />} />
         <Route path="/error" element={<ErrorPage />} />
+        <Route path="/list-topics" element={<ListTopicsPage />} />
+        <Route path="/list-modules" element={<ListModulesPage />} />
+        {/* <Route path="/access-topics" element={<AccessTopicsPage />} /> */}
       </Routes>
     </BrowserRouter>
   );
