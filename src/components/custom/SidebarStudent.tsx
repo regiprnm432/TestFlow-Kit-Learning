@@ -27,8 +27,16 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   };
 
   const handleItemClick = (path: string) => {
-    setActiveItem(path);
-    navigate(path);
+    // untuk sementara sebelum tampilan list topik nya ready
+    if (path == '/challenge'){
+      navigate({
+          pathname: '/topikModul',
+          search: '?topikModulId=3f194aef-3267-4bba-a31a-0f27099a3db2',
+        });
+    }else{
+      setActiveItem(path);
+      navigate(path);
+    }
   };
 
   return (

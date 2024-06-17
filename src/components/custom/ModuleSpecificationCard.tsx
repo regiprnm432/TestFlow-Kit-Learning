@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 
 
 interface DataModul {
@@ -43,6 +44,7 @@ interface Data {
 }
 
 const ModuleSpecificationCard = () => {
+  const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
@@ -71,7 +73,8 @@ const ModuleSpecificationCard = () => {
 
       if (!response.ok) {
         if (response.status === 403) {
-          throw new Error('Forbidden: Access is denied');
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
         } else {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

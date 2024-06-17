@@ -15,10 +15,12 @@ import {
   // BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import logo_polban from "../../assets/logo/polban.png";
+import { useNavigate } from "react-router-dom";
 
 
 
 export function Navbar() {
+  const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
@@ -64,6 +66,7 @@ export function Navbar() {
   const handleLogout = () => {
     // Lakukan proses logout di sini
     console.log("Logout clicked");
+    navigate("/dashboard-student")
   };
 
   return (
