@@ -21,7 +21,7 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
 
   const handleLogout = () => {
     // Clear user session (this can vary depending on how you handle authentication)
-    localStorage.removeItem('userToken'); // Example for token stored in localStorage
+    localStorage.removeItem("userToken"); // Example for token stored in localStorage
     // Redirect to login page
     navigate("/login");
   };
@@ -37,7 +37,7 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         isOpen ? "w-64" : "w-20"
       } fixed z-10 flex flex-col justify-between`}
     >
-      <div>
+      <div className="flex flex-col flex-grow overflow-hidden">
         <div className="flex items-center mb-4">
           <img
             src={logo_polban}
@@ -46,7 +46,7 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
           />
           {isOpen && <div className="ml-2 text-xl font-bold">Coverage Test</div>}
         </div>
-        <nav className="flex flex-col items-start w-full mt-10">
+        <nav className="flex flex-col items-start w-full mt-10 overflow-y-auto flex-grow pr-4">
           <ul className="w-full">
             <li
               className={`flex items-center mb-4 cursor-pointer p-2 rounded ${

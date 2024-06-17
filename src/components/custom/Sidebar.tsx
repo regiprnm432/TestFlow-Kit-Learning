@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaUserPlus,
   FaTachometerAlt,
@@ -11,7 +11,7 @@ import {
   FaAngleRight,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo_polban from "../../assets/logo/polban.png";
 
 interface SidebarProps {
@@ -21,17 +21,19 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeItem, setActiveItem] = useState<string>("");
 
+  useEffect(() => {
+    setActiveItem(location.pathname);
+  }, [location.pathname]);
+
   const handleLogout = () => {
-    // Clear user session (this can vary depending on how you handle authentication)
-    localStorage.removeItem('userToken'); // Example for token stored in localStorage
-    // Redirect to login page
+    localStorage.removeItem("userToken");
     navigate("/login");
   };
 
   const handleItemClick = (path: string) => {
-    setActiveItem(path);
     navigate(path);
   };
 
@@ -41,8 +43,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         isOpen ? "w-64" : "w-20"
       } fixed z-10 flex flex-col justify-between`}
     >
-      <div>
-        <div className="flex items-center mb-4">
+      <div className="flex flex-col flex-grow overflow-hidden">
+        <div className="flex items-center">
           <img
             src={logo_polban}
             alt="Polban Logo"
@@ -50,10 +52,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
           />
           {isOpen && <div className="ml-2 text-xl font-bold">Coverage Test</div>}
         </div>
-        <nav className="flex flex-col items-start w-full mt-10">
+        <nav className="flex flex-col items-start w-full mt-10 overflow-y-auto flex-grow pr-4">
           <ul className="w-full">
             <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
+              className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
                 activeItem === "/dashboard-teacher"
                   ? "bg-white text-blue-800"
                   : "hover:bg-white hover:text-blue-800"
@@ -64,18 +66,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               {isOpen && <span className="ml-2">Dashboard</span>}
             </li>
             <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
-                activeItem === "/list-module"
+              className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
+                activeItem === "/list-modules"
                   ? "bg-white text-blue-800"
                   : "hover:bg-white hover:text-blue-800"
               }`}
-              onClick={() => handleItemClick("/list-module")}
+              onClick={() => handleItemClick("/list-modules")}
             >
               <FaBook size={16} />
               {isOpen && <span className="ml-2">Modul Program</span>}
             </li>
             <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
+              className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
                 activeItem === "/list-topics"
                   ? "bg-white text-blue-800"
                   : "hover:bg-white hover:text-blue-800"
@@ -86,7 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               {isOpen && <span className="ml-2">Topik Pengujian</span>}
             </li>
             <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
+              className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
                 activeItem === "/grade"
                   ? "bg-white text-blue-800"
                   : "hover:bg-white hover:text-blue-800"
@@ -97,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               {isOpen && <span className="ml-2">Grade Siswa</span>}
             </li>
             <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
+              className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
                 activeItem === "/materi"
                   ? "bg-white text-blue-800"
                   : "hover:bg-white hover:text-blue-800"
@@ -108,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               {isOpen && <span className="ml-2">Materi Belajar</span>}
             </li>
             <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
+              className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
                 activeItem === "/data-mahasiswa"
                   ? "bg-white text-blue-800"
                   : "hover:bg-white hover:text-blue-800"
@@ -119,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               {isOpen && <span className="ml-2">Kelola Data Mahasiswa</span>}
             </li>
           </ul>
-          <div className="w-full h-px bg-white mt-4"></div> 
+          <div className="w-full h-px bg-white mt-4"></div>
         </nav>
         <div
           className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 bg-white text-blue-900 rounded-full p-1 cursor-pointer"
