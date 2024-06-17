@@ -11,7 +11,7 @@ import DashboardStudentPage from "./pages/DashboardStudentPage";
 import ErrorPage from "./pages/ErrorSessionPage";
 import ListTopicsPage from "./pages/ListTopicsPage";
 import ListModulesPage from "./pages/ListModulesPage";
-import AccessTopicsPage from "./pages/AccessTopicsPage";
+// import AccessTopicsPage from "./pages/AccessTopicsPage";
 
 function App() {
   return (
