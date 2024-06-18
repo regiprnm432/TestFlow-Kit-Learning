@@ -1,14 +1,14 @@
 import React from "react";
 import {
   Card,
-  CardContent,
+  // CardContent,
   CardFooter,
-  CardHeader,
+  // CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import "../../index.css";
 import passIcon from "../../assets/logo/pass.png";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 
 interface PassCardProps {
   percentageCoverage: number;
@@ -22,14 +22,14 @@ interface PassCardProps {
 const PassCard: React.FC<PassCardProps> = ({
   percentageCoverage,
   minimumCoverage,
-  statusEksekusi,
+  // statusEksekusi,
   tanggalEksekusi,
-  modulId,
+  // modulId,
   poin,
 }) => {
   // Mendapatkan tanggal saat ini
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleDateString();
+  // const currentDate = new Date();
+  // const formattedDate = currentDate.toLocaleDateString();
 
   return (
     <div className=" w-full">

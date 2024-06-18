@@ -1,7 +1,7 @@
 import React from "react";
-import { Card, CardFooter, CardTitle } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import failIcon from "../../assets/logo/fail.png";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 
 interface FailCardProps {
   percentageCoverage: number;
@@ -16,16 +16,16 @@ const FailCard: React.FC<FailCardProps> = ({
   minimumCoverage,
   statusEksekusi,
   tanggalEksekusi,
-  modulId, // Added idModul prop
+  // modulId, // Added idModul prop
 }) => {
   const message = statusEksekusi
     ? `Mohon maaf, belum bisa melanjutkan ke case berikutnya. Minimal coverage test ${minimumCoverage}%.`
     : `Mohon maaf, belum bisa melanjutkan ke case berikutnya. Ubah kembali test case sampai semua hasil test result berstatus PASS.`;
 
-  const handleReportClick = () => {
-    const url = `/modul/generateTestUnitClass/${modulId}`;
-    window.open(url, '_blank');
-  };
+  // const handleReportClick = () => {
+  //   const url = `/modul/generateTestUnitClass/${modulId}`;
+  //   window.open(url, '_blank');
+  // };
 
   return (
     <div className="h-full w-full">

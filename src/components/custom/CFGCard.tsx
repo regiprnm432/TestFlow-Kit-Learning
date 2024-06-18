@@ -11,10 +11,6 @@ import {
 } from "@/components/ui/card";
 import "../../index.css";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
-
 const calculateCyclomaticComplexity = (edgesCount: number, nodesCount: number) => {
   return edgesCount - nodesCount + 2;
 };
@@ -47,12 +43,23 @@ const CFGCard: React.FC<CFGCardProps> = ({
   showCodeCoverage = false,
   codeCoveragePercentage,
 }) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
+
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(`${apiUrl}/modul/detail/${modulId}`, {
+  const fetchCFG = async ()=>{
+    fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -61,7 +68,7 @@ const CFGCard: React.FC<CFGCardProps> = ({
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Data CFG:", data); // Cetak data CFG ke konsol
+      console.log("Data CFG:", data.data.data_cfg.nodes); // Cetak data CFG ke konsol
       
       const nodesData = data.data.data_cfg.nodes.map((node: any) => ({
         id: node.ms_id_node,
@@ -89,6 +96,9 @@ const CFGCard: React.FC<CFGCardProps> = ({
     .catch((error) => {
       console.error("Failed to fetch data:", error);
     });
+  };
+  useEffect(() => {
+    fetchCFG();
   }, []);
   
 

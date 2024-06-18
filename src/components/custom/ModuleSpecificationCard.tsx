@@ -9,10 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
 
 interface DataModul {
   ms_id_modul: string;
@@ -46,13 +44,26 @@ interface Data {
 }
 
 const ModuleSpecificationCard = () => {
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
+  
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sourceCode, setSourceCode] = useState<string | null>(null);
 
   const fetchDataModule = async () => {
     try {
-      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+      const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -62,7 +73,8 @@ const ModuleSpecificationCard = () => {
 
       if (!response.ok) {
         if (response.status === 403) {
-          throw new Error('Forbidden: Access is denied');
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
         } else {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

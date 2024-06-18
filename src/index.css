@@ -202,3 +202,28 @@ button:focus-visible {
   color: white;
   border: 2px solid white;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* index.css */
+.sidebar-menu-item:last-child::after {
+  content: "";
+  display: block;
+  width: calc(100% - 2rem); /* Sesuaikan lebar garis dengan menu */
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.5); /* Warna dan opasitas garis */
+  margin-top: 0.5rem; /* Jarak antara garis dan teks */
+}

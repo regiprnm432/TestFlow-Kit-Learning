@@ -18,10 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { FaPlus } from "react-icons/fa";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
-
 interface FormDialogProps {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
@@ -80,6 +76,16 @@ const TestCaseFormDialog = ({
   triggerRefresh,
   onSuccess,
 }: FormDialogProps) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [existingObjectives, setExistingObjectives] = useState<string[]>([]);
@@ -93,7 +99,7 @@ const TestCaseFormDialog = ({
   const fetchParameters = async () => {
     try {
       const response = await fetch(
-        `${apiUrl}/modul/detail/${modulId}`,
+        `${apiUrl}/modul/detailByIdTopikModul/${modulId}`,
         {
           method: "GET",
           headers: {
@@ -165,99 +171,99 @@ const TestCaseFormDialog = ({
     fetchParameters();
   }, []);
   
-  const getValidationRule = (param: ParameterModul) => {
-    let rules;
-    try {
-      rules = JSON.parse(param.ms_rules as string);
-    } catch (error) {
-      console.error("Error parsing JSON rules:", error);
-      return {
-        validate: () =>
-          `Aturan JSON tidak valid untuk parameter ${param.ms_nama_parameter}`,
-      };
-    }
+  // const getValidationRule = (param: ParameterModul) => {
+  //   let rules;
+  //   try {
+  //     rules = JSON.parse(param.ms_rules as string);
+  //   } catch (error) {
+  //     console.error("Error parsing JSON rules:", error);
+  //     return {
+  //       validate: () =>
+  //         `Aturan JSON tidak valid untuk parameter ${param.ms_nama_parameter}`,
+  //     };
+  //   }
 
-    switch (rules.nama_rule) {
-      case "range":
-        return {
-          validate: (value: string) => {
-            const numericValue = parseFloat(value);
-            if (rules.min_value && numericValue < parseFloat(rules.min_value)) {
-              return `Masukkan nilai yang lebih besar atau sama dengan ${rules.min_value}`;
-            }
-            if (rules.max_value && numericValue > parseFloat(rules.max_value)) {
-              return `Masukkan nilai yang lebih kecil atau sama dengan ${rules.max_value}`;
-            }
-            return true;
-          },
-        };
-      case "condition":
-        return {
-          validate: (value: string) => {
-            const numericValue = parseFloat(value);
-            const conditionValue = parseFloat(rules.value);
-            switch (rules.condition) {
-              case ">":
-                if (!(numericValue > conditionValue)) {
-                  return `Masukkan nilai lebih besar dari ${conditionValue}`;
-                }
-                break;
-              case "<":
-                if (!(numericValue < conditionValue)) {
-                  return `Masukkan nilai lebih kecil dari ${conditionValue}`;
-                }
-                break;
-              case ">=":
-                if (!(numericValue >= conditionValue)) {
-                  return `Masukkan nilai lebih besar dari atau sama dengan ${conditionValue}`;
-                }
-                break;
-              case "<=":
-                if (!(numericValue <= conditionValue)) {
-                  return `Masukkan nilai lebih kecil dari atau sama dengan ${conditionValue}`;
-                }
-                break;
-              case "==":
-                if (!(numericValue === conditionValue)) {
-                  return `Masukkan nilai sama dengan ${conditionValue}`;
-                }
-                break;
-              case "!=":
-                if (!(numericValue !== conditionValue)) {
-                  return `Masukkan nilai tidak sama dengan ${conditionValue}`;
-                }
-                break;
-              default:
-                return "Kondisi tidak valid";
-            }
-            return true;
-          },
-        };
-      case "enumerasi":
-        return {
-          validate: (value: string) => {
-            const allowedValues = rules.value.split(",");
-            if (!allowedValues.includes(value)) {
-              return `Masukkan salah satu dari nilai berikut: ${allowedValues.join(
-                ", "
-              )}`;
-            }
-            return true;
-          },
-        };
-      case "countOfLength":
-        return {
-          validate: (value: string) => {
-            if (value.length !== parseInt(rules.value)) {
-              return `Nilai harus tepat ${rules.value} karakter`;
-            }
-            return true;
-          },
-        };
-      default:
-        return {};
-    }
-  };
+  //   switch (rules.nama_rule) {
+  //     case "range":
+  //       return {
+  //         validate: (value: string) => {
+  //           const numericValue = parseFloat(value);
+  //           if (rules.min_value && numericValue < parseFloat(rules.min_value)) {
+  //             return `Masukkan nilai yang lebih besar atau sama dengan ${rules.min_value}`;
+  //           }
+  //           if (rules.max_value && numericValue > parseFloat(rules.max_value)) {
+  //             return `Masukkan nilai yang lebih kecil atau sama dengan ${rules.max_value}`;
+  //           }
+  //           return true;
+  //         },
+  //       };
+  //     case "condition":
+  //       return {
+  //         validate: (value: string) => {
+  //           const numericValue = parseFloat(value);
+  //           const conditionValue = parseFloat(rules.value);
+  //           switch (rules.condition) {
+  //             case ">":
+  //               if (!(numericValue > conditionValue)) {
+  //                 return `Masukkan nilai lebih besar dari ${conditionValue}`;
+  //               }
+  //               break;
+  //             case "<":
+  //               if (!(numericValue < conditionValue)) {
+  //                 return `Masukkan nilai lebih kecil dari ${conditionValue}`;
+  //               }
+  //               break;
+  //             case ">=":
+  //               if (!(numericValue >= conditionValue)) {
+  //                 return `Masukkan nilai lebih besar dari atau sama dengan ${conditionValue}`;
+  //               }
+  //               break;
+  //             case "<=":
+  //               if (!(numericValue <= conditionValue)) {
+  //                 return `Masukkan nilai lebih kecil dari atau sama dengan ${conditionValue}`;
+  //               }
+  //               break;
+  //             case "==":
+  //               if (!(numericValue === conditionValue)) {
+  //                 return `Masukkan nilai sama dengan ${conditionValue}`;
+  //               }
+  //               break;
+  //             case "!=":
+  //               if (!(numericValue !== conditionValue)) {
+  //                 return `Masukkan nilai tidak sama dengan ${conditionValue}`;
+  //               }
+  //               break;
+  //             default:
+  //               return "Kondisi tidak valid";
+  //           }
+  //           return true;
+  //         },
+  //       };
+  //     case "enumerasi":
+  //       return {
+  //         validate: (value: string) => {
+  //           const allowedValues = rules.value.split(",");
+  //           if (!allowedValues.includes(value)) {
+  //             return `Masukkan salah satu dari nilai berikut: ${allowedValues.join(
+  //               ", "
+  //             )}`;
+  //           }
+  //           return true;
+  //         },
+  //       };
+  //     case "countOfLength":
+  //       return {
+  //         validate: (value: string) => {
+  //           if (value.length !== parseInt(rules.value)) {
+  //             return `Nilai harus tepat ${rules.value} karakter`;
+  //           }
+  //           return true;
+  //         },
+  //       };
+  //     default:
+  //       return {};
+  //   }
+  // };
 
 
   const getValidationDataType = (param: ParameterModul) => {
@@ -312,7 +318,7 @@ const TestCaseFormDialog = ({
     }
 
     const formattedData = {
-      id_modul: modulId, 
+      id_topik_modul: modulId, 
       no: lastTestCaseNumber + 1,
       object_pengujian: data.objective,
       data_test_input: parameters.map((param) => ({

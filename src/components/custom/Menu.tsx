@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PoinIcon from "/src/assets/logo/poin.png";
 
@@ -6,18 +6,25 @@ interface ModuleData {
   ms_tingkat_kesulitan: string;
 }
 
-const apiUrl = import.meta.env.VITE_API_URL;
-const apiKey = import.meta.env.VITE_API_KEY;
-const modulId = import.meta.env.VITE_MODULE_ID;
 
 export function Menu() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
   const location = useLocation();
   const [moduleData, setModuleData] = useState<ModuleData | null>(null);
 
   useEffect(() => {
     const fetchModuleData = async () => {
       try {
-        const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+        const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -67,7 +74,8 @@ export function Menu() {
   };
 
   const maxPoint: number = calculateMaxPoint(100, difficultyLevel); // Misalnya level kesulitan adalah 100
-
+  const linkPembuatanTestCase = "/topikModul?topikModulId="+modulId
+  const linkTestResult = "/test-result?topikModulId="+modulId
   return (
     <div
       className="menu"
@@ -81,9 +89,9 @@ export function Menu() {
     >
       <div className="buttons" style={{ display: "flex" }}>
         <Link
-          to="/"
+          to={linkPembuatanTestCase}
           className={
-            location.pathname === "/" ||
+            location.pathname === "/topikModul" ||
             location.pathname === "/pass/" ||
             location.pathname === "/fail/"
               ? "buttonMenu activeButton"
@@ -93,7 +101,7 @@ export function Menu() {
           Pembuatan Test Case
         </Link>
         <Link
-          to="/test-result"
+          to={linkTestResult}
           className={
             location.pathname === "#"
               ? "buttonMenu activeButton"

@@ -11,17 +11,17 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// import { ScrollArea } from "@/components/ui/scroll-area";
 import PassCard from "@/components/custom/PassCard";
 
 const ExecutionTestCasePassPage: React.FC = () => {
-  const [showCyclomaticComplexity, setShowCyclomaticComplexity] = useState(true);
-  const [showCodeCoverage, setShowCodeCoverage] = useState(false);
-  const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
-  const [minimumCoverage, setMinimumCoverage] = useState<number>(0);
-  const [points, setPoints] = useState<number>(0);
-  const [cyclomaticComplexityValue, setCyclomaticComplexityValue] = useState(5);
-  const [codeCoveragePercentage, setCodeCoveragePercentage] = useState(80);
+  const [showCyclomaticComplexity] = useState(true);
+  const [showCodeCoverage] = useState(false);
+  // const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
+  // const [minimumCoverage, setMinimumCoverage] = useState<number>(0);
+  // const [points, setPoints] = useState<number>(0);
+  const [cyclomaticComplexityValue ] = useState(5);
+  const [codeCoveragePercentage] = useState(80);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -31,27 +31,29 @@ const ExecutionTestCasePassPage: React.FC = () => {
     modul_id: string;
   };
 
-  const [dataIdModul, SetDataIdModul] = useState<NavigationDataModul | null>(
-    null
-  );
+  // const [dataIdModul, SetDataIdModul] = useState<NavigationDataModul | null>(
+  //   null
+  // );
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
 
   const navigate = useNavigate(); 
   
-  const [failCardData, setFailCardData] = useState<{
-    percentageCoverage: number;
-    minimumCoverage: number;
-    statusEksekusi: boolean;
-    tanggalEksekusi: string;
-    poin: number;
-    modulId: string;
-  }>({
-    percentageCoverage: 0,
-    minimumCoverage: 0,
-    statusEksekusi: false,
-    tanggalEksekusi: "",
-    poin: 0,
-    modulId: ""
-  });
+  // const [failCardData, setFailCardData] = useState<{
+  //   percentageCoverage: number;
+  //   minimumCoverage: number;
+  //   statusEksekusi: boolean;
+  //   tanggalEksekusi: string;
+  //   poin: number;
+  //   modulId: string;
+  // }>({
+  //   percentageCoverage: 0,
+  //   minimumCoverage: 0,
+  //   statusEksekusi: false,
+  //   tanggalEksekusi: "",
+  //   poin: 0,
+  //   modulId: ""
+  // });
 
   useEffect(() => {
     // Scroll ke bagian paling bawah saat komponen dimount
@@ -64,22 +66,22 @@ const ExecutionTestCasePassPage: React.FC = () => {
         modul_id: navigationData?.modul_id,
         };
   
-        SetDataIdModul(dataToPass);
-        navigate("/test-result", { state: dataToPass });
+        // SetDataIdModul(dataToPass);
+        navigate("/test-result?topikModulId="+modulId, { state: dataToPass });
       }  
 
 
   useEffect(() => {
     // Mendapatkan nilai percentageCoverage, minimumCoverage, dan points dari URL query params
-    const searchParams = new URLSearchParams(location.search);
-    const percentage = Number(searchParams.get("percentageCoverage"));
-    const minimum = Number(searchParams.get("minimumCoverage"));
-    const pointsValue = Number(searchParams.get("points"));
+    // const searchParams = new URLSearchParams(location.search);
+    // const percentage = Number(searchParams.get("percentageCoverage"));
+    // const minimum = Number(searchParams.get("minimumCoverage"));
+    // const pointsValue = Number(searchParams.get("points"));
 
     // Set nilai percentageCoverage, minimumCoverage, dan points
-    setPercentageCoverage(percentage);
-    setMinimumCoverage(minimum);
-    setPoints(pointsValue);
+    // setPercentageCoverage(percentage);
+    // setMinimumCoverage(minimum);
+    // setPoints(pointsValue);
   }, []);
 
   return (

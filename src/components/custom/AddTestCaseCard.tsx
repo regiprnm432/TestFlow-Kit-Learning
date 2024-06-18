@@ -57,12 +57,12 @@ const AddTestCaseCard: React.FC = () => {
   const [editingTestId, setEditingTestId] = useState<string | null>(null);
   const [isEditFormDialogOpen, setIsEditFormDialogOpen] = useState(false);
   const [deletingTestId, setDeletingTestId] = useState<string | null>(null);
-  const [executedTestCase, setExecutedTestCase] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
+  // const [executedTestCase, setExecutedTestCase] = useState(false);
+  // const [showMessage, setShowMessage] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState("");
-  const [minimumCoverage, setMinimumCoverage] = useState<number>(0);
-  const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
+  // const [minimumCoverage, setMinimumCoverage] = useState<number>(0);
+  // const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [hasUnexecutedChanges, setHasUnexecutedChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Add loading state
@@ -77,9 +77,9 @@ const AddTestCaseCard: React.FC = () => {
     modul_id: string;
   };
 
-  const [navigationData, setNavigationData] = useState<NavigationData | null>(
-    null
-  );
+  // const [navigationData, setNavigationData] = useState<NavigationData | null>(
+  //   null
+  // );
   const navigate = useNavigate();
 
   const DeleteConfirmationDialog: React.FC<{
@@ -117,12 +117,21 @@ const AddTestCaseCard: React.FC = () => {
   );
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  const apiKey = import.meta.env.VITE_API_KEY;
-  const modulId = import.meta.env.VITE_MODULE_ID;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData == null){
+      navigate('/login');
+  }else{
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const modulId = queryParameters.get("topikModulId")
 
   const fetchParameters = async () => {
     try {
-      const response = await fetch(`${apiUrl}/modul/detail/${modulId}`, {
+      const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -270,8 +279,8 @@ const AddTestCaseCard: React.FC = () => {
 
       const result = await response.json();
       console.log("Hasil eksekusi test case:", result);
-      setPercentageCoverage(result.coverage_score);
-      setMinimumCoverage(result.minimum_coverage_score);
+      // setPercentageCoverage(result.coverage_score);
+      // setMinimumCoverage(result.minimum_coverage_score);
 
       const dataToPass: NavigationData = {
         status_eksekusi: result.result_test.status_eksekusi,
@@ -282,21 +291,21 @@ const AddTestCaseCard: React.FC = () => {
         modul_id: result.modul,
       };
 
-      setNavigationData(dataToPass);
+      // setNavigationData(dataToPass);
       setHasUnexecutedChanges(false);
       setPreviouslyExecuted(true);
 
       if (result.coverage_score < result.minimum_coverage_score) {
-        navigate("/fail", { state: dataToPass });
+        navigate("/fail?topikModulId="+modulId, { state: dataToPass });
       } else {
-        navigate("/pass", { state: dataToPass });
+        navigate("/pass?topikModulId="+modulId, { state: dataToPass });
       }
 
-      setShowMessage(true);
-      const timer = setTimeout(() => {
-        setShowMessage(false);
-      }, 5000);
-      return () => clearTimeout(timer);
+      // setShowMessage(true);
+      // const timer = setTimeout(() => {
+      //   setShowMessage(false);
+      // }, 5000);
+      // return () => clearTimeout(timer);
     } catch (error) {
       console.error("Error executing test case:", error);
     } finally {
