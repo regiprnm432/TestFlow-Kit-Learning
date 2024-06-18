@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaTachometerAlt,
   FaTrophy,
@@ -7,7 +7,7 @@ import {
   FaAngleRight,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo_polban from "../../assets/logo/polban.png";
 
 interface SidebarProps {
@@ -17,11 +17,16 @@ interface SidebarProps {
 
 const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   const navigate = useNavigate();
-  const [activeItem, setActiveItem] = useState<string>("");
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState<string>("/dashboard-student");
+
+  useEffect(() => {
+    setActiveItem(location.pathname);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     // Clear user session (this can vary depending on how you handle authentication)
-    localStorage.removeItem("userToken"); // Example for token stored in localStorage
+    localStorage.removeItem('session');
     // Redirect to login page
     navigate("/login");
   };
@@ -56,39 +61,22 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         </div>
         <nav className="flex flex-col items-start w-full mt-10 overflow-y-auto flex-grow pr-4">
           <ul className="w-full">
-            <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
-                activeItem === "/dashboard-student"
-                  ? "bg-white text-blue-800"
-                  : "hover:bg-white hover:text-blue-800"
-              }`}
-              onClick={() => handleItemClick("/dashboard-student")}
-            >
-              <FaTachometerAlt size={16} />
-              {isOpen && <span className="ml-2">Dashboard</span>}
-            </li>
-            <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
-                activeItem === "/topics"
-                  ? "bg-white text-blue-800"
-                  : "hover:bg-white hover:text-blue-800"
-              }`}
-              onClick={() => handleItemClick("/topics")}
-            >
-              <FaClipboard size={16} />
-              {isOpen && <span className="ml-2">Topik Pengujian</span>}
-            </li>
-            <li
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
-                activeItem === "/challenge"
-                  ? "bg-white text-blue-800"
-                  : "hover:bg-white hover:text-blue-800"
-              }`}
-              onClick={() => handleItemClick("/challenge")}
-            >
-              <FaTrophy size={16} />
-              {isOpen && <span className="ml-2">Tantangan</span>}
-            </li>
+            {[
+              { path: "/dashboard-student", icon: FaTachometerAlt, label: "Dashboard" },
+              { path: "/access-topics", icon: FaClipboard, label: "Topik Pengujian" },
+              { path: "/challenge", icon: FaTrophy, label: "Tantangan" },
+            ].map((item) => (
+              <li
+                key={item.path}
+                className={`flex items-center mb-4 cursor-pointer p-2 rounded ${
+                  activeItem === item.path ? "bg-white text-blue-800" : "hover:bg-white hover:text-blue-800"
+                }`}
+                onClick={() => handleItemClick(item.path)}
+              >
+                <item.icon size={16} />
+                {isOpen && <span className="ml-2">{item.label}</span>}
+              </li>
+            ))}
           </ul>
           <div className="w-full h-px bg-white mt-4"></div>
         </nav>

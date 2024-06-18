@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken");
+    localStorage.removeItem('session'); // Example for token stored in localStorage
     navigate("/login");
   };
 
