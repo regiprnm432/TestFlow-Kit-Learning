@@ -26,13 +26,23 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
 
   const handleLogout = () => {
     // Clear user session (this can vary depending on how you handle authentication)
-    localStorage.removeItem("userToken"); // Example for token stored in localStorage
+    localStorage.removeItem('session');
     // Redirect to login page
     navigate("/login");
   };
 
   const handleItemClick = (path: string) => {
-    navigate(path);
+     // untuk sementara sebelum tampilan list topik nya ready
+     if (path == '/challenge'){
+      navigate({
+          pathname: '/topikModul',
+          search: '?topikModulId=3f194aef-3267-4bba-a31a-0f27099a3db2',
+        });
+    }else{
+      setActiveItem(path);
+      navigate(path);
+    }
+
   };
 
   return (
