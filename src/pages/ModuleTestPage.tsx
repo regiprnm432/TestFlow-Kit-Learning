@@ -4,12 +4,11 @@ import Layout from "./Layout";
 const ModuleTestPage = () => {
     const handleAddModule = (module: any) => {
         console.log("New module added:", module);
-        // Tambahkan logika untuk menangani penambahan modul di sini
     };
 
     return (
         <Layout>
-            <div className="min-h-screen w-screen flex items-center justify-center bg-gray-100">
+            <div className="min-h-screen w-screen flex items-center justify-center bg-gray-100 p-10">
                 <AddModuleForm onAddModule={handleAddModule} />
             </div>
         </Layout>
@@ -17,4 +16,3 @@ const ModuleTestPage = () => {
 };
 
 export default ModuleTestPage;
-
