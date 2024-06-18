@@ -151,7 +151,7 @@ const TopicPage: React.FC = () => {
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4 mr-4">
                 <select
                   value={filterOption}
                   onChange={handleFilterChange}
