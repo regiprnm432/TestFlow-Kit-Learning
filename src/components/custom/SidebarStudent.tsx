@@ -32,8 +32,8 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   };
 
   const handleItemClick = (path: string) => {
-     // untuk sementara sebelum tampilan list topik nya ready
-     if (path == '/challenge'){
+    // untuk sementara sebelum tampilan list topik nya ready
+    if (path == '/challenge'){
       navigate({
           pathname: '/topikModul',
           search: '?topikModulId=3f194aef-3267-4bba-a31a-0f27099a3db2',
@@ -42,7 +42,6 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       setActiveItem(path);
       navigate(path);
     }
-
   };
 
   return (

@@ -60,10 +60,12 @@ const LoginPage = () => {
       console.log(result_login)
       if (result_login.status == 200){
         localStorage.setItem('session',JSON.stringify(result_login.data));
-        navigate({
-          pathname: '/topikModul',
-          search: '?topikModulId=3f194aef-3267-4bba-a31a-0f27099a3db2',
-        });
+        console.log(result_login.data.login_type)
+        if (result_login.data.login_type == 'student'){
+          navigate("/dashboard-student")
+        }else{
+          navigate("/dashboard-teacher")
+        }
         
       }else if (result_login.status == 400){
         errors.username = result_login.message ;
