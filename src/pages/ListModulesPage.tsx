@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { FaEdit, FaTrash, FaPlus, FaSearch } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import Sidebar from "../components/custom/Sidebar";
 import Pagination from "@/components/custom/Pagination";
+import ModulesTable from "../components/custom/ModuleTable";
+import ConfirmationModal from "../components/custom/ConfirmationModal";
 
 // Interface for module object
-interface Module {
+export interface Module {
   id: number;
   name: string;
   type: string;
@@ -25,46 +27,6 @@ const initialModules: Module[] = [
   { id: 10, name: "Penambahan", type: "Fungsi", difficulty: 2 },
   { id: 11, name: "Perkalian", type: "Fungsi", difficulty: 3 },
 ];
-
-// Confirmation Modal Component
-const ConfirmationModal = ({
-  isOpen,
-  onClose,
-  onConfirm,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="fixed inset-0 bg-black opacity-50"></div>
-      <div className="bg-white p-6 rounded shadow-lg z-10 max-w-md w-full">
-        <h2 className="text-xl mb-4">Apakah Kamu Yakin?</h2>
-        <p className="mb-4">
-          Apakah kamu benar-benar ingin menghapus modul ini? Modul akan dihapus
-          secara permanen.
-        </p>
-        <div className="flex justify-end space-x-4">
-          <button
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            onClick={onConfirm}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const ListModulesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,9 +49,7 @@ const ListModulesPage = () => {
   };
 
   const handleDelete = (id: number) => {
-    setModules((prevModules) =>
-      prevModules.filter((module) => module.id !== id)
-    );
+    setModules((prevModules) => prevModules.filter((module) => module.id !== id));
     setDeleteMessage("Modul berhasil dihapus.");
     closeModal();
     setTimeout(() => setDeleteMessage(null), 2000);
@@ -109,21 +69,6 @@ const ListModulesPage = () => {
     setSearchTerm(e.target.value);
   };
 
-  const getDifficultyString = (difficulty: number): string => {
-    switch (difficulty) {
-      case 1:
-        return "Sangat Mudah";
-      case 2:
-        return "Mudah";
-      case 3:
-        return "Sedang";
-      case 4:
-        return "Sulit";
-      default:
-        return "";
-    }
-  };
-
   const filteredModules = modules.filter(
     (module) =>
       module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -140,11 +85,7 @@ const ListModulesPage = () => {
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div
-        className={`flex-1 ${
-          isSidebarOpen ? "ml-64" : "ml-20"
-        } transition-all duration-300`}
-      >
+      <div className={`flex-1 ${isSidebarOpen ? "ml-64" : "ml-20"} transition-all duration-300`}>
         <div className="w-full bg-white p-4 shadow mb-6">
           <div className="max-w-screen-xl mx-auto">
             <h1 className="text-2xl font-bold text-blue-800 mb-6 mt-4">
@@ -184,70 +125,8 @@ const ListModulesPage = () => {
               </div>
             ) : (
               <>
-                <table className="min-w-full">
-                  <thead
-                    className="bg-blue-800 text-white"
-                    style={{ fontSize: "14px" }}
-                  >
-                    <tr>
-                      <th className="py-3 px-2 md:px-6 text-left border-b border-r">
-                        Nama Modul
-                      </th>
-                      <th className="py-3 px-2 md:px-6 text-left border-b border-r">
-                        Jenis Modul
-                      </th>
-                      <th className="py-3 px-2 md:px-6 text-left border-b border-r">
-                        Tingkat Kesulitan
-                      </th>
-                      <th className="py-3 px-2 md:px-6 text-left border-b">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody style={{ fontSize: "14px" }}>
-                    {currentItems.map((module, index) => (
-                      <tr
-                        key={module.id}
-                        className={`border-b ${
-                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                        }`}
-                      >
-                        <td className="py-3 px-2 md:px-6 border-r">
-                          {module.name}
-                        </td>
-                        <td className="py-3 px-2 md:px-6 border-r">
-                          {module.type}
-                        </td>
-                        <td className="py-3 px-2 md:px-6 border-r">
-                          <span
-                            className={`px-2 py-1 rounded ${
-                              module.difficulty === 1
-                                ? "bg-blue-100 text-blue-600"
-                                : module.difficulty === 2
-                                ? "bg-green-100 text-green-600"
-                                : module.difficulty === 3
-                                ? "bg-yellow-100 text-yellow-600"
-                                : "bg-red-100 text-red-600"
-                            }`}
-                          >
-                            {getDifficultyString(module.difficulty)}
-                          </span>
-                        </td>
-                        <td className="py-3 px-2 md:px-6 flex items-center space-x-2">
-                          <FaEdit className="cursor-pointer text-blue-500" />
-                          <FaTrash
-                            className="cursor-pointer text-red-500"
-                            onClick={() => openModal(module)}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div
-                  className="flex justify-center items-center py-4"
-                  style={{ fontSize: "14px" }}
-                >
+                <ModulesTable modules={currentItems} onDelete={openModal} />
+                <div className="flex justify-center items-center py-4" style={{ fontSize: "14px" }}>
                   <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -259,13 +138,30 @@ const ListModulesPage = () => {
           </div>
         </div>
       </div>
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onConfirm={() => handleDelete(moduleToDelete!.id)}
-      />
+      {isModalOpen && moduleToDelete && (
+        <ConfirmationModal
+          message="Apakah kamu benar-benar ingin menghapus modul ini? Modul akan dihapus secara permanen."
+          onConfirm={() => handleDelete(moduleToDelete.id)}
+          onCancel={closeModal}
+        />
+      )}
     </div>
   );
+};
+
+const getDifficultyString = (difficulty: number): string => {
+  switch (difficulty) {
+    case 1:
+      return "Sangat Mudah";
+    case 2:
+      return "Mudah";
+    case 3:
+      return "Sedang";
+    case 4:
+      return "Sulit";
+    default:
+      return "";
+  }
 };
 
 export default ListModulesPage;
