@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { FaSearch, FaUpload} from "react-icons/fa";
+import { FaSearch} from "react-icons/fa";
 import Pagination from "@/components/custom/Pagination";
 import StudentTable from "../components/custom/StudentTable";
 import ConfirmationModal from "../components/custom/ConfirmationModal";
 import Sidebar from "@/components/custom/Sidebar";
 import AddStudentDataForm from "@/components/custom/AddStudentDataForm";
+import UploadStudentDataForm from "@/components/custom/UploadStudentDataForm";
 
 interface Student {
   id: number;
@@ -166,6 +167,7 @@ const StudentPage: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [deleteMessage, setDeleteMessage] = useState<string>("");
   const [isAddStudentFormOpen, setIsAddStudentFormOpen] = useState(false);
+  const [isUploadStudentFormOpen, setIsUploadStudentFormOpen] = useState(false);
 
   const itemsPerPage = 5;
 
@@ -246,13 +248,10 @@ const StudentPage: React.FC = () => {
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
               <div className="flex space-x-4">
-                <button
-                  className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
-                  style={{ fontSize: "14px" }}
-                >
-                  <FaUpload className="mr-2" />
-                  Unggah
-                </button>
+                <UploadStudentDataForm
+                  isDialogOpen={isUploadStudentFormOpen}
+                  setIsDialogOpen={setIsUploadStudentFormOpen}
+                />
                 <AddStudentDataForm 
                   isDialogOpen={isAddStudentFormOpen}
                   setIsDialogOpen={setIsAddStudentFormOpen}
