@@ -67,6 +67,7 @@ const ListModulesPage = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+    setCurrentPage(1); 
   };
 
   const filteredModules = modules.filter(

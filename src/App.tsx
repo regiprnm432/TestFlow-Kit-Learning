@@ -12,7 +12,7 @@ import ErrorPage from "./pages/ErrorSessionPage";
 import ListTopicsPage from "./pages/ListTopicsPage";
 import ListModulesPage from "./pages/ListModulesPage";
 import AccessTopicsPage from "./pages/AccessTopicsPage";
-// import GradeStudentPage from "./pages/GradeStudentPage";
+import GradeStudentPage from "./pages/GradeStudentPage";
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
         <Route path="/list-topics" element={<ListTopicsPage />} />
         <Route path="/list-modules" element={<ListModulesPage />} />
         <Route path="/challenge" element={<AccessTopicsPage />} />
-        {/* <Route path="/grade" element={<GradeStudentPage />} /> */}
+        <Route path="/grade" element={<GradeStudentPage />} />
       </Routes>
     </BrowserRouter>
   );

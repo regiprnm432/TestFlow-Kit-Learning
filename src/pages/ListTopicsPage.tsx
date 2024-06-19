@@ -109,7 +109,7 @@ const parseStudentAccess = (access: number | string) => {
 
 const ListTopicsPage: React.FC = () => {
   const [topics, setTopics] = useState<Topic[]>(initialTopics);
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
@@ -201,6 +201,11 @@ const ListTopicsPage: React.FC = () => {
     currentPage * itemsPerPage
   );
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); 
+  };
+
   const totalPages = Math.ceil(filteredTopics.length / itemsPerPage);
 
   return (
@@ -216,7 +221,7 @@ const ListTopicsPage: React.FC = () => {
                   type="text"
                   placeholder="Search or type"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)} // Update search query state
+                  onChange={handleSearchChange} 
                   className="w-full p-2 pl-10 border border-gray-300 rounded-md"
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />

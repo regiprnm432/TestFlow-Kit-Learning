@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaSortUp, FaSortDown } from 'react-icons/fa';
 
 interface Student {
   no: number;
@@ -11,19 +12,48 @@ interface Student {
 
 interface StudentTableProps {
   students: Student[];
+  onSort: (column: 'poin' | 'modul') => void;
+  sortColumn?: 'poin' | 'modul';
+  sortDirection?: 'asc' | 'desc';
 }
 
-const GradeStudentTable: React.FC<StudentTableProps> = ({ students }) => {
+const GradeStudentTable: React.FC<StudentTableProps> = ({ students, onSort, sortColumn, sortDirection }) => {
+  const renderSortIcon = (column: 'poin' | 'modul') => {
+    if (sortColumn === column) {
+      return sortDirection === 'asc' ? <FaSortUp /> : <FaSortDown />;
+    }
+    return (
+      <span className="text-gray-400 flex flex-col">
+        <FaSortUp />
+        <FaSortDown />
+      </span>
+    );
+  };
+
   return (
-    <div className="bg-white rounded-lg overflow-hidden">
+    <div className="bg-white shadow-md rounded-lg overflow-hidden">
       <table className="min-w-full">
         <thead className="bg-blue-800 text-white" style={{ fontSize: '14px' }}>
           <tr>
             <th className="py-3 px-2 md:px-6 text-left border-b border-r">No</th>
             <th className="py-3 px-2 md:px-6 text-left border-b border-r">Nim</th>
             <th className="py-3 px-2 md:px-6 text-left border-b border-r">Nama</th>
-            <th className="py-3 px-2 md:px-6 text-left border-b border-r">Jumlah Poin</th>
-            <th className="py-3 px-2 md:px-6 text-left border-b border-r">Jumlah Modul Terselesaikan</th>
+            <th
+              className="py-3 px-2 md:px-6 text-left border-b border-r cursor-pointer"
+              onClick={() => onSort('poin')}
+            >
+              <div className="flex items-center">
+                Jumlah Poin {renderSortIcon('poin')}
+              </div>
+            </th>
+            <th
+              className="py-3 px-2 md:px-6 text-left border-b border-r cursor-pointer"
+              onClick={() => onSort('modul')}
+            >
+              <div className="flex items-center">
+                Jumlah Modul Terselesaikan {renderSortIcon('modul')}
+              </div>
+            </th>
             <th className="py-3 px-2 md:px-6 text-left border-b">Modul Program Terakhir</th>
           </tr>
         </thead>
