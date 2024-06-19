@@ -138,22 +138,22 @@ const ModuleSpecificationCard = () => {
             
             <div className="rounded-lg mb-6">
               <h4 className="text-base font-semibold mb-3 text-gray-700">Daftar Parameter</h4>
-              <Table className="text-sm border-collapse border  border-black">
+              <Table className="text-sm border-collapse border border-black">
                 <TableHeader>
                   <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
-                    <TableHead className="border border-black">No</TableHead>
+                    <TableHead className="border border-black w-10">No</TableHead>
                     <TableHead className="border border-black">Nama Parameter</TableHead>
                     <TableHead className="border border-black">Tipe Data</TableHead>
-                    <TableHead className="border border-black">Rules</TableHead>
+                    <TableHead className="border border-black w-full pr-4">Rules</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {dataModule.data_parameter_modul.map((parameter, index) => (
                     <TableRow key={parameter.ms_id_parameter} className={`${index % 2 === 0 ? "bg-blue-100" : "bg-blue-200"} text-sm leading-tight`}>
-                      <TableCell className="py-2 border border-black">{index + 1}</TableCell>
+                      <TableCell className="py-2 border border-black w-10 text-center">{index + 1}</TableCell>
                       <TableCell className="py-2 border border-black">{parameter.ms_nama_parameter}</TableCell>
                       <TableCell className="py-2 border border-black">{parameter.ms_tipe_data}</TableCell>
-                      <TableCell className="py-2 border border-black">{parameter.ms_rules}</TableCell>
+                      <TableCell className="py-2 border border-black w-full pr-4">{parameter.ms_rules}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

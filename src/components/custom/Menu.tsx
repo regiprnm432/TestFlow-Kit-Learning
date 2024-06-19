@@ -77,8 +77,7 @@ export function Menu() {
   const linkPembuatanTestCase = "/topikModul?topikModulId="+modulId
   const linkTestResult = "/test-result?topikModulId="+modulId
   return (
-    <div
-      className="menu"
+    <div className="menu"
       style={{
         display: "flex",
         alignItems: "center",
