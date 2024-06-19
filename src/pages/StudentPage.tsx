@@ -179,7 +179,7 @@ const StudentPage: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const handleEdit = (id: number) => {
+  const handleEdit = () => {
     // Handle edit logic here
   };
 
