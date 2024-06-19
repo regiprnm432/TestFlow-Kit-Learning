@@ -15,7 +15,7 @@ import {
     FormField, 
     FormItem, 
     FormLabel, 
-    FormControl
+    FormControl,
 } from '@/components/ui/form';
 
 interface FormData {
@@ -65,7 +65,7 @@ const AddStudentDataForm = ({
                 <FormField 
                 control={form.control} 
                 name="nim"
-                rules={{ required: "NIM Mahasiswa harus terisi" }}
+                rules={{required: "NIM Mahasiswa harus terisi"}}
                 render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center">
                     <FormLabel className="w-1/6 flex items-center space-x-2">
@@ -87,7 +87,7 @@ const AddStudentDataForm = ({
                 <FormField 
                 control={form.control} 
                 name="nama"
-                rules={{ required: "Nama Mahasiswa harus terisi" }}
+                rules={{required: "Nama Mahasiswa harus terisi"}}
                 render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center">
                     <FormLabel className="w-1/6 flex items-center space-x-2">
@@ -109,7 +109,7 @@ const AddStudentDataForm = ({
                 <FormField 
                 control={form.control} 
                 name="kelas"
-                rules={{ required: "Kelas Mahasiswa harus terisi" }}
+                rules={{required: "Kelas Mahasiswa harus terisi"}}
                 render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center">
                     <FormLabel className="w-1/6 flex items-center space-x-2">
@@ -131,7 +131,7 @@ const AddStudentDataForm = ({
                 <FormField 
                 control={form.control} 
                 name="prodi"
-                rules={{ required: "Prodi Mahasiswa harus terisi" }}
+                rules={{required: "Prodi Mahasiswa harus terisi"}}
                 render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center">
                     <FormLabel className="w-1/6 flex items-center space-x-2">

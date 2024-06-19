@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { FaSearch, FaUpload, FaPlus } from "react-icons/fa";
+import { FaSearch, FaUpload} from "react-icons/fa";
 import Pagination from "@/components/custom/Pagination";
 import StudentTable from "../components/custom/StudentTable";
 import ConfirmationModal from "../components/custom/ConfirmationModal";
 import Sidebar from "@/components/custom/Sidebar";
+import AddStudentDataForm from "@/components/custom/AddStudentDataForm";
 
 interface Student {
   id: number;
@@ -164,6 +165,7 @@ const StudentPage: React.FC = () => {
   const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [deleteMessage, setDeleteMessage] = useState<string>("");
+  const [isAddStudentFormOpen, setIsAddStudentFormOpen] = useState(false);
 
   const itemsPerPage = 5;
 
@@ -251,13 +253,10 @@ const StudentPage: React.FC = () => {
                   <FaUpload className="mr-2" />
                   Unggah
                 </button>
-                <button
-                  className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
-                  style={{ fontSize: "14px" }}
-                >
-                  <FaPlus className="mr-2" />
-                  Tambah
-                </button>
+                <AddStudentDataForm 
+                  isDialogOpen={isAddStudentFormOpen}
+                  setIsDialogOpen={setIsAddStudentFormOpen}
+                />
               </div>
             </div>
           </div>
