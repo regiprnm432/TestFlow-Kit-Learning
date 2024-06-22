@@ -1,81 +1,113 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import Sidebar from "../components/custom/SidebarStudent";
 import { FaSearch } from "react-icons/fa";
 import OngoingTopics from "../components/custom/OngoingTopics";
 import LearningTopics from "../components/custom/LearningTopics";
 import CompletedTopics from "../components/custom/CompletedTopics";
+import { useNavigate } from "react-router-dom";
+import { Description } from "@radix-ui/react-dialog";
 
-const ongoingTopics = [
-  { id: 1, title: "Pemula", progress: 40, remaining: 8, xp: 600 },
-  { id: 2, title: "Pemula", progress: 10, remaining: 9, xp: 90 },
-];
+// const ongoingTopics = [
+//   { id: 1, title: "Pemula", progress: 40, remaining: 8, xp: 600 },
+//   { id: 2, title: "Pemula", progress: 10, remaining: 9, xp: 90 },
+// ];
 
-const learningTopics = [
-  {
-    id: 1,
-    title: "Topik 1",
-    description: "Pembuatan Test Case level menengah",
-    challenges: 20,
-    xp: 2400,
-  },
-  {
-    id: 2,
-    title: "Topik 2",
-    description: "Pembuatan Test Case level Pemula",
-    challenges: 10,
-    xp: 1600,
-  },
-  {
-    id: 3,
-    title: "Topik 3",
-    description: "Pembuatan Test Case level Mahir",
-    challenges: 30,
-    xp: 4600,
-  },
-  {
-    id: 4,
-    title: "Topik 4",
-    description: "Pembuatan Test Case level Pemula",
-    challenges: 40,
-    xp: 6000,
-  },
-  {
-    id: 5,
-    title: "Topik 1",
-    description: "Pembuatan Test Case level menengah",
-    challenges: 20,
-    xp: 2400,
-  },
-  {
-    id: 6,
-    title: "Topik 2",
-    description: "Pembuatan Test Case level Pemula",
-    challenges: 10,
-    xp: 1600,
-  },
-  {
-    id: 7,
-    title: "Topik 3",
-    description: "Pembuatan Test Case level Mahir",
-    challenges: 30,
-    xp: 4600,
-  },
-];
+// const learningTopics = [
+//   {
+//     id: 1,
+//     title: "Topik 1",
+//     description: "Pembuatan Test Case level menengah",
+//     challenges: 20,
+//     xp: 2400,
+//   },
+//   {
+//     id: 2,
+//     title: "Topik 2",
+//     description: "Pembuatan Test Case level Pemula",
+//     challenges: 10,
+//     xp: 1600,
+//   },
+//   {
+//     id: 3,
+//     title: "Topik 3",
+//     description: "Pembuatan Test Case level Mahir",
+//     challenges: 30,
+//     xp: 4600,
+//   },
+//   {
+//     id: 4,
+//     title: "Topik 4",
+//     description: "Pembuatan Test Case level Pemula",
+//     challenges: 40,
+//     xp: 6000,
+//   },
+//   {
+//     id: 5,
+//     title: "Topik 1",
+//     description: "Pembuatan Test Case level menengah",
+//     challenges: 20,
+//     xp: 2400,
+//   },
+//   {
+//     id: 6,
+//     title: "Topik 2",
+//     description: "Pembuatan Test Case level Pemula",
+//     challenges: 10,
+//     xp: 1600,
+//   },
+//   {
+//     id: 7,
+//     title: "Topik 3",
+//     description: "Pembuatan Test Case level Mahir",
+//     challenges: 30,
+//     xp: 4600,
+//   },
+// ];
 
-const completedTopics = [
-  { id: 1, title: "Topik X", xp: 550 },
-  { id: 2, title: "Topik Y", xp: 900 },
-  { id: 3, title: "Topik Z", xp: 780 },
-  { id: 4, title: "Topik X", xp: 550 },
-  { id: 5, title: "Topik Y", xp: 900 },
-  { id: 6, title: "Topik Z", xp: 780 },
-];
-
+// const completedTopics = [
+//   { id: 1, title: "Topik X", xp: 550 },
+//   { id: 2, title: "Topik Y", xp: 900 },
+//   { id: 3, title: "Topik Z", xp: 780 },
+//   { id: 4, title: "Topik X", xp: 550 },
+//   { id: 5, title: "Topik Y", xp: 900 },
+//   { id: 6, title: "Topik Z", xp: 780 },
+// ];
+interface DataOnGoing {
+  id: string;
+  title: string;
+  progress: number; 
+  remaining: number;
+  xp: number;
+}
+interface DataCompleted {
+  id: string;
+  title: string;
+  xp: number;
+}
+interface DataLearning {
+  id: string;
+  title: string;
+  description: string;
+  challenges: number;
+  xp: number;
+}
 const TopicPage: React.FC = () => {
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filterOption, setFilterOption] = useState<string>("all");
-
+  const [ongoingTopics, setOngoingTopics] = useState<DataOnGoing[]>([]);
+  const [learningTopics, setLearningTopics] = useState<DataLearning[]>([]);
+  const [completedTopics, setCompletedTopics] = useState<DataCompleted[]>([]);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -92,6 +124,115 @@ const TopicPage: React.FC = () => {
     setFilterOption(e.target.value);
   };
 
+  const fetchDataOngoingChallenge = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/topik/challenge?status=ongoing`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+
+      const data = await response.json();
+      let tempOngoing = [];
+      for (let i = 0; i < data.data.length; i++) {
+        tempOngoing.push(
+            { id: data.data[i].ms_id_topik, 
+              title: data.data[i].ms_nama_topik, 
+              progress: (data.data[i].jml_completed_modul/data.data[i].jml_modul)*100, 
+              remaining: (data.data[i].jml_modul - data.data[i].jml_completed_modul), 
+              xp: data.data[i].jml_ongoing_point },
+          )
+      }
+      setOngoingTopics(tempOngoing);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  const fetchDataLearningChallenge = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/topik/challenge?status=learning`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+
+      const data = await response.json();
+      let tempLearning = [];
+      for (let i = 0; i < data.data.length; i++) {
+        tempLearning.push(
+            { id: data.data[i].ms_id_topik, 
+              title: data.data[i].ms_nama_topik, 
+              description: data.data[i].ms_deskripsi_topik, 
+              challenges: (data.data[i].jml_modul), 
+              xp: data.data[i].jml_point }
+          )
+      }
+      setLearningTopics(tempLearning);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchDataCompletedChallenge = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/topik/challenge?status=completed`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+
+      const data = await response.json();
+      let tempCompleted = [];
+      for (let i = 0; i < data.data.length; i++) {
+        tempCompleted.push(
+            { id: data.data[i].ms_id_topik, 
+              title: data.data[i].ms_nama_topik, 
+              xp: data.data[i].jml_point }
+          )
+      }
+      setCompletedTopics(tempCompleted);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
+    fetchDataOngoingChallenge();
+    fetchDataLearningChallenge();
+    fetchDataCompletedChallenge();
+  }, []);
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

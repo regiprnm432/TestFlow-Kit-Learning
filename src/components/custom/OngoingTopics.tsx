@@ -1,9 +1,10 @@
 import React from 'react';
 import logo_berpikir from "../../assets/logo/berpikir.png";
 import logo_skor from "../../assets/logo/skor.png";
+import { useNavigate } from "react-router-dom";
 
 interface OngoingTopic {
-  id: number;
+  id: string;
   title: string;
   progress: number;
   remaining: number;
@@ -16,6 +17,7 @@ interface OngoingTopicsProps {
 }
 
 const OngoingTopics: React.FC<OngoingTopicsProps> = ({ topics, searchQuery }) => {
+  const navigate = useNavigate();
   const filterTopics = (topics: OngoingTopic[], query: string) => {
     if (!query) return topics;
     return topics.filter((topic) =>
@@ -24,7 +26,12 @@ const OngoingTopics: React.FC<OngoingTopicsProps> = ({ topics, searchQuery }) =>
   };
 
   const filteredOngoingTopics = filterTopics(topics, searchQuery);
-
+  const onResume = async () => {
+    navigate({
+      pathname: '/topikModul',
+      search: '?topikModulId=3f194aef-3267-4bba-a31a-0f27099a3db2',
+    });
+  };
   return (
     <>
       {filteredOngoingTopics.length > 0 && (
@@ -52,7 +59,7 @@ const OngoingTopics: React.FC<OngoingTopicsProps> = ({ topics, searchQuery }) =>
                   </p>
                 </div>
                 <div className="flex justify-between items-center mt-4">
-                  <button className="bg-blue-800 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                  <button onClick={onResume} className="bg-blue-800 hover:bg-blue-500 text-white px-4 py-2 rounded">
                     Lanjutkan Belajar
                   </button>
                   <div className="flex items-center">
