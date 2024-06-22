@@ -3,7 +3,7 @@ import logo_berpikir from "../../assets/logo/berpikir.png";
 import logo_skor from "../../assets/logo/skor.png";
 
 interface LearningTopic {
-  id: number;
+  id: string;
   title: string;
   description: string;
   challenges: number;

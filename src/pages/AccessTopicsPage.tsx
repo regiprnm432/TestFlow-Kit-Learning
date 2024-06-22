@@ -5,7 +5,6 @@ import OngoingTopics from "../components/custom/OngoingTopics";
 import LearningTopics from "../components/custom/LearningTopics";
 import CompletedTopics from "../components/custom/CompletedTopics";
 import { useNavigate } from "react-router-dom";
-import { Description } from "@radix-ui/react-dialog";
 
 // const ongoingTopics = [
 //   { id: 1, title: "Pemula", progress: 40, remaining: 8, xp: 600 },
