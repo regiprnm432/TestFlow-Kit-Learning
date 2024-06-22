@@ -2,7 +2,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 
 // Define the Module interface directly here
 interface Module {
-  id: number;
+  id: string;
   name: string;
   type: string;
   difficulty: number; // 1: Sangat Mudah, 2: Mudah, 3: Sedang, 4: Sulit
