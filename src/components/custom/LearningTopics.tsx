@@ -26,38 +26,42 @@ const LearningTopics: React.FC<LearningTopicsProps> = ({ topics, searchQuery }) 
   const filteredLearningTopics = filterTopics(topics, searchQuery);
 
   return (
-    <div className="m-4">
-      <h2 className="text-xl font-bold text-blue-800 mb-4">Topik Belajar</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 m-2 animate-fade-in">
-        {filteredLearningTopics.map((topic) => (
-          <div
-            key={topic.id}
-            className="bg-blue-50 text-black p-6 rounded-lg shadow-lg border-2 border-blue-800"
-          >
-            <div className="flex justify-between items-start mb-2 text-blue-800">
-              <h3 className="text-lg font-bold">{topic.title}</h3>
-              <img src={logo_berpikir} alt="Logo" className="w-20" />
-            </div>
-            <p className="text-lg font-semibold text-blue-800 mb-2">
-              {topic.description}
-            </p>
-            <p className="text-m font-bold text-blue-800 mb-2">
-              {topic.challenges} Tantangan
-            </p>
-            <div className="flex justify-between items-center mt-4">
-              <div className="flex items-center">
-                <img src={logo_skor} alt="Logo" className="w-10 mr-2" />
-                <p className="font-semibold">{topic.xp} XP</p>
+    <>
+      {filteredLearningTopics.length > 0 && (
+      <div className="m-4">
+        <h2 className="text-xl font-bold text-blue-800 mb-4">Topik Belajar</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 m-2 animate-fade-in">
+          {filteredLearningTopics.map((topic) => (
+            <div
+              key={topic.id}
+              className="bg-blue-50 text-black p-6 rounded-lg shadow-lg border-2 border-blue-800"
+            >
+              <div className="flex justify-between items-start mb-2 text-blue-800">
+                <h3 className="text-lg font-bold">{topic.title}</h3>
+                <img src={logo_berpikir} alt="Logo" className="w-20" />
               </div>
-              <button className="bg-blue-800 hover:bg-blue-500 text-white px-4 py-2 rounded">
-                Pelajari
-              </button>
+              <p className="text-lg font-semibold text-blue-800 mb-2">
+                {topic.description}
+              </p>
+              <p className="text-m font-bold text-blue-800 mb-2">
+                {topic.challenges} Tantangan
+              </p>
+              <div className="flex justify-between items-center mt-4">
+                <div className="flex items-center">
+                  <img src={logo_skor} alt="Logo" className="w-10 mr-2" />
+                  <p className="font-semibold">{topic.xp} XP</p>
+                </div>
+                <button className="bg-blue-800 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                  Pelajari
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <hr className="border-blue-800 my-6" />
       </div>
-      <hr className="border-blue-800 my-6" />
-    </div>
+      )}
+    </>
   );
 };
 
