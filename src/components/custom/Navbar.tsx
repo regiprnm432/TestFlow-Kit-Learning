@@ -32,6 +32,7 @@ export function Navbar() {
   const queryParameters = new URLSearchParams(window.location.search)
   const modulId = queryParameters.get("topikModulId")
   const [moduleName, setModuleName] = useState("");
+  const [idTopik, setIdTopik] = useState("");
   const linkTopikModul = "/topikModul?topikModulId="+modulId
   useEffect(() => {
     const fetchModuleName = async () => {
@@ -54,7 +55,7 @@ export function Navbar() {
 
         const data = await response.json();
         setModuleName(data.data.data_modul.ms_nama_modul); // Assuming the API response has a `name` field
-        console.log(data)
+        setIdTopik(data.id_topik)
       } catch (error) {
         console.error("Error fetching module name:", error);
       }
@@ -63,10 +64,8 @@ export function Navbar() {
     fetchModuleName();
   }, []);
 
-  const handleLogout = () => {
-    // Lakukan proses logout di sini
-    console.log("Logout clicked");
-    navigate("/dashboard-student")
+  const handleBack = () => {
+    navigate("/list-challanges?idTopik="+idTopik);
   };
 
   return (
@@ -122,7 +121,7 @@ export function Navbar() {
 
       <a
         href="#"
-        onClick={handleLogout}
+        onClick={handleBack}
         className="flex items-center text-white hover:text-gray-300 mr-8"
       >
         <FaSignOutAlt size={18} className="mr-2" />

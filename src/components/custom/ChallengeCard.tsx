@@ -1,8 +1,10 @@
 import React from 'react';
 import { FaTrophy } from 'react-icons/fa';
 import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 interface ChallengeCardProps {
+  idTopikModul: string;
   title: string;
   level: string;
   currentPoints: number;
@@ -10,7 +12,8 @@ interface ChallengeCardProps {
   status: string;
 }
 
-const ChallengeCard: React.FC<ChallengeCardProps> = ({ title, level, currentPoints, maxPoints, status }) => {
+const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, level, currentPoints, maxPoints, status }) => {
+  const navigate = useNavigate();
   const getLevelColor = (level: string) => {
     switch (level) {
       case 'Mudah':
@@ -51,7 +54,12 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ title, level, currentPoin
         return 'Status Unknown';
     }
   };
-
+  const goToTestCasePage = () => {
+    navigate({
+      pathname: '/topikModul',
+      search: '?topikModulId='+idTopikModul,
+    });
+  };
   return (
     <Card className="mb-4 border border-blue-800 rounded">
       <CardContent className="p-4">
@@ -66,7 +74,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ title, level, currentPoin
           <div className="text-l font-semibold">
             <span className={getLevelColor(level)}>{level}</span>, Max Points : {maxPoints} XP
           </div>
-          <button className={`px-4 py-2 font-bold rounded ${getButtonStyle(status)}`}>
+          <button onClick={goToTestCasePage} className={`px-4 py-2 font-bold rounded ${getButtonStyle(status)}`}>
             {getButtonLabel(status)}
           </button>
         </div>
