@@ -26,13 +26,13 @@ const CreateTestCasePage: React.FC = () => {
   return (
     <Layout>
       <Menu />
-      <div className="flex flex-col w-screen">
+      <div className="flex flex-col w-screen min-h-screen">
         <ResizablePanelGroup
           direction="horizontal"
           className="flex-grow"
         >
           <ResizablePanel defaultSize={50}>
-            <div className="flex flex-col overflow-auto">
+            <div className="flex flex-col h-full">
               <ModuleSpecificationCard />
             </div>
           </ResizablePanel>

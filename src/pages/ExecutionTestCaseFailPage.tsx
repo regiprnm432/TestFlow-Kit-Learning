@@ -73,7 +73,7 @@ const ExecutionTestCaseFailPage: React.FC = () => {
     <>
       <Layout>
         <Menu />
-        <div className="flex flex-col w-screen">
+        <div className="flex flex-col w-screen min-h-screen">
           <ResizablePanelGroup
             direction="horizontal"
             className="w-full rounded-lg border flex-grow"
@@ -95,9 +95,7 @@ const ExecutionTestCaseFailPage: React.FC = () => {
                   showCodeCoverage={showCodeCoverage}
                   codeCoveragePercentage={codeCoveragePercentage}
                 />
-                <div className="flex-grow">
-                  <AddTestCaseCard />
-                </div>
+                <AddTestCaseCard />
                 <div className="mt-6 w-full">
                   <FailCard
                     percentageCoverage={navigationData?.coverage_score || 0}

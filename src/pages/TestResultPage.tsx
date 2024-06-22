@@ -112,7 +112,7 @@ const TestResultPage = () => {
     return (
         <Layout>
         <Menu />
-        <div className="flex flex-grow w-screen">
+        <div className="flex flex-col w-screen min-h-screen">
             <ResizablePanelGroup
             direction="horizontal"
             className="w-full rounded-lg border flex-grow"
@@ -123,7 +123,7 @@ const TestResultPage = () => {
                 </div>
             </ResizablePanel>
             <ResizablePanel defaultSize={50}>
-                <div className="flex flex-col h-full items-center pl-4 pr-4 gap-4" style={{ overflowY: 'auto' }}>
+                <div className="flex flex-col overflow-auto pr-4 pl-4 pb-4 gap-4">
                   <CFGCard 
                     showCyclomaticComplexity={showCyclomaticComplexity}
                     cyclomaticComplexityValue={cyclomaticComplexityValue}
@@ -131,16 +131,16 @@ const TestResultPage = () => {
                     codeCoveragePercentage={dataTestResult.coverageScore}
                   />
                   <TestResultCard dataResultTest = {dataTestResult}/>
-                  <div className="space-x-2 items-center justify-end">
+                  <div className="flex justify-end space-x-2 items-center pr-4">
                       <Button
                           variant="outline"
-                          className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
+                          className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10px] hover:bg-blue-800 hover:text-white"
                           onClick={handleCoverageTestReport}
                       >
                           Coverage Test
                       </Button>
                       <Button
-                          className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
+                          className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[10px] pt-0 pb-0"
                           onClick={handleTestReport}
                       >
                           Test Report
