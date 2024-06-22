@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   FaTachometerAlt,
   FaTrophy,
-  FaClipboard,
+  // FaClipboard,
   FaAngleLeft,
   FaAngleRight,
   FaSignOutAlt,
@@ -55,9 +55,9 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
           <ul className="w-full">
             {[
               { path: "/dashboard-student", icon: FaTachometerAlt, label: "Dashboard" },
-              { path: "/access-topics", icon: FaClipboard, label: "Topik Pengujian" },
+              // { path: "/access-topics", icon: FaClipboard, label: "Topik Pengujian" },
               { path: "/challenge", icon: FaTrophy, label: "Tantangan" },
-              { path: "/list-challanges", icon: FaTrophy, label: "Tantangan {List}" }
+              // { path: "/list-challanges", icon: FaTrophy, label: "Tantangan {List}" }
             ].map((item) => (
               <li
                 key={item.path}
