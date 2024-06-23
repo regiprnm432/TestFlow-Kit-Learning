@@ -36,6 +36,7 @@ const AddStudentDataForm = ({
 }: AddStudentFormProps) => {
 
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
     const form = useForm<FormData>({
         mode: "onBlur",
     });
@@ -53,7 +54,7 @@ const AddStudentDataForm = ({
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
             <Button className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700">
-            <FaPlus className="mr-2" />Tambah
+                <FaPlus className="mr-2" />Tambah
             </Button>
         </DialogTrigger>
         <DialogContent className="bg-white p-10 rounded-lg shadow-lg max-w-2xl mx-auto">

@@ -65,6 +65,7 @@ const SidebarStudent: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               { path: "/dashboard-student", icon: FaTachometerAlt, label: "Dashboard" },
               { path: "/access-topics", icon: FaClipboard, label: "Topik Pengujian" },
               { path: "/challenge", icon: FaTrophy, label: "Tantangan" },
+              { path: "/list-challanges", icon: FaTrophy, label: "Tantangan {List}" }
             ].map((item) => (
               <li
                 key={item.path}

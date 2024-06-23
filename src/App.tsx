@@ -11,6 +11,7 @@ import DashboardStudentPage from "./pages/DashboardStudentPage";
 import ErrorPage from "./pages/ErrorSessionPage";
 import ListTopicsPage from "./pages/ListTopicsPage";
 import ListModulesPage from "./pages/ListModulesPage";
+import ListChallengesPage from "./pages/ListChallangesPage";
 import AccessTopicsPage from "./pages/AccessTopicsPage";
 import GradeStudentPage from "./pages/GradeStudentPage";
 import StudentPage from "./pages/StudentPage";
@@ -31,6 +32,7 @@ function App() {
         <Route path="/error" element={<ErrorPage />} />
         <Route path="/list-topics" element={<ListTopicsPage />} />
         <Route path="/list-modules" element={<ListModulesPage />} />
+        <Route path="/list-challanges" element={<ListChallengesPage />}/>
         <Route path="/challenge" element={<AccessTopicsPage />} />
         <Route path="/grade" element={<GradeStudentPage />} />
         <Route path="/data-mahasiswa" element={<StudentPage />} />
