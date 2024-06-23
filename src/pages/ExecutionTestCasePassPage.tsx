@@ -107,9 +107,7 @@ const ExecutionTestCasePassPage: React.FC = () => {
                   showCodeCoverage={showCodeCoverage}
                   codeCoveragePercentage={codeCoveragePercentage}
                 />
-             <div className="flex-grow">
-                <AddTestCaseCard />
-              </div>
+              <AddTestCaseCard />
               <div className="mt-6 w-full">
                 <PassCard
                   percentageCoverage={navigationData?.coverage_score || 0}

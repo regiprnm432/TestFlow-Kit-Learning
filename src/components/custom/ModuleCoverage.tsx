@@ -147,7 +147,7 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
               <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
               <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
               
-              <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
+              <h4 className="text-base font-bold mb-1 text-gray-800">Code Coverage</h4>
               <div className="text-sm p-4 rounded-lg">
                 <iframe src={linkReportSourceCoverage} width={1000} height={500}>
                 </iframe>
@@ -166,7 +166,7 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
               <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
               <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
               
-              <h4 className="text-base font-bold mb-1 text-gray-800">Kode Program</h4>
+              <h4 className="text-base font-bold mb-1 text-gray-800">Code Coverage</h4>
               <div className="text-sm p-4 rounded-lg">
                 <CopyBlock
                   language="java"

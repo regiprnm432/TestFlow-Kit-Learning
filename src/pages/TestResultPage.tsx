@@ -112,7 +112,7 @@ const TestResultPage = () => {
     return (
         <Layout>
         <Menu />
-        <div className="flex flex-grow w-screen">
+        <div className="flex flex-col w-screen">
             <ResizablePanelGroup
             direction="horizontal"
             className="w-full rounded-lg border flex-grow"
