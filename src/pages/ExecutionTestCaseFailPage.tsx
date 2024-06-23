@@ -73,7 +73,7 @@ const ExecutionTestCaseFailPage: React.FC = () => {
     <>
       <Layout>
         <Menu />
-        <div className="flex flex-col w-screen">
+        <div className="flex flex-col w-screen min-h-screen">
           <ResizablePanelGroup
             direction="horizontal"
             className="w-full rounded-lg border flex-grow"

@@ -112,7 +112,7 @@ const TestResultPage = () => {
     return (
         <Layout>
         <Menu />
-        <div className="flex flex-col w-screen">
+        <div className="flex flex-col w-screen min-h-screen">
             <ResizablePanelGroup
             direction="horizontal"
             className="w-full rounded-lg border flex-grow"
@@ -140,7 +140,7 @@ const TestResultPage = () => {
                           Coverage Test
                       </Button>
                       <Button
-                          className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[20px] pt-0 pb-0"
+                          className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[10px] pt-0 pb-0"
                           onClick={handleTestReport}
                       >
                           Test Report
