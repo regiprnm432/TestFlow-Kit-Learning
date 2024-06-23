@@ -26,7 +26,7 @@ const CreateTestCasePage: React.FC = () => {
   return (
     <Layout>
       <Menu />
-      <div className="flex flex-col w-screen h-screen">
+      <div className="flex flex-col w-screen">
         <ResizablePanelGroup
           direction="horizontal"
           className="flex-grow"
