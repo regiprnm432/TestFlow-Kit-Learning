@@ -98,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               <FaUserGraduate size={16} />
               {isOpen && <span className="ml-2">Grade Siswa</span>}
             </li>
-            <li
+            {/* <li
               className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
                 activeItem === "/materi"
                   ? "bg-white text-blue-800"
@@ -108,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
             >
               <FaChalkboardTeacher size={16} />
               {isOpen && <span className="ml-2">Materi Belajar</span>}
-            </li>
+            </li> */}
             <li
               className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
                 activeItem === "/data-mahasiswa"
