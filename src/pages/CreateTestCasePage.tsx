@@ -32,7 +32,7 @@ const CreateTestCasePage: React.FC = () => {
           className="flex-grow"
         >
           <ResizablePanel defaultSize={50}>
-            <div className="flex flex-col overflow-auto">
+            <div className="flex flex-col h-full">
               <ModuleSpecificationCard />
             </div>
           </ResizablePanel>

@@ -140,8 +140,8 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
   }
   if (dataResultTest.totalTestCase == dataResultTest.totalPassTestCase){
     return (
-      <div className="p-6 bg-white rounded-lg shadow-lg h-screen">
-        <div className="max-h-[80vh] overflow-y-auto">
+      <div className="p-6 bg-white rounded-lg shadow-lg h-full">
+        <div className="overflow-y-auto">
           {dataModule.data_modul && dataModule.data_parameter_modul && (
             <>
               <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
@@ -159,8 +159,8 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
     );
   }else{
     return (
-      <div className="p-6 bg-white rounded-lg shadow-lg h-screen">
-        <div className="max-h-[80vh] overflow-y-auto">
+      <div className="p-6 bg-white rounded-lg shadow-lg h-full">
+        <div className="overflow-y-auto">
           {dataModule.data_modul && dataModule.data_parameter_modul && (
             <>
               <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
