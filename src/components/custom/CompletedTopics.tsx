@@ -2,7 +2,7 @@ import React from 'react';
 import logo_skor from "../../assets/logo/skor.png";
 
 interface CompletedTopic {
-  id: number;
+  id: string;
   title: string;
   xp: number;
 }
