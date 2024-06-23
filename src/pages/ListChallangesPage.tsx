@@ -71,12 +71,12 @@ const ListChallengesPage: React.FC = () => {
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen bg-gray-200 min-h-screen">
       <SidebarStudent isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
-        <div className="bg-white p-4 shadow h-full overflow-auto">
+        <div className="bg-white p-5 shadow h-full overflow-auto">
           <div className="sticky top-0 bg-white z-10 pb-4">
             <div className="flex justify-between items-center mb-4 mt-4">
               <h1 className="text-xl font-bold text-blue-800">Belajar Kemampuan Pembuatan Test Case Unit</h1>
             </div>
-            <div className="flex flex-col lg:flex-row bg-white p-4 mb-4">
+            <div className="flex flex-col lg:flex-row bg-white p-4 mb-4 mx-8">
               <div className="flex flex-col lg:w-1/2">
                 <h2 className="text-xl font-bold text-blue-800">Pemula</h2>
                 <div className="text-green-600 text-xl font-bold">{currentXP} / {maxXP} XP</div>
@@ -97,7 +97,7 @@ const ListChallengesPage: React.FC = () => {
               </div>
             </div>
             <Separator className="my-4"/>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 ml-10">
               <div className="flex-1 overflow-y-auto">
                 <div className="grid grid-cols-1 gap-4">
                   {filteredChallenges.length > 0 ? (

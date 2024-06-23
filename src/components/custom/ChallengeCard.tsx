@@ -57,13 +57,13 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ title, level, currentPoin
       <CardContent className="p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-bold text-blue-600">{title}</h3>
-          <div className="text-sm text-blue-600 flex items-center">
+          <div className="text-l text-blue-600 flex items-center">
             <FaTrophy className="mr-1" />
             <span>{currentPoints}/{maxPoints} XP</span>
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <div className="text-sm font-semibold">
+          <div className="text-l font-semibold">
             <span className={getLevelColor(level)}>{level}</span>, Max Points : {maxPoints} XP
           </div>
           <button className={`px-4 py-2 font-bold rounded ${getButtonStyle(status)}`}>
