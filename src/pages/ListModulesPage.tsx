@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import Sidebar from "../components/custom/Sidebar";
 import Pagination from "@/components/custom/Pagination";
 import ModulesTable from "../components/custom/ModuleTable";
 import ConfirmationModal from "../components/custom/ConfirmationModal";
+import { useNavigate } from "react-router-dom";
 
 // Interface for module object
 export interface Module {
-  id: number;
+  id: string;
   name: string;
   type: string;
   difficulty: number; // 1: Sangat Mudah, 2: Mudah, 3: Sedang, 4: Sulit
@@ -15,44 +16,128 @@ export interface Module {
 
 // Array of modules
 const initialModules: Module[] = [
-  { id: 1, name: "Pengurangan", type: "Fungsi", difficulty: 1 },
-  { id: 2, name: "Penambahan", type: "Fungsi", difficulty: 2 },
-  { id: 3, name: "Perkalian", type: "Fungsi", difficulty: 3 },
-  { id: 4, name: "Pembagian", type: "Fungsi", difficulty: 4 },
-  { id: 5, name: "Pengurangan", type: "Fungsi", difficulty: 1 },
-  { id: 6, name: "Penambahan", type: "Fungsi", difficulty: 2 },
-  { id: 7, name: "Perkalian", type: "Fungsi", difficulty: 3 },
-  { id: 8, name: "Pembagian", type: "Fungsi", difficulty: 4 },
-  { id: 9, name: "Pengurangan", type: "Fungsi", difficulty: 1 },
-  { id: 10, name: "Penambahan", type: "Fungsi", difficulty: 2 },
-  { id: 11, name: "Perkalian", type: "Fungsi", difficulty: 3 },
+  // { id: '1', name: "Pengurangan", type: "Fungsi", difficulty: 1 },
+  // { id: '2', name: "Penambahan", type: "Fungsi", difficulty: 2 },
+  // { id: '3', name: "Perkalian", type: "Fungsi", difficulty: 3 },
+  // { id: '4', name: "Pembagian", type: "Fungsi", difficulty: 4 },
+  // { id: '5', name: "Pengurangan", type: "Fungsi", difficulty: 1 },
+  // { id: '6', name: "Penambahan", type: "Fungsi", difficulty: 2 },
+  // { id: '7', name: "Perkalian", type: "Fungsi", difficulty: 3 },
+  // { id: '8', name: "Pembagian", type: "Fungsi", difficulty: 4 },
+  // { id: '9', name: "Pengurangan", type: "Fungsi", difficulty: 1 },
+  // { id: '10', name: "Penambahan", type: "Fungsi", difficulty: 2 },
+  // { id: '11', name: "Perkalian", type: "Fungsi", difficulty: 3 },
 ];
 
 const ListModulesPage = () => {
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Number of items per page
   const [modules, setModules] = useState(initialModules);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null);
   const [deleteMessage, setDeleteMessage] = useState<string | null>(null);
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(null);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
-  const totalPages = Math.ceil(modules.length / itemsPerPage);
+ 
+  const fetchDataModul = async (page:number, keyword:string) => {
+    setCurrentPage(page);
+    setSearchTerm(keyword);
+    try {
+      const response = await fetch(`${apiUrl}/modul/search?keyword=${keyword}&page=${page}&limit=${itemsPerPage}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      
+      const data = await response.json();
+      let tempModules = [];
+      for (let i = 0; i < data.data.length; i++) {
+        tempModules.push(
+            { id: data.data[i].ms_id_modul, 
+              name: data.data[i].ms_nama_modul, 
+              type: data.data[i].jenis_modul, 
+              difficulty: parseInt(data.data[i].ms_tingkat_kesulitan), 
+            }
+          )
+      }
+      setModules(tempModules)
+      setTotalPages(data.max_page)
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  const deleteDataModul = async (id:string) => {
+    try {
+      let param = {
+        id_modul: id
+      }
+      const response = await fetch(`${apiUrl}/modul/delete`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body:JSON.stringify(param)
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
+        } else if (response.status === 500) {
+          const data = await response.json();
+          setDeleteErrorMessage(`${data.message}`);
+          setTimeout(() => setDeleteErrorMessage(null), 2000);
+        } else {
+          setDeleteErrorMessage(`HTTP error! status: ${response.status}`);
+          setTimeout(() => setDeleteErrorMessage(null), 2000);
+        }
+      }else{
+        setDeleteMessage("Modul berhasil dihapus.");
+        setTimeout(() => setDeleteMessage(null), 2000);
+        fetchDataModul(currentPage, searchTerm);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    // setCurrentPage(pageNumber);
+    fetchDataModul(pageNumber, searchTerm)
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleDelete = (id: number) => {
-    setModules((prevModules) => prevModules.filter((module) => module.id !== id));
-    setDeleteMessage("Modul berhasil dihapus.");
+  const handleDelete = (id: string) => {
+    deleteDataModul(id)
     closeModal();
-    setTimeout(() => setDeleteMessage(null), 2000);
   };
 
   const openModal = (module: Module) => {
@@ -66,23 +151,24 @@ const ListModulesPage = () => {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1); 
+    fetchDataModul(1,e.target.value);
   };
 
-  const filteredModules = modules.filter(
-    (module) =>
-      module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      module.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      getDifficultyString(module.difficulty)
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-  );
+  // const filteredModules = modules.filter(
+  //   (module) =>
+  //     module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     module.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     getDifficultyString(module.difficulty)
+  //       .toLowerCase()
+  //       .includes(searchTerm.toLowerCase())
+  // );
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredModules.slice(indexOfFirstItem, indexOfLastItem);
-
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentItems = filteredModules.slice(indexOfFirstItem, indexOfLastItem);
+  useEffect(() => {
+    fetchDataModul(1,searchTerm)
+  }, []);
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -120,13 +206,18 @@ const ListModulesPage = () => {
                 {deleteMessage}
               </div>
             )}
-            {filteredModules.length === 0 ? (
+            {deleteErrorMessage && (
+              <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md">
+                {deleteErrorMessage}
+              </div>
+            )}
+            {modules.length === 0 ? (
               <div className="p-4 text-center text-red-500">
                 Data tidak ditemukan
               </div>
             ) : (
               <>
-                <ModulesTable modules={currentItems} onDelete={openModal} />
+                <ModulesTable modules={modules} onDelete={openModal} />
                 <div className="flex justify-center items-center py-4" style={{ fontSize: "14px" }}>
                   <Pagination
                     currentPage={currentPage}
@@ -150,19 +241,19 @@ const ListModulesPage = () => {
   );
 };
 
-const getDifficultyString = (difficulty: number): string => {
-  switch (difficulty) {
-    case 1:
-      return "Sangat Mudah";
-    case 2:
-      return "Mudah";
-    case 3:
-      return "Sedang";
-    case 4:
-      return "Sulit";
-    default:
-      return "";
-  }
-};
+// const getDifficultyString = (difficulty: number): string => {
+//   switch (difficulty) {
+//     case 1:
+//       return "Sangat Mudah";
+//     case 2:
+//       return "Mudah";
+//     case 3:
+//       return "Sedang";
+//     case 4:
+//       return "Sulit";
+//     default:
+//       return "";
+//   }
+// };
 
 export default ListModulesPage;
