@@ -5,7 +5,7 @@ import {
   FaBook,
   FaClipboard,
   FaUserGraduate,
-  FaChalkboardTeacher,
+  // FaChalkboardTeacher,
   FaDatabase,
   FaAngleLeft,
   FaAngleRight,
