@@ -34,33 +34,34 @@ export function Navbar() {
   const [moduleName, setModuleName] = useState("");
   const [idTopik, setIdTopik] = useState("");
   const linkTopikModul = "/topikModul?topikModulId="+modulId
-  useEffect(() => {
-    const fetchModuleName = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-        });
 
-        if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error("Forbidden: Access is denied");
-          } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
+  const fetchModuleName = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const data = await response.json();
-        setModuleName(data.data.data_modul.ms_nama_modul); // Assuming the API response has a `name` field
-        setIdTopik(data.id_topik)
-      } catch (error) {
-        console.error("Error fetching module name:", error);
       }
-    };
 
+      const data = await response.json();
+      setModuleName(data.data.data_modul.ms_nama_modul); // Assuming the API response has a `name` field
+      setIdTopik(data.id_topik)
+    } catch (error) {
+      console.error("Error fetching module name:", error);
+    }
+  };
+  
+  useEffect(() => {
     fetchModuleName();
   }, []);
 

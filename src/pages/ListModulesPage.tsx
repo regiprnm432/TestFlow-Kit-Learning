@@ -169,6 +169,13 @@ const ListModulesPage = () => {
   useEffect(() => {
     fetchDataModul(1,searchTerm)
   }, []);
+
+  const addModul = () => {
+    navigate("/module")
+  };
+  const editModul = (module: Module) => {
+    navigate("/module?idModul="+module.id)
+  };
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -192,6 +199,7 @@ const ListModulesPage = () => {
               <button
                 className="mr-6 flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
                 style={{ fontSize: "14px" }}
+                onClick={addModul}
               >
                 <FaPlus className="mr-2" />
                 Tambah Modul Program
@@ -217,7 +225,7 @@ const ListModulesPage = () => {
               </div>
             ) : (
               <>
-                <ModulesTable modules={modules} onDelete={openModal} />
+                <ModulesTable modules={modules} onDelete={openModal} onEdit={editModul} />
                 <div className="flex justify-center items-center py-4" style={{ fontSize: "14px" }}>
                   <Pagination
                     currentPage={currentPage}
