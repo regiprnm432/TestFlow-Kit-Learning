@@ -189,10 +189,15 @@ const AddTestCaseCard: React.FC = () => {
     fetchTestCases();
   }, []);
 
+  // const handleEdit = (id: string) => {
+  //   setEditingTestId(id);
+  // };
+
   const handleEdit = (id: string) => {
     setEditingTestId(id);
+    setIsEditFormDialogOpen(true);
   };
-
+  
   const handleDelete = (id: string) => {
     setDeletingTestId(id);
     setIsDeleteDialogOpen(true);

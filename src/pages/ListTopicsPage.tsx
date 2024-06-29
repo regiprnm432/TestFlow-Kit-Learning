@@ -4,6 +4,7 @@ import Sidebar from '../components/custom/Sidebar';
 import Pagination from '@/components/custom/Pagination';
 import TopicTable from '../components/custom/TopicTable';
 import ConfirmationModal from '../components/custom/ConfirmationModal';
+import { useNavigate } from "react-router-dom";
 
 interface Topic {
   id: number;
@@ -120,6 +121,8 @@ const ListTopicsPage: React.FC = () => {
 
   const itemsPerPage = 5;
 
+  const navigate = useNavigate();
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -155,6 +158,10 @@ const ListTopicsPage: React.FC = () => {
   const handleDelete = (id: number) => {
     setShowConfirmation(true);
     setTopicToDelete(id);
+  };
+
+  const handleAddTopic = () => {
+    navigate('/add-topics');
   };
 
   const confirmDelete = () => {
@@ -226,7 +233,10 @@ const ListTopicsPage: React.FC = () => {
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
-              <button className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700" style={{ fontSize: '14px' }}>
+              <button 
+                className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700" style={{ fontSize: '14px' }}
+                onClick={handleAddTopic}
+              >
                 <FaPlus className="mr-2" />
                 Tambah Topik Pengujian
               </button>
