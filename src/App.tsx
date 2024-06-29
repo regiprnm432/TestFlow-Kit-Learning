@@ -15,6 +15,7 @@ import ListChallengesPage from "./pages/ListChallangesPage";
 import AccessTopicsPage from "./pages/AccessTopicsPage";
 import GradeStudentPage from "./pages/GradeStudentPage";
 import StudentPage from "./pages/StudentPage";
+import AddTopicPage from "./pages/AddTopicPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/challenge" element={<AccessTopicsPage />} />
         <Route path="/grade" element={<GradeStudentPage />} />
         <Route path="/data-mahasiswa" element={<StudentPage />} />
+        <Route path="/add-topics" element={<AddTopicPage />} />
       </Routes>
     </BrowserRouter>
   );

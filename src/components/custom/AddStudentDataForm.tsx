@@ -51,15 +51,19 @@ const AddStudentDataForm = ({
     };
 
     return (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
-            <Button className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700">
-                <FaPlus className="mr-2" />Tambah
+            <Button
+            className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
+            style={{ fontSize: "14px" }}
+            >
+            <FaPlus className="mr-2" />
+            Tambah
             </Button>
-        </DialogTrigger>
+      </DialogTrigger>
         <DialogContent className="bg-white p-10 rounded-lg shadow-lg max-w-2xl mx-auto">
             <DialogHeader>
-            <DialogTitle className="text-lg text-center font-bold mb-4">Form Tambah Data Mahasiswa</DialogTitle>
+                <DialogTitle className="text-lg text-center font-bold mb-4">Form Tambah Data Mahasiswa</DialogTitle>
             </DialogHeader>
             <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -171,7 +175,7 @@ const AddStudentDataForm = ({
             </div>
           )}
         </DialogContent>
-        </Dialog>
+      </Dialog>
     );
 };
 

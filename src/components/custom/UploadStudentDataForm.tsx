@@ -23,7 +23,7 @@ const UploadStudentDataForm = ({
       setFile(selectedFile);
       setUploadProgress(0);
       setUploadComplete(false);
-      simulateUploadProgress(); // Simulate upload progress for demonstration purposes
+      simulateUploadProgress();
     }
   };
 
