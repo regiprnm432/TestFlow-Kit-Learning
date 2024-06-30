@@ -383,7 +383,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
               rules={{ required: "Tipe data parameter harus dipilih!" }}
               render={({ field, fieldState: { error } }) => (
                 <FormItem className="w-full">
-                  <div className="flex w-full gap-4">
+                  <div className="flex w-full gap-4 items-center">
                     <FormLabel className="w-1/3">
                       Tipe Data
                       <span className="text-red-500">*</span>
@@ -418,7 +418,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
               rules={{ required: "Aturan validasi harus dipilih!" }}
               render={({ field, fieldState: { error } }) => (
                 <FormItem className="w-full">
-                  <div className="flex w-full gap-4">
+                  <div className="flex w-full gap-4 items-center">
                     <FormLabel className="w-1/3">Aturan Validasi</FormLabel>
                     <FormControl className="w-2/3">
                       <Select onValueChange={(e) => handlingRuleChange(e, index)} defaultValue={field.value}>
@@ -482,7 +482,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
               )}
           </div>
         ))}
-        <FormDescription className="text-xs text-gray-500 mt-2">*Urutan parameter dan tipe data harus sama dengan source code</FormDescription>
+        <FormDescription className="text-xs text-gray-500 mt-2 pl-5">*Urutan parameter dan tipe data harus sama dengan source code</FormDescription>
         </div>
     
         <div className="grid grid-cols-2 gap-10 pb-8">
@@ -515,7 +515,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div>
                 {error && (
-                    <p className="text-red-600 text-sm pl-52 mt-1">
+                    <p className="text-red-600 text-sm pl-48 mt-1">
                         {error.message}
                     </p>
                   )}
@@ -556,7 +556,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div>
                 {error && (
-                    <p className="text-red-600 text-sm pl-52 mt-1">
+                    <p className="text-red-600 text-sm pl-48 mt-1">
                         {error.message}
                     </p>
                   )}
@@ -591,7 +591,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div> 
                 {error && (
-                    <p className="text-red-600 text-sm pl-52 mt-1">
+                    <p className="text-red-600 text-sm pl-48 mt-1">
                         {error.message}
                     </p>
                   )}
