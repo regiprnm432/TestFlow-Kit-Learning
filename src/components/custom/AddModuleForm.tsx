@@ -269,10 +269,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     name="paramCount"
                     rules={{
                       required: "Jumlah Parameter harus diisi!",
-                      pattern: { 
-                        value: /^[0-9]+$/, 
-                        message: "Jumlah Parameter tidak sesuai!" 
-                      }
+                      pattern: { value: /^[0-9]+$/, message: "Jumlah Parameter tidak sesuai!" }
                     }}
                     render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center mt-4">
