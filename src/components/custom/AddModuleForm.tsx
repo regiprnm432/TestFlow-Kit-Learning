@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,25 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const formSchema = z.object({
-  moduleName: z.string().min(2, { message: "Nama modul harus setidaknya 2 karakter." }),
-  moduleDescription: z.string().min(5, { message: "Deskripsi modul harus setidaknya 5 karakter." }),
-  moduleType: z.string().min(1, { message: "Jenis modul harus setidaknya 1 karakter." }),
-  paramCount: z.preprocess((a) => parseInt(z.string().parse(a),0),z.number().min(0, { message: "Jumlah parameter harus 0 atau lebih." })),
-  parameters: z.array(
-    z.object({
-      paramName: z.string().min(2, { message: "Nama parameter harus setidaknya 2 karakter." }),
-      paramType: z.string().min(1, { message: "Tipe data parameter harus dipilih." }),
-      validationRule: z.string().min(1, { message: "Aturan validasi harus dipilih." }),
-    })
-  ).optional(),
-  returnType: z.string().min(1, { message: "Tipe data kembalian harus dipilih." }),
-  sourceCode: z.string().min(1, { message: "Source code harus diunggah." }),
-  className: z.string().min(2, { message: "Nama class harus setidaknya 2 karakter." }),
-  functionName: z.string().min(2, { message: "Nama fungsi harus setidaknya 2 karakter." }),
-  complexityLevel: z.string().min(1, { message: "Tingkat kesulitan harus dipilih." }),
-});
 
 interface AddModuleFormProps {
   onAddModule: (module: any, mode: string, fileSourceCode:any) => void;
@@ -190,7 +169,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
   };
 
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    mode: "onBlur",
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -235,7 +214,11 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 <FormField
                     control={form.control}
                     name="moduleName"
-                    render={({ field }) => (
+                    rules={{
+                      required: "Nama Modul harus diisi!",
+                      maxLength: { value: 50, message: "Nama Modul tidak sesuai!" }
+                    }}
+                    render={({ field, fieldState: { error } }) => (
                         <FormItem>
                             <FormLabel>
                                 Nama Modul
@@ -245,14 +228,19 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                                 <Input {...field} className="border rounded p-2 w-full bg-gray-50" />
                             </FormControl>
                             <FormDescription className="text-xs text-gray-500 mt-1">*Nama modul harus unik, belum pernah dibuat sebelumnya</FormDescription>
-                            <FormMessage />
+                            {error && (
+                              <p className="text-red-600 text-sm mt-1">
+                                {error.message}
+                                  </p>
+                            )}
                         </FormItem>
                     )}
                 />
                 <FormField
                     control={form.control}
                     name="moduleType"
-                    render={({ field }) => (
+                    rules={{ required: "Jenis modul harus dipilih!" }}
+                    render={({ field,  fieldState: { error } }) => (
                     <FormItem className="flex items-center mt-4">
                         <FormLabel className="w-1/3">Jenis Modul :</FormLabel>
                         <FormControl className="flex-1">
@@ -269,14 +257,25 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                           </SelectContent>
                         </Select>
                         </FormControl>
-                        <FormMessage />
+                        {error && (
+                          <p className="text-red-600 text-sm mt-1">
+                            {error.message}
+                          </p>
+                        )}
                     </FormItem>
                     )}
                 />
                 <FormField
                     control={form.control}
                     name="paramCount"
-                    render={({ field }) => (
+                    rules={{
+                      required: "Jumlah Parameter harus diisi!",
+                      pattern: { 
+                        value: /^[0-9]+$/, 
+                        message: "Jumlah Parameter tidak sesuai!" 
+                      }
+                    }}
+                    render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center mt-4">
                         <FormLabel className="w-1/3">
                             Jumlah Parameter 
@@ -291,9 +290,13 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                                 className="border rounded p-2 w-32 bg-gray-50"
                             />
                             <FormDescription className="text-xs text-gray-500 mt-1">*Jumlah parameter minimal 1</FormDescription>
+                            {error && (
+                              <p className="text-red-600 text-sm mt-1">
+                                {error.message}
+                              </p>
+                            )}
                         </div>
                         </FormControl>
-                        <FormMessage />
                     </FormItem>
                     )}
                 />
@@ -302,13 +305,21 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 <FormField
                     control={form.control}
                     name="moduleDescription"
-                    render={({ field }) => (
+                    rules={{
+                      required: "Deskripsi Modul harus diisi!",
+                      maxLength: { value: 100, message: "Deskripsi Modul tidak sesuai!" }
+                    }}
+                    render={({ field, fieldState: { error } }) => (
                         <FormItem className="flex-grow">
                             <FormLabel>Deskripsi Modul</FormLabel>
                             <FormControl className="h-full">
                                 <Input {...field} className="border rounded p-2 w-full h-full bg-gray-50" />
                             </FormControl>
-                            <FormMessage />
+                            {error && (
+                              <p className="text-red-600 text-sm mt-1">
+                                {error.message}
+                              </p>
+                            )}
                         </FormItem>
                     )}
                 />
@@ -320,8 +331,13 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
             <FormField
               control={form.control}
               name={`parameters.${index}.paramName`}
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-2 flex-1">
+              rules={{
+                required: "Nama Parameter harus diisi!",
+                minLength: { value: 2, message: "Nama Parameter harus setidaknya 2 karakter." }
+              }}
+              render={({ field, fieldState: { error }  }) => (
+                <FormItem>
+                  <div className="flex items-center gap-2 flex-1">
                   <FormLabel className="w-1/3">
                     Nama Parameter
                     <span className="text-red-500">*</span>
@@ -330,15 +346,22 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                   <FormControl className="w-2/3">
                     <Input {...field} className="border rounded p-2 w-full bg-white" />
                   </FormControl>
-                  <FormMessage />
+                  </div>
+                  {error && (
+                    <p className="text-red-600 text-sm mt-1">
+                        {error.message}
+                    </p>
+                  )}
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
               name={`parameters.${index}.paramType`}
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-2 flex-1">
+              rules={{ required: "Tipe data parameter harus dipilih!" }}
+              render={({ field, fieldState: { error } }) => (
+                <FormItem>
+                  <div className="flex items-center gap-2 flex-1">
                   <FormLabel className="w-1/3">
                     Tipe Data
                     <span className="text-red-500">*</span>
@@ -358,7 +381,12 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  <FormMessage />
+                  </div>
+                  {error && (
+                    <p className="text-red-600 text-sm mt-1">
+                        {error.message}
+                    </p>
+                  )}
                 </FormItem>
               )}
             />
@@ -396,8 +424,10 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
             <FormField
             control={form.control}
             name="returnType"
-            render={({ field }) => (
-                <FormItem className="flex items-center space-x-4">
+            rules={{ required: "Tipe data kembalian harus diisi!" }}
+            render={({ field, fieldState: { error } }) => (
+                <FormItem>
+                <div className="flex items-center space-x-4">
                 <FormLabel className="w-1/3">
                     Tipe Data Kembalian
                     <span className="text-red-500">*</span>
@@ -405,7 +435,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                  </FormLabel>
                 <FormControl className="w-auto flex-1">
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <SelectTrigger className="w-32 bg-gray-50"> {/* Gunakan w-32 untuk mengecilkan */}
+                    <SelectTrigger className="w-32 bg-gray-50"> 
                         <SelectValue placeholder="Pilih" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -417,13 +447,29 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     </SelectContent>
                     </Select>
                 </FormControl>
-                <FormMessage />
+                </div>
+                {error && (
+                    <p className="text-red-600 text-sm mt-1">
+                        {error.message}
+                    </p>
+                  )}
                 </FormItem>
             )}
             />
             <FormField
             control={form.control}
             name="sourceCode"
+            rules={{
+              required: "Source code harus diunggah!",
+              // validate: {
+              //   fileSize: () => {
+              //     if (fileSourceCode && fileSourceCode.size > 2097152) {
+              //       return "Ukuran maksimal file adalah 2 MB!";
+              //     }
+              //     return true;
+              //   }
+              // }
+            }}
             render={({ field }) => (
                 <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-1/3">
@@ -448,7 +494,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
             <FormField
             control={form.control}
             name="complexityLevel"
-            render={({ field }) => (
+            render={({ field, fieldState: {error} }) => (
                 <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-1/3">
                     Tingkat Kesulitan
@@ -469,7 +515,11 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     </SelectContent>
                     </Select>
                 </FormControl>
-                <FormMessage />
+                {error && (
+                    <p className="text-red-600 text-sm mt-1">
+                        {error.message}
+                    </p>
+                  )}
                 </FormItem>
             )}
             />
@@ -478,7 +528,14 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
             <FormField
             control={form.control}
             name="className"
-            render={({ field }) => (
+            rules={{
+              required: "Nama Class harus diisi!",
+              pattern: {
+                value: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
+                message: "Nama Class Tidak sesuai!"
+              }
+            }}
+            render={({ field, fieldState: {error} }) => (
                 <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-1/3">
                     Nama Class
@@ -489,16 +546,27 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     <div>
                         <Input {...field} className="border rounded p-2 w-full bg-gray-50" />
                         <FormDescription className="text-xs text-gray-500 mt-1">*Nama Class harus sama dengan yang ada pada source code & mengikuti standar coding convention</FormDescription>
+                        {error && (
+                          <p className="text-red-600 text-sm mt-1">
+                              {error.message}
+                          </p>
+                        )}
                     </div>
                 </FormControl>
-                <FormMessage />
                 </FormItem>
             )}
             />
             <FormField
             control={form.control}
             name="functionName"
-            render={({ field }) => (
+            rules={{
+              required: "Nama fungsi harus diisi!",
+              pattern: {
+                value: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
+                message: "Nama fungsi Tidak sesuai!"
+              }
+            }}
+            render={({ field, fieldState:{error} }) => (
                 <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-1/3">
                     Nama Fungsi
@@ -509,9 +577,13 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     <div>
                         <Input {...field} className="border rounded p-2 w-full bg-gray-50" />
                         <FormDescription className="text-xs text-gray-500 mt-1">*Nama Fungsi harus sama dengan yang ada pada source code & mengikuti standar coding convention</FormDescription>
+                        {error && (
+                          <p className="text-red-600 text-sm mt-1">
+                              {error.message}
+                          </p>
+                        )}
                     </div>
                 </FormControl>
-                <FormMessage />
                 </FormItem>
             )}
             />
