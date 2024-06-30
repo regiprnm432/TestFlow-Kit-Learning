@@ -515,7 +515,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div>
                 {error && (
-                    <p className="text-red-600 text-sm pl-48 mt-1">
+                    <p className="text-red-600 text-sm pl-52 mt-1">
                         {error.message}
                     </p>
                   )}
@@ -556,7 +556,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div>
                 {error && (
-                    <p className="text-red-600 text-sm pl-48 mt-1">
+                    <p className="text-red-600 text-sm pl-52 mt-1">
                         {error.message}
                     </p>
                   )}
@@ -591,7 +591,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div> 
                 {error && (
-                    <p className="text-red-600 text-sm pl-48 mt-1">
+                    <p className="text-red-600 text-sm pl-52 mt-1">
                         {error.message}
                     </p>
                   )}
