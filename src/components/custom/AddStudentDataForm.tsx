@@ -82,12 +82,18 @@ const AddStudentDataForm = ({
                                     rules={{ required: "NIM Mahasiswa harus terisi" }}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormItem>
-                                            <FormLabel>Nim</FormLabel>
+                                           <div className="flex items-center">
+                                            <FormLabel className="w-1/6 flex items-center space-x-2">
+                                              <span>Nim</span> 
+                                              <span className="text-red-500">*</span>
+                                              <span>:</span>
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
                                             </FormControl>
+                                            </div>
                                             {error && (
-                                                <p className="text-red-600 text-sm mt-1">
+                                                <p className="text-red-600 pl-20 text-sm mt-1">
                                                     {error.message}
                                                 </p>
                                             )}
@@ -100,12 +106,18 @@ const AddStudentDataForm = ({
                                     rules={{ required: "Nama Mahasiswa harus terisi" }}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormItem>
-                                            <FormLabel>Nama</FormLabel>
+                                          <div className="flex items-center">
+                                            <FormLabel className="w-1/6 flex items-center space-x-2">
+                                              <span>Nama</span> 
+                                              <span className="text-red-500">*</span>
+                                              <span>:</span>
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
                                             </FormControl>
+                                          </div>
                                             {error && (
-                                                <p className="text-red-600 text-sm mt-1">
+                                                <p className="text-red-600 pl-20 text-sm mt-1">
                                                     {error.message}
                                                 </p>
                                             )}
@@ -118,12 +130,18 @@ const AddStudentDataForm = ({
                                     rules={{ required: "Kelas Mahasiswa harus terisi" }}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormItem>
-                                            <FormLabel>Kelas</FormLabel>
+                                          <div className='flex items-center'>
+                                            <FormLabel className="w-1/6 flex items-center space-x-2">
+                                              <span>Kelas</span> 
+                                              <span className="text-red-500">*</span>
+                                              <span>:</span>
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
                                             </FormControl>
+                                            </div>
                                             {error && (
-                                                <p className="text-red-600 text-sm mt-1">
+                                                <p className="text-red-600 pl-20 text-sm mt-1">
                                                     {error.message}
                                                 </p>
                                             )}
@@ -136,12 +154,18 @@ const AddStudentDataForm = ({
                                     rules={{ required: "Prodi Mahasiswa harus terisi" }}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormItem>
-                                            <FormLabel>Prodi</FormLabel>
+                                          <div className='flex items-center'>
+                                            <FormLabel className="w-1/6 flex items-center space-x-2">
+                                              <span>Prodi</span> 
+                                              <span className="text-red-500">*</span>
+                                              <span>:</span>
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
                                             </FormControl>
+                                            </div>
                                             {error && (
-                                                <p className="text-red-600 text-sm mt-1">
+                                                <p className="text-red-600 pl-20 text-sm mt-1">
                                                     {error.message}
                                                 </p>
                                             )}
