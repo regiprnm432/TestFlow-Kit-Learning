@@ -79,18 +79,24 @@ const AddStudentDataForm = ({
                                 <FormField
                                     control={form.control}
                                     name="nim"
-                                    rules={{ required: "NIM Mahasiswa harus terisi" }}
+                                    rules={{
+                                        required: "NIM harus diisi!",
+                                        pattern: {
+                                            value: /^[0-9]{9}$/,
+                                            message: "Format NIM tidak sesuai!"
+                                        }
+                                    }}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormItem>
-                                           <div className="flex items-center">
-                                            <FormLabel className="w-1/6 flex items-center space-x-2">
-                                              <span>Nim</span> 
-                                              <span className="text-red-500">*</span>
-                                              <span>:</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
-                                            </FormControl>
+                                            <div className="flex items-center">
+                                                <FormLabel className="w-1/6 flex items-center space-x-2">
+                                                    <span>Nim</span> 
+                                                    <span className="text-red-500">*</span>
+                                                    <span>:</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
+                                                </FormControl>
                                             </div>
                                             {error && (
                                                 <p className="text-red-600 pl-20 text-sm mt-1">
@@ -103,19 +109,25 @@ const AddStudentDataForm = ({
                                 <FormField
                                     control={form.control}
                                     name="nama"
-                                    rules={{ required: "Nama Mahasiswa harus terisi" }}
+                                    rules={{
+                                        required: "Nama harus diisi!",
+                                        pattern: {
+                                            value: /^[a-zA-Z\s]{1,50}$/,
+                                            message: "Nama tidak sesuai!"
+                                        }
+                                    }}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormItem>
-                                          <div className="flex items-center">
-                                            <FormLabel className="w-1/6 flex items-center space-x-2">
-                                              <span>Nama</span> 
-                                              <span className="text-red-500">*</span>
-                                              <span>:</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
-                                            </FormControl>
-                                          </div>
+                                            <div className="flex items-center">
+                                                <FormLabel className="w-1/6 flex items-center space-x-2">
+                                                    <span>Nama</span> 
+                                                    <span className="text-red-500">*</span>
+                                                    <span>:</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
+                                                </FormControl>
+                                            </div>
                                             {error && (
                                                 <p className="text-red-600 pl-20 text-sm mt-1">
                                                     {error.message}
@@ -127,18 +139,24 @@ const AddStudentDataForm = ({
                                 <FormField
                                     control={form.control}
                                     name="kelas"
-                                    rules={{ required: "Kelas Mahasiswa harus terisi" }}
+                                    rules={{
+                                        required: "Kelas harus diisi!",
+                                        pattern: {
+                                            value: /^[A-Z]$/,
+                                            message: "Kelas tidak sesuai!"
+                                        }
+                                    }}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormItem>
-                                          <div className='flex items-center'>
-                                            <FormLabel className="w-1/6 flex items-center space-x-2">
-                                              <span>Kelas</span> 
-                                              <span className="text-red-500">*</span>
-                                              <span>:</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
-                                            </FormControl>
+                                            <div className='flex items-center'>
+                                                <FormLabel className="w-1/6 flex items-center space-x-2">
+                                                    <span>Kelas</span> 
+                                                    <span className="text-red-500">*</span>
+                                                    <span>:</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
+                                                </FormControl>
                                             </div>
                                             {error && (
                                                 <p className="text-red-600 pl-20 text-sm mt-1">
@@ -151,18 +169,18 @@ const AddStudentDataForm = ({
                                 <FormField
                                     control={form.control}
                                     name="prodi"
-                                    rules={{ required: "Prodi Mahasiswa harus terisi" }}
+                                    rules={{ required: "Prodi harus diisi!" }}
                                     render={({ field, fieldState: { error } }) => (
                                         <FormItem>
-                                          <div className='flex items-center'>
-                                            <FormLabel className="w-1/6 flex items-center space-x-2">
-                                              <span>Prodi</span> 
-                                              <span className="text-red-500">*</span>
-                                              <span>:</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
-                                            </FormControl>
+                                            <div className='flex items-center'>
+                                                <FormLabel className="w-1/6 flex items-center space-x-2">
+                                                    <span>Prodi</span> 
+                                                    <span className="text-red-500">*</span>
+                                                    <span>:</span>
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} className="mt-1 block w-full rounded border-gray-300 bg-gray-50 shadow-sm" />
+                                                </FormControl>
                                             </div>
                                             {error && (
                                                 <p className="text-red-600 pl-20 text-sm mt-1">
