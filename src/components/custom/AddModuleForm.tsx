@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
@@ -26,8 +26,8 @@ import {
 const formSchema = z.object({
   moduleName: z.string().min(2, { message: "Nama modul harus setidaknya 2 karakter." }),
   moduleDescription: z.string().min(5, { message: "Deskripsi modul harus setidaknya 5 karakter." }),
-  moduleType: z.string().min(2, { message: "Jenis modul harus setidaknya 2 karakter." }),
-  paramCount: z.number().min(0, { message: "Jumlah parameter harus 0 atau lebih." }),
+  moduleType: z.string().min(1, { message: "Jenis modul harus setidaknya 1 karakter." }),
+  paramCount: z.preprocess((a) => parseInt(z.string().parse(a),0),z.number().min(0, { message: "Jumlah parameter harus 0 atau lebih." })),
   parameters: z.array(
     z.object({
       paramName: z.string().min(2, { message: "Nama parameter harus setidaknya 2 karakter." }),
@@ -43,10 +43,152 @@ const formSchema = z.object({
 });
 
 interface AddModuleFormProps {
-  onAddModule: (module: any) => void;
+  onAddModule: (module: any, mode: string, fileSourceCode:any) => void;
+  onCancel: () => void;
+  idModul:string
 }
+interface ComboData {
+  label: string;
+  value: string;
+}
+const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, idModul}) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const defaultCombo = [{value:"pilih", label:"pilih"}];
+  const [fileSourceCode, setFileSourceCode] = useState(null);
+  const [comboDataType, setComboDataType] = useState<ComboData[]>(defaultCombo);
+  const [comboValidationType, setComboValidationType] = useState<ComboData[]>(defaultCombo);
+  const [comboModuleType, setComboModuleType] = useState<ComboData[]>(defaultCombo);
+  const [comboLevel, setComboLevel] = useState<ComboData[]>(defaultCombo);
+  const handleFileChange = (e:any, field:any) => {
+    field.onChange(e.target.files?.[0]?.name || '')
+    if (e.target.files != null){
+      setFileSourceCode(e.target.files[0])
+    }
+  };
+  const fetchDataModule = async () => {
+        try {
+          const response = await fetch(`${apiUrl}/modul/detail/${idModul}`, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+          });
 
-const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
+          if (!response.ok) {
+            if (response.status === 403) {
+              throw new Error("Forbidden: Access is denied");
+            } else {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+          }
+          const data = await response.json();
+          form.setValue("moduleName", data.data.data_modul.ms_nama_modul);
+         } catch (error) {
+          console.error("Error fetching module name:", error);
+        }
+  };
+
+  const fetchDataComboDataType = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/combo/data_type`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      const data = await response.json();
+      setComboDataType(data.data);
+     } catch (error) {
+      console.error("Error fetching module name:", error);
+    }
+  };
+  const fetchDataComboValidationType = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/combo/validasi_parameter`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      const data = await response.json();
+      setComboValidationType(data.data);
+     } catch (error) {
+      console.error("Error fetching module name:", error);
+    }
+  };
+  const fetchDataComboModuleType = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/combo/module_type`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      const data = await response.json();
+      setComboModuleType(data.data);
+     } catch (error) {
+      console.error("Error fetching module name:", error);
+    }
+  };
+  const fetchDataComboLevel = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/combo/tingkat_kesulitan`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      const data = await response.json();
+      setComboLevel(data.data);
+     } catch (error) {
+      console.error("Error fetching module name:", error);
+    }
+  };
+
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
@@ -68,10 +210,21 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
         remove(i - 1);
       }
     }
+    if (idModul != "0"){  
+      fetchDataModule()
+    }
+    fetchDataComboDataType()
+    fetchDataComboModuleType()
+    fetchDataComboLevel()
+    fetchDataComboValidationType()
   }, [paramCount, fields.length, append, remove]);
 
   const onSubmit = (data: any) => {
-    onAddModule(data);
+    let mode = "add";
+    if (idModul != "0"){  
+      mode = "edit"
+    }
+    onAddModule(data, mode, fileSourceCode);
   };
 
   return (
@@ -103,7 +256,18 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                     <FormItem className="flex items-center mt-4">
                         <FormLabel className="w-1/3">Jenis Modul :</FormLabel>
                         <FormControl className="flex-1">
-                        <Input {...field} className="border rounded p-2 w-full bg-gray-50" />
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <SelectTrigger className="w-full bg-white">
+                            <SelectValue placeholder="Pilih" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white">
+                            <SelectGroup>
+                            {comboModuleType.map((dataCombo) => (
+                              <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                            ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -187,11 +351,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                       </SelectTrigger>
                       <SelectContent className="bg-white">
                         <SelectGroup>
-                          <SelectItem value="int">Int</SelectItem>
-                          <SelectItem value="float">Float</SelectItem>
-                          <SelectItem value="boolean">Boolean</SelectItem>
-                          <SelectItem value="char">Char</SelectItem>
-                          <SelectItem value="string">String</SelectItem>
+                        {comboDataType.map((dataCombo) => (
+                          <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                        ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -213,10 +375,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                       </SelectTrigger>
                       <SelectContent className="bg-white">
                         <SelectGroup>
-                          <SelectItem value="range">Range Value</SelectItem>
-                          <SelectItem value="condition">Condition Value</SelectItem>
-                          <SelectItem value="enumerasi">Enumerasi</SelectItem>
-                          <SelectItem value="length">Count of Length</SelectItem>
+                        {comboValidationType.map((dataCombo) => (
+                              <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                        ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -249,11 +410,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                         <SelectGroup>
-                        <SelectItem value="int">Int</SelectItem>
-                        <SelectItem value="float">Float</SelectItem>
-                        <SelectItem value="boolean">Boolean</SelectItem>
-                        <SelectItem value="char">Char</SelectItem>
-                        <SelectItem value="string">String</SelectItem>
+                        {comboDataType.map((dataCombo) => (
+                          <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                        ))}
                         </SelectGroup>
                     </SelectContent>
                     </Select>
@@ -276,9 +435,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                     <div>
                         <Input
                             type="file"
-                            onChange={(e) =>
-                                field.onChange(e.target.files?.[0]?.name || '')
-                            }
+                            onChange={(e) => handleFileChange(e, field)}
                             className="border rounded p-2 w-full bg-gray-50"
                         />
                         <FormDescription className="text-xs text-gray-500 mt-1">File harus berekstensi .java dan memiliki ukuran maksimal 2MB</FormDescription>
@@ -305,9 +462,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                         <SelectGroup>
-                        <SelectItem value="easy">Mudah</SelectItem>
-                        <SelectItem value="medium">Sedang</SelectItem>
-                        <SelectItem value="hard">Sulit</SelectItem>
+                        {comboLevel.map((dataCombo) => (
+                          <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                        ))}
                         </SelectGroup>
                     </SelectContent>
                     </Select>
@@ -362,7 +519,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule }) => {
         </div>
 
         <div className="flex justify-end space-x-4">
-            <Button type="reset" className="bg-blue-50 text-blue-700 border-2 border-blue-700 py-2 px-4 rounded-full hover:bg-blue-700 hover:text-white">Batal</Button>
+            <Button onClick={onCancel} type="reset" className="bg-blue-50 text-blue-700 border-2 border-blue-700 py-2 px-4 rounded-full hover:bg-blue-700 hover:text-white">Batal</Button>
             <Button type="submit" className="bg-blue-50 text-blue-700 border-2 border-blue-700 py-2 px-4 rounded-full hover:bg-blue-700 hover:text-white">Simpan</Button>
         </div>
       </form>

@@ -26,9 +26,11 @@ const getDifficultyString = (difficulty: number): string => {
 const ModulesTable = ({
   modules,
   onDelete,
+  onEdit,
 }: {
   modules: Module[];
   onDelete: (module: Module) => void;
+  onEdit: (module: Module) => void;
 }) => {
   return (
     <table className="min-w-full">
@@ -61,7 +63,7 @@ const ModulesTable = ({
               </span>
             </td>
             <td className="py-3 px-2 md:px-6 flex items-center space-x-2">
-              <FaEdit className="cursor-pointer text-blue-500" />
+              <FaEdit className="cursor-pointer text-blue-500" onClick={() => onEdit(module)} />
               <FaTrash className="cursor-pointer text-red-500" onClick={() => onDelete(module)} />
             </td>
           </tr>
