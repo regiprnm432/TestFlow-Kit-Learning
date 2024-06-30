@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { FaUpload, FaCloudUploadAlt, FaTrashAlt } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 
 interface UploadStudentDataProps {
   isDialogOpen: boolean;
@@ -46,6 +45,22 @@ const UploadStudentDataForm = ({
     }, 200);
   };
 
+  const handleClose = () => {
+    setFile(null);
+    setUploadProgress(0);
+    setUploadComplete(false);
+    setIsDialogOpen(false);
+  };
+
+  const handleUpload = () => {
+    if (file) {
+      console.log('File uploaded');
+      handleClose();
+    } else {
+      console.log('No file to upload');
+    }
+  };
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
@@ -78,7 +93,15 @@ const UploadStudentDataForm = ({
                   {uploadComplete ? (
                     <p>{(file.size / 1024).toFixed(2)} KB</p>
                   ) : (
-                    <Progress value={uploadProgress} />
+                    <div className="w-full mt-2">
+                      <div className="w-full bg-gray-200 rounded-full h-4">
+                        <div
+                          className="bg-blue-600 h-4 rounded-full"
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-sm mt-2">{uploadProgress}%</p>
+                    </div>
                   )}
                 </div>
                 {uploadComplete && (
@@ -96,11 +119,15 @@ const UploadStudentDataForm = ({
             <Button
               type="button"
               className="bg-transparent border border-blue-800 text-blue-800 rounded-full px-4 py-2 hover:bg-blue-100"
-              onClick={() => setIsDialogOpen(false)}
+              onClick={handleClose}
             >
               Kembali
             </Button>
-            <Button type="submit" className="bg-blue-800 text-white rounded-full px-4 py-2 hover:bg-blue-700">
+            <Button
+              type="button"
+              className="bg-blue-800 text-white rounded-full px-4 py-2 hover:bg-blue-700"
+              onClick={handleUpload}
+            >
               Simpan
             </Button>
           </div>
