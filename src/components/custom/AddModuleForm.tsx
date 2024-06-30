@@ -351,44 +351,40 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-4 bg-blue-50 rounded p-4">
             <FormField
-              control={form.control}
-              name={`parameters.${index}.paramName`}
-              rules={{
-                required: "Nama Parameter harus diisi!",
-                minLength: { value: 2, message: "Nama Parameter harus setidaknya 2 karakter." }
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <FormItem className="w-full">
-                  <div className="flex w-full gap-4">
-                    <FormLabel className="w-1/3">
+                control={form.control}
+                name={`parameters.${index}.paramName`}
+                rules={{
+                  required: "Nama Parameter harus diisi!",
+                  minLength: { value: 2, message: "Nama Parameter harus setidaknya 2 karakter." }
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <FormItem className="w-full col-span-1">
+                    <FormLabel>
                       Nama Parameter
                       <span className="text-red-500">*</span>
                     </FormLabel>
-                    <FormControl className="w-2/3">
+                    <FormControl>
                       <Input {...field} className="border rounded p-2 w-full bg-white" />
                     </FormControl>
-                  </div>
-                  {error && (
-                    <p className="text-red-600 pl-24 text-sm mt-1">
+                    {error && (
+                      <p className="text-red-600 text-sm mt-1">
                         {error.message}
-                    </p>
-                  )}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name={`parameters.${index}.paramType`}
-              rules={{ required: "Tipe data parameter harus dipilih!" }}
-              render={({ field, fieldState: { error } }) => (
-                <FormItem className="w-full">
-                  <div className="flex w-full gap-4 items-center">
-                    <FormLabel className="w-1/3">
+                      </p>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`parameters.${index}.paramType`}
+                rules={{ required: "Tipe data parameter harus dipilih!" }}
+                render={({ field, fieldState: { error } }) => (
+                  <FormItem className="w-full col-span-1">
+                    <FormLabel>
                       Tipe Data
                       <span className="text-red-500">*</span>
                     </FormLabel>
-                    <FormControl className="w-2/3">
+                    <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger className="w-full bg-white">
                           <SelectValue placeholder="Pilih" />
@@ -402,25 +398,22 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                         </SelectContent>
                       </Select>
                     </FormControl>
-                  </div>
-                  {error && (
-                    <p className="text-red-600 text-sm pl-24 mt-1">
+                    {error && (
+                      <p className="text-red-600 text-sm mt-1">
                         {error.message}
-                    </p>
-                  )}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name={`parameters.${index}.validationRule`}
-              rules={{ required: "Aturan validasi harus dipilih!" }}
-              render={({ field, fieldState: { error } }) => (
-                <FormItem className="w-full">
-                  <div className="flex w-full gap-4 items-center">
-                    <FormLabel className="w-1/3">Aturan Validasi</FormLabel>
-                    <FormControl className="w-2/3">
+                      </p>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`parameters.${index}.validationRule`}
+                rules={{ required: "Aturan validasi harus dipilih!" }}
+                render={({ field, fieldState: { error } }) => (
+                  <FormItem className="w-full col-span-1">
+                    <FormLabel>Aturan Validasi</FormLabel>
+                    <FormControl>
                       <Select onValueChange={(e) => handlingRuleChange(e, index)} defaultValue={field.value}>
                         <SelectTrigger className="w-full bg-white">
                           <SelectValue placeholder="Pilih" />
@@ -434,55 +427,51 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                         </SelectContent>
                       </Select>
                     </FormControl>
-                  </div>
-                  {error && (
-                    <p className="text-red-600 text-sm pl-24 mt-1">
+                    {error && (
+                      <p className="text-red-600 text-sm mt-1">
                         {error.message}
-                    </p>
+                      </p>
+                    )}
+                  </FormItem>
+                )}
+              />
+              {paramRules[index].jmlParam >= 1 && (
+                <FormField
+                  control={form.control}
+                  name={`parameters.${index}.ruleValue1`}
+                  render={({ field }) => (
+                    <FormItem className="w-full col-span-1">
+                      <FormLabel>
+                        {paramRules[index].nameParam1}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} className="border rounded p-2 w-full bg-white" />
+                      </FormControl>
+                    </FormItem>
                   )}
-                </FormItem>
+                />
               )}
-            />
-
-            {paramRules[index].jmlParam >= 1 &&(
-              <FormField
-                control={form.control}
-                name={`parameters.${index}.ruleValue1`}
-                render={({ field }) => (
-                  <FormItem className="flex items-center gap-2 flex-1">
-                    <FormLabel className="w-1/3">
-                      {paramRules[index].nameParam1}
-                      <span className="text-red-500">*</span>
-                      :
-                    </FormLabel>
-                    <FormControl className="w-2/3">
-                      <Input {...field} className="border rounded p-2 w-full bg-white" />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              {paramRules[index].jmlParam === 2 && (
+                <FormField
+                  control={form.control}
+                  name={`parameters.${index}.ruleValue2`}
+                  render={({ field }) => (
+                    <FormItem className="w-full col-span-1">
+                      <FormLabel>
+                        {paramRules[index].nameParam2}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} className="border rounded p-2 w-full bg-white" />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               )}
-            {paramRules[index].jmlParam == 2 &&(
-              <FormField
-                control={form.control}
-                name={`parameters.${index}.ruleValue2`}
-                render={({ field }) => (
-                  <FormItem className="flex items-center gap-2 flex-1">
-                    <FormLabel className="w-1/3">
-                    {paramRules[index].nameParam2}
-                      <span className="text-red-500">*</span>
-                      :
-                    </FormLabel>
-                    <FormControl className="w-2/3">
-                      <Input {...field} className="border rounded p-2 w-full bg-white" />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              )}
-          </div>
-        ))}
-        <FormDescription className="text-xs text-gray-500 mt-2 pl-5">*Urutan parameter dan tipe data harus sama dengan source code</FormDescription>
+            </div>
+          ))}
+          <FormDescription className="text-xs text-gray-500 mt-2 pl-5">*Urutan parameter dan tipe data harus sama dengan source code</FormDescription>
         </div>
     
         <div className="grid grid-cols-2 gap-10 pb-8">
