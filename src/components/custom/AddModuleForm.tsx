@@ -232,7 +232,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-10 w-full mx-auto bg-white shadow-md rounded-md">
-        <div className="grid grid-cols-2 gap-10 pb-8">
+        <div className="grid grid-cols-2 gap-10 pb-14">
             <div>
                 <FormField
                     control={form.control}
@@ -264,7 +264,8 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     name="moduleType"
                     rules={{ required: "Jenis modul harus dipilih!" }}
                     render={({ field,  fieldState: { error } }) => (
-                    <FormItem className="flex items-center mt-4">
+                    <FormItem>
+                      <div  className="flex items-center mt-4 w-full">
                         <FormLabel className="w-1/3">Jenis Modul :</FormLabel>
                         <FormControl className="flex-1">
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -280,8 +281,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                           </SelectContent>
                         </Select>
                         </FormControl>
+                        </div>
                         {error && (
-                          <p className="text-red-600 text-sm mt-1">
+                          <p className="text-red-600 text-sm pl-36 mt-1">
                             {error.message}
                           </p>
                         )}
@@ -355,93 +357,93 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 required: "Nama Parameter harus diisi!",
                 minLength: { value: 2, message: "Nama Parameter harus setidaknya 2 karakter." }
               }}
-              render={({ field, fieldState: { error }  }) => (
-                <FormItem>
-                  <div className="flex items-center gap-2 flex-1">
-                  <FormLabel className="w-1/3">
-                    Nama Parameter
-                    <span className="text-red-500">*</span>
-                    :
-                  </FormLabel>
-                  <FormControl className="w-2/3">
-                    <Input {...field} className="border rounded p-2 w-full bg-white" />
-                  </FormControl>
+              render={({ field, fieldState: { error } }) => (
+                <FormItem className="w-full">
+                  <div className="flex w-full gap-4">
+                    <FormLabel className="w-1/3">
+                      Nama Parameter
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl className="w-2/3">
+                      <Input {...field} className="border rounded p-2 w-full bg-white" />
+                    </FormControl>
                   </div>
                   {error && (
-                    <p className="text-red-600 text-sm mt-1">
+                    <p className="text-red-600 pl-24 text-sm mt-1">
                         {error.message}
                     </p>
                   )}
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name={`parameters.${index}.paramType`}
               rules={{ required: "Tipe data parameter harus dipilih!" }}
               render={({ field, fieldState: { error } }) => (
-                <FormItem>
-                  <div className="flex items-center gap-2 flex-1">
-                  <FormLabel className="w-1/3">
-                    Tipe Data
-                    <span className="text-red-500">*</span>
-                    :
-                  </FormLabel>
-                  <FormControl className="w-2/3">
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <SelectTrigger className="w-full bg-white">
-                        <SelectValue placeholder="Pilih" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectGroup>
-                        {comboDataType.map((dataCombo) => (
-                          <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
-                        ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
+                <FormItem className="w-full">
+                  <div className="flex w-full gap-4">
+                    <FormLabel className="w-1/3">
+                      Tipe Data
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl className="w-2/3">
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="w-full bg-white">
+                          <SelectValue placeholder="Pilih" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                          <SelectGroup>
+                            {comboDataType.map((dataCombo) => (
+                              <SelectItem key={dataCombo.value} value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
                   </div>
                   {error && (
-                    <p className="text-red-600 text-sm mt-1">
+                    <p className="text-red-600 text-sm pl-24 mt-1">
                         {error.message}
                     </p>
                   )}
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name={`parameters.${index}.validationRule`}
               rules={{ required: "Aturan validasi harus dipilih!" }}
-              render={({ field, fieldState:{error} }) => (
-                <FormItem>
-                  <div className="flex items-center gap-2 flex-1">
-                  <FormLabel className="w-1/3">Aturan Validasi</FormLabel>
-                  <FormControl className="w-2/3">
-                    <Select onValueChange={(e) => handlingRuleChange(e, index)} defaultValue={field.value}>
-                    {/* <Select onValueChange={field.onChange} defaultValue={field.value}> */}
-                      <SelectTrigger className="w-full bg-white">
-                        <SelectValue placeholder="Pilih" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectGroup>
-                        {comboValidationType.map((dataCombo) => (
-                              <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
-                        ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
+              render={({ field, fieldState: { error } }) => (
+                <FormItem className="w-full">
+                  <div className="flex w-full gap-4">
+                    <FormLabel className="w-1/3">Aturan Validasi</FormLabel>
+                    <FormControl className="w-2/3">
+                      <Select onValueChange={(e) => handlingRuleChange(e, index)} defaultValue={field.value}>
+                        <SelectTrigger className="w-full bg-white">
+                          <SelectValue placeholder="Pilih" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                          <SelectGroup>
+                            {comboValidationType.map((dataCombo) => (
+                              <SelectItem key={dataCombo.value} value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
                   </div>
                   {error && (
-                    <p className="text-red-600 text-sm mt-1">
+                    <p className="text-red-600 text-sm pl-24 mt-1">
                         {error.message}
                     </p>
                   )}
                 </FormItem>
               )}
             />
+
             {paramRules[index].jmlParam >= 1 &&(
               <FormField
                 control={form.control}
@@ -513,7 +515,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div>
                 {error && (
-                    <p className="text-red-600 text-sm mt-1">
+                    <p className="text-red-600 text-sm pl-48 mt-1">
                         {error.message}
                     </p>
                   )}
@@ -554,7 +556,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div>
                 {error && (
-                    <p className="text-red-600 text-sm mt-1">
+                    <p className="text-red-600 text-sm pl-48 mt-1">
                         {error.message}
                     </p>
                   )}
@@ -589,7 +591,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormControl>
                 </div> 
                 {error && (
-                    <p className="text-red-600 text-sm mt-1">
+                    <p className="text-red-600 text-sm pl-48 mt-1">
                         {error.message}
                     </p>
                   )}
