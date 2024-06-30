@@ -8,7 +8,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -410,7 +409,6 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -470,8 +468,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
               //   }
               // }
             }}
-            render={({ field }) => (
-                <FormItem className="flex items-center space-x-4">
+            render={({ field, fieldState:{error} }) => (
+                <FormItem>
+                <div className="flex items-center space-x-4">
                 <FormLabel className="w-1/3">
                     Source Code
                     <span className="text-red-500">*</span>
@@ -487,7 +486,12 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                         <FormDescription className="text-xs text-gray-500 mt-1">File harus berekstensi .java dan memiliki ukuran maksimal 2MB</FormDescription>
                     </div>
                 </FormControl>
-                <FormMessage />
+                </div>
+                {error && (
+                    <p className="text-red-600 text-sm mt-1">
+                        {error.message}
+                    </p>
+                  )}
                 </FormItem>
             )}
             />
