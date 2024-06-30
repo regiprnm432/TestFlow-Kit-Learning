@@ -335,7 +335,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                         <FormItem className="flex-grow">
                             <FormLabel>Deskripsi Modul</FormLabel>
                             <FormControl className="h-full">
-                                <Input {...field} className="border rounded p-2 w-full h-full bg-gray-50" />
+                                <textarea {...field} className="border rounded p-2 w-full h-full bg-gray-50 border-black" />
                             </FormControl>
                             {error && (
                               <p className="text-red-600 text-sm mt-1">
