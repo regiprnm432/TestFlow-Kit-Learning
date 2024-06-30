@@ -46,10 +46,22 @@ const ModuleTestPage = () => {
             setIsLoading(true)
             let paramModul =[]
             for (let i=0; i < module.parameters.length; i++){
+                let tempRule = JSON.parse(module.parameters[i].validationRule);
+                if (tempRule.nama_rule == "range"){
+                  tempRule.min_value = module.parameters[i].ruleValue1;
+                  tempRule.max_value = module.parameters[i].ruleValue2;
+                }else if (tempRule.nama_rule == "enumerasi"){
+                  tempRule.value = module.parameters[i].ruleValue1; 
+                }else if (tempRule.nama_rule == "countOfLength"){
+                  tempRule.value = module.parameters[i].ruleValue1; 
+                }else if (tempRule.nama_rule == "condition"){
+                  tempRule.condition = module.parameters[i].ruleValue1;
+                  tempRule.value = module.parameters[i].ruleValue2; 
+                }
                 paramModul.push({
                     param_name: module.parameters[i].paramName,
                     param_type: module.parameters[i].paramType,
-                    param_rules: module.parameters[i].validationRule
+                    param_rules: JSON.stringify(tempRule)
                 })
             }
             const paramData = {

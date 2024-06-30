@@ -32,7 +32,9 @@ const formSchema = z.object({
     z.object({
       paramName: z.string().min(2, { message: "Nama parameter harus setidaknya 2 karakter." }),
       paramType: z.string().min(1, { message: "Tipe data parameter harus dipilih." }),
-      validationRule: z.string().min(1, { message: "Aturan validasi harus dipilih." }),
+      validationRule: z.string().optional(),
+      ruleValue1: z.string().optional(),
+      ruleValue2: z.string().optional(),
     })
   ).optional(),
   returnType: z.string().min(1, { message: "Tipe data kembalian harus dipilih." }),
@@ -62,6 +64,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
   }
   const defaultCombo = [{value:"pilih", label:"pilih"}];
   const [fileSourceCode, setFileSourceCode] = useState(null);
+  const [paramRules, setParamRules] = useState<any[]>([]);
   const [comboDataType, setComboDataType] = useState<ComboData[]>(defaultCombo);
   const [comboValidationType, setComboValidationType] = useState<ComboData[]>(defaultCombo);
   const [comboModuleType, setComboModuleType] = useState<ComboData[]>(defaultCombo);
@@ -72,6 +75,24 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
       setFileSourceCode(e.target.files[0])
     }
   };
+  const handlingRuleChange = (e:any, index:number) =>{
+    form.setValue(`parameters.${index}.validationRule`, e);
+    let data = JSON.parse(e);
+    let newArr = [...paramRules]
+    newArr[index].jmlParam = parseInt(data.jml_param)
+    if (data.nama_rule == "range"){
+      newArr[index].nameParam1 = "Min" 
+      newArr[index].nameParam2 = "Max"
+    }else if (data.nama_rule == "enumerasi"){
+      newArr[index].nameParam1 = "Enum" 
+    }else if (data.nama_rule == "countOfLength"){
+      newArr[index].nameParam1 = "Length" 
+    }else if (data.nama_rule == "condition"){
+      newArr[index].nameParam1 = "Operator"
+      newArr[index].nameParam2 = "Value" 
+    }
+    setParamRules(newArr);
+  }
   const fetchDataModule = async () => {
         try {
           const response = await fetch(`${apiUrl}/modul/detail/${idModul}`, {
@@ -201,23 +222,29 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
   const paramCount = form.watch("paramCount");
 
   useEffect(() => {
+    let temp=[...paramRules]
     if (paramCount > fields.length) {
       for (let i = fields.length; i < paramCount; i++) {
         append({ paramName: "", paramType: "", validationRule: "" });
+        temp.push({jmlParam: 0, nameParam1: "",  nameParam2: ""})
       }
     } else if (paramCount < fields.length) {
       for (let i = fields.length; i > paramCount; i--) {
         remove(i - 1);
+        temp.slice(0,-1);
       }
     }
-    if (idModul != "0"){  
-      fetchDataModule()
-    }
+    setParamRules(temp)
     fetchDataComboDataType()
     fetchDataComboModuleType()
     fetchDataComboLevel()
     fetchDataComboValidationType()
   }, [paramCount, fields.length, append, remove]);
+  useEffect(() => {
+    if (idModul != "0"){  
+      fetchDataModule()
+    }
+  });
 
   const onSubmit = (data: any) => {
     let mode = "add";
@@ -369,7 +396,8 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 <FormItem className="flex items-center gap-2 flex-1">
                   <FormLabel className="w-1/3">Aturan Validasi</FormLabel>
                   <FormControl className="w-2/3">
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={(e) => handlingRuleChange(e, index)} defaultValue={field.value}>
+                    {/* <Select onValueChange={field.onChange} defaultValue={field.value}> */}
                       <SelectTrigger className="w-full bg-white">
                         <SelectValue placeholder="Pilih" />
                       </SelectTrigger>
@@ -386,6 +414,44 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 </FormItem>
               )}
             />
+            {paramRules[index].jmlParam >= 1 &&(
+              <FormField
+                control={form.control}
+                name={`parameters.${index}.ruleValue1`}
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 flex-1">
+                    <FormLabel className="w-1/3">
+                      {paramRules[index].nameParam1}
+                      <span className="text-red-500">*</span>
+                      :
+                    </FormLabel>
+                    <FormControl className="w-2/3">
+                      <Input {...field} className="border rounded p-2 w-full bg-white" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              )}
+            {paramRules[index].jmlParam == 2 &&(
+              <FormField
+                control={form.control}
+                name={`parameters.${index}.ruleValue2`}
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 flex-1">
+                    <FormLabel className="w-1/3">
+                    {paramRules[index].nameParam2}
+                      <span className="text-red-500">*</span>
+                      :
+                    </FormLabel>
+                    <FormControl className="w-2/3">
+                      <Input {...field} className="border rounded p-2 w-full bg-white" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              )}
           </div>
         ))}
         <FormDescription className="text-xs text-gray-500 mt-2">*Urutan parameter dan tipe data harus sama dengan source code</FormDescription>
