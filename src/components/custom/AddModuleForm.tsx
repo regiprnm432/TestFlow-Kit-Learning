@@ -389,8 +389,10 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
             <FormField
               control={form.control}
               name={`parameters.${index}.validationRule`}
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-2 flex-1">
+              rules={{ required: "Aturan validasi harus dipilih!" }}
+              render={({ field, fieldState:{error} }) => (
+                <FormItem>
+                  <div className="flex items-center gap-2 flex-1">
                   <FormLabel className="w-1/3">Aturan Validasi</FormLabel>
                   <FormControl className="w-2/3">
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -406,6 +408,12 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                       </SelectContent>
                     </Select>
                   </FormControl>
+                  </div>
+                  {error && (
+                    <p className="text-red-600 text-sm mt-1">
+                        {error.message}
+                    </p>
+                  )}
                 </FormItem>
               )}
             />
@@ -419,7 +427,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
             <FormField
             control={form.control}
             name="returnType"
-            rules={{ required: "Tipe data kembalian harus diisi!" }}
+            rules={{ required: "Tipe data kembalian harus dipilih!" }}
             render={({ field, fieldState: { error } }) => (
                 <FormItem>
                 <div className="flex items-center space-x-4">
@@ -495,8 +503,10 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
             <FormField
             control={form.control}
             name="complexityLevel"
+            rules={{ required: "Tingkat kesulitan harus dipilih!" }}
             render={({ field, fieldState: {error} }) => (
-                <FormItem className="flex items-center space-x-4">
+                <FormItem>
+                 <div className="flex items-center space-x-4">
                 <FormLabel className="w-1/3">
                     Tingkat Kesulitan
                     <span className="text-red-500">*</span>
@@ -516,6 +526,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     </SelectContent>
                     </Select>
                 </FormControl>
+                </div> 
                 {error && (
                     <p className="text-red-600 text-sm mt-1">
                         {error.message}
