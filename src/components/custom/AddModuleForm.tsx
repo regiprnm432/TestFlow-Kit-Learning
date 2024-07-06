@@ -42,6 +42,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
   const defaultCombo = [{value:"pilih", label:"pilih"}];
   const [paramRules, setParamRules] = useState<any[]>([]);
   const [fileSourceCode, setFileSourceCode] = useState(null);
+  const [fileErrors, setFileErrors] = useState<string[]>([]);
   const [comboDataType, setComboDataType] = useState<ComboData[]>(defaultCombo);
   const [comboValidationType, setComboValidationType] = useState<ComboData[]>(defaultCombo);
   const [comboModuleType, setComboModuleType] = useState<ComboData[]>(defaultCombo);
@@ -50,12 +51,37 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
   const [defaultValueLevel, setDefaultValueLevel] = useState('');
   const [defaultValueReturnType, setDefaultValueReturnType] = useState('');
   const [editMode, setEditMode] = useState(false);
-  const handleFileChange = (e:any, field:any) => {
-    field.onChange(e.target.files?.[0]?.name || '')
-    if (e.target.files != null){
-      setFileSourceCode(e.target.files[0])
+
+
+  // const handleFileChange = (e:any, field:any) => {
+  //   field.onChange(e.target.files?.[0]?.name || '')
+  //   if (e.target.files != null){
+  //     setFileSourceCode(e.target.files[0])
+  //   }
+  // };
+
+  const handleFileChange = (e: any, field: any) => {
+    const file = e.target.files?.[0];
+    let errors = [];
+    if (file) {
+      if (file.size > 2097152) {
+        errors.push("Ukuran maksimal file adalah 2 MB!");
+      }
+      if (!file.name.endsWith('.java')) {
+        errors.push("File Source Code tidak sesuai");
+      }
+      if (errors.length === 0) {
+        setFileSourceCode(file);
+        setFileErrors([]);
+        field.onChange(file.name);
+      } else {
+        setFileSourceCode(null);
+        setFileErrors(errors);
+        field.onChange('');
+      }
     }
   };
+
   const handlingLevelChange = (e:any) =>{
     form.setValue(`complexityLevel`, e);
     setDefaultValueLevel(e);
@@ -580,15 +606,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
             control={form.control}
             name="sourceCode"
             rules={{
-              required: "Source code harus diunggah!",
-              // validate: {
-              //   fileSize: () => {
-              //     if (fileSourceCode && fileSourceCode.size > 2097152) {
-              //       return "Ukuran maksimal file adalah 2 MB!";
-              //     }
-              //     return true;
-              //   }
-              // }
+              required: !editMode ? "Source code harus diunggah!" : undefined,
             }}
             render={({ field, fieldState:{error} }) => (
                 <FormItem>
@@ -609,9 +627,14 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                     </div>
                 </FormControl>
                 </div>
-                {error && (
+                {fileErrors.map((err, idx) => (
+                    <p key={idx} className="text-red-600 text-sm pl-48 mt-1">
+                      {err}
+                    </p>
+                  ))}
+                  {error && (
                     <p className="text-red-600 text-sm pl-48 mt-1">
-                        {error.message}
+                      {error.message}
                     </p>
                   )}
                 </FormItem>
