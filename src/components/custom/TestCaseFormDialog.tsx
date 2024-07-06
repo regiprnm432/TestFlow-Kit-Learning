@@ -383,8 +383,8 @@ const TestCaseFormDialog = ({
         </DialogTrigger>
         <DialogContent className="bg-white rounded-[20] overflow-y-auto max-h-[80vh] p-6">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold mb-4">
-              Tambah Test Case
+            <DialogTitle className="text-lg text-center font-bold mb-4">
+              Pengisian Test Case
             </DialogTitle>
             <Form {...form}>
               <form
