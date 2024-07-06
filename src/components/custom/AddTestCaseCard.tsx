@@ -404,13 +404,13 @@ const AddTestCaseCard: React.FC = () => {
           <TableHeader>
             <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
               <TableHead className="border border-black">No</TableHead>
-              <TableHead className="border border-black w-52">Objective Testing</TableHead>
+              <TableHead className="border border-black w-52">Objektif Pengujian</TableHead>
               {parameters.map((param) => (
                 <TableHead key={`param_${param.ms_id_parameter}`} className="border border-black">
                   {param.ms_nama_parameter}
                 </TableHead>
               ))}
-              <TableHead className="border border-black w-64">Expected</TableHead>
+              <TableHead className="border border-black w-64">Ekspektasi</TableHead>
               <TableHead className="border border-black">Aksi</TableHead>
             </TableRow>
           </TableHeader>
