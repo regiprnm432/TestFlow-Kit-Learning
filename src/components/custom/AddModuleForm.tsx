@@ -394,8 +394,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                     control={form.control}
                     name="moduleDescription"
                     rules={{
-                      required: "Deskripsi Modul harus diisi!",
-                      maxLength: { value: 100, message: "Deskripsi Modul tidak sesuai!" }
+                      required: "Deskripsi Modul harus diisi!"
                     }}
                     render={({ field, fieldState: { error } }) => (
                         <FormItem className="flex-grow">
