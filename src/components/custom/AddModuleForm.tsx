@@ -22,6 +22,7 @@ import {
 
 interface AddModuleFormProps {
   onAddModule: (module: any, mode: string, fileSourceCode:any) => void;
+  onEditModule: (module: any, idModul: string, fileSourceCode:any) => void;
   onCancel: () => void;
   idModul:string
 }
@@ -29,7 +30,7 @@ interface ComboData {
   label: string;
   value: string;
 }
-const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, idModul}) => {
+const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule, onCancel, idModul}) => {
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
@@ -45,12 +46,28 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
   const [comboValidationType, setComboValidationType] = useState<ComboData[]>(defaultCombo);
   const [comboModuleType, setComboModuleType] = useState<ComboData[]>(defaultCombo);
   const [comboLevel, setComboLevel] = useState<ComboData[]>(defaultCombo);
+  const [defaultValueJenisModul, setDefaultValueJenisModul] = useState('');
+  const [defaultValueLevel, setDefaultValueLevel] = useState('');
+  const [defaultValueReturnType, setDefaultValueReturnType] = useState('');
+  const [editMode, setEditMode] = useState(false);
   const handleFileChange = (e:any, field:any) => {
     field.onChange(e.target.files?.[0]?.name || '')
     if (e.target.files != null){
       setFileSourceCode(e.target.files[0])
     }
   };
+  const handlingLevelChange = (e:any) =>{
+    form.setValue(`complexityLevel`, e);
+    setDefaultValueLevel(e);
+  }
+  const handlingReturnTypeChange = (e:any) =>{
+    form.setValue(`returnType`, e);
+    setDefaultValueReturnType(e);
+  }
+  const handlingModulTypeChange = (e:any) =>{
+    form.setValue(`moduleType`, e);
+    setDefaultValueJenisModul(e);
+  }
   const handlingRuleChange = (e:any, index:number) =>{
     form.setValue(`parameters.${index}.validationRule`, e);
     let data = JSON.parse(e);
@@ -88,7 +105,53 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
           }
           const data = await response.json();
           form.setValue("moduleName", data.data.data_modul.ms_nama_modul);
-         } catch (error) {
+          form.setValue("moduleType", data.data.data_modul.ms_jenis_modul);
+          setDefaultValueJenisModul(data.data.data_modul.ms_jenis_modul);
+          form.setValue("paramCount", data.data.data_modul.ms_jml_parameter);
+          form.setValue("moduleDescription", data.data.data_modul.ms_deskripsi_modul);
+          form.setValue("returnType", data.data.data_modul.ms_return_type);
+          setDefaultValueReturnType(data.data.data_modul.ms_return_type);
+          form.setValue("functionName", data.data.data_modul.ms_function_name);
+          form.setValue("className", data.data.data_modul.ms_class_name);
+          form.setValue(`complexityLevel`, data.data.data_modul.ms_tingkat_kesulitan);
+          setDefaultValueLevel(data.data.data_modul.ms_tingkat_kesulitan);
+          form.setValue("sourceCode", data.data.data_modul.ms_source_code);
+          let data_params = data.data.data_parameter_modul;
+          let tempParamRules = []
+          for(let i=0; i<data_params.length; i++){
+            tempParamRules.push({jmlParam: 0, nameParam1: "",  nameParam2: ""});
+            form.setValue(`parameters.${i}.paramName`, data_params[i].ms_nama_parameter);
+            form.setValue(`parameters.${i}.paramType`, data_params[i].ms_tipe_data);
+            let dataRule = JSON.parse(data_params[i].ms_rules)
+            tempParamRules[i].jmlParam = parseInt(dataRule.jml_param)
+            
+            if (dataRule.nama_rule == "range"){
+              tempParamRules[i].nameParam1 = "Min";
+              tempParamRules[i].nameParam2 = "Max";
+              form.setValue(`parameters.${i}.ruleValue1`, dataRule.min_value);
+              form.setValue(`parameters.${i}.ruleValue2`, dataRule.max_value);
+              dataRule.min_value = "";
+              dataRule.max_value = "";  
+            }else if (dataRule.nama_rule == "enumerasi"){
+              tempParamRules[i].nameParam1 = "Enum";
+              form.setValue(`parameters.${i}.ruleValue1`, dataRule.value);
+              dataRule.value="";
+            }else if (dataRule.nama_rule == "countOfLength"){
+              tempParamRules[i].nameParam1 = "Length";
+              form.setValue(`parameters.${i}.ruleValue1`, dataRule.value);
+              dataRule.value="";
+            }else if (dataRule.nama_rule == "condition"){
+              tempParamRules[i].nameParam1 = "Operator";
+              tempParamRules[i].nameParam2 = "Value";
+              form.setValue(`parameters.${i}.ruleValue1`, dataRule.condition);
+              form.setValue(`parameters.${i}.ruleValue2`, dataRule.value);
+              dataRule.value="";
+              dataRule.condition="";
+            }
+            form.setValue(`parameters.${i}.validationRule`, JSON.stringify(dataRule));
+          }
+          setParamRules(tempParamRules);
+        } catch (error) {
           console.error("Error fetching module name:", error);
         }
   };
@@ -218,15 +281,18 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
   }, [paramCount, fields.length, append, remove]);
   useEffect(() => {
     if (idModul != "0"){  
+      setEditMode(true)
       fetchDataModule()
     }
-  });
+  },[idModul]);
   const onSubmit = (data: any) => {
     let mode = "add";
     if (idModul != "0"){  
       mode = "edit"
+      onEditModule(data, idModul, fileSourceCode);
+    }else{
+      onAddModule(data, mode, fileSourceCode);
     }
-    onAddModule(data, mode, fileSourceCode);
   };
 
   return (
@@ -268,14 +334,14 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                       <div  className="flex items-center mt-4 w-full">
                         <FormLabel className="w-1/3">Jenis Modul :</FormLabel>
                         <FormControl className="flex-1">
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={(e) => handlingModulTypeChange(e)} defaultValue={field.value} value={defaultValueJenisModul}>
                           <SelectTrigger className="w-full bg-white">
                             <SelectValue placeholder="Pilih" />
                           </SelectTrigger>
                           <SelectContent className="bg-white">
                             <SelectGroup>
                             {comboModuleType.map((dataCombo) => (
-                              <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                              <SelectItem key={dataCombo.value} value={dataCombo.value}>{dataCombo.label}</SelectItem>
                             ))}
                             </SelectGroup>
                           </SelectContent>
@@ -392,7 +458,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                         <SelectContent className="bg-white">
                           <SelectGroup>
                             {comboDataType.map((dataCombo) => (
-                              <SelectItem key={dataCombo.value} value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                              <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
                             ))}
                           </SelectGroup>
                         </SelectContent>
@@ -489,14 +555,14 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     :
                  </FormLabel>
                 <FormControl className="w-auto flex-1">
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={(e) => handlingReturnTypeChange(e)} defaultValue={field.value} value={defaultValueReturnType}>
                     <SelectTrigger className="w-32 bg-gray-50"> 
                         <SelectValue placeholder="Pilih" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                         <SelectGroup>
                         {comboDataType.map((dataCombo) => (
-                          <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                          <SelectItem key={dataCombo.value} value={dataCombo.value}>{dataCombo.label}</SelectItem>
                         ))}
                         </SelectGroup>
                     </SelectContent>
@@ -530,7 +596,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                 <div className="flex items-center space-x-4">
                 <FormLabel className="w-1/3">
                     Source Code
-                    <span className="text-red-500">*</span>
+                    {!editMode && (<span className="text-red-500">*</span>)}
                     :
                  </FormLabel>
                 <FormControl className="flex-1">
@@ -565,14 +631,14 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onCancel, id
                     :
                  </FormLabel>
                 <FormControl className="flex-1">
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={(e) => handlingLevelChange(e)} defaultValue={field.value} value={defaultValueLevel}>
                     <SelectTrigger className="w-32 bg-gray-50">
                         <SelectValue placeholder="Pilih" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                         <SelectGroup>
                         {comboLevel.map((dataCombo) => (
-                          <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                          <SelectItem key={dataCombo.value} value={dataCombo.value}>{dataCombo.label}</SelectItem>
                         ))}
                         </SelectGroup>
                     </SelectContent>

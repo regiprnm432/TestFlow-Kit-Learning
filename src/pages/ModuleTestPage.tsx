@@ -37,6 +37,9 @@ const ModuleTestPage = () => {
         console.log("Mode:", mode);
 
     };
+    const handleEditModule = (module: any, idModul: string, fileSourceCode: any) => {
+      editDataModul(idModul, module, fileSourceCode)
+    };
     const handleCancel = () => {
         navigate('/list-modules');
     };
@@ -123,6 +126,101 @@ const ModuleTestPage = () => {
           setIsLoading(false)    
         }
     };
+    const editDataModul = async (idModul:string, module: any, fileSourceCode:any) => {
+      try {
+          // prepare param
+          setIsLoading(true)
+          let paramModul =[]
+          for (let i=0; i < module.parameters.length; i++){
+              let tempRule = JSON.parse(module.parameters[i].validationRule);
+              if (tempRule.nama_rule == "range"){
+                tempRule.min_value = module.parameters[i].ruleValue1;
+                tempRule.max_value = module.parameters[i].ruleValue2;
+              }else if (tempRule.nama_rule == "enumerasi"){
+                tempRule.value = module.parameters[i].ruleValue1; 
+              }else if (tempRule.nama_rule == "countOfLength"){
+                tempRule.value = module.parameters[i].ruleValue1; 
+              }else if (tempRule.nama_rule == "condition"){
+                tempRule.condition = module.parameters[i].ruleValue1;
+                tempRule.value = module.parameters[i].ruleValue2; 
+              }
+              paramModul.push({
+                  param_name: module.parameters[i].paramName,
+                  param_type: module.parameters[i].paramType,
+                  param_rules: JSON.stringify(tempRule)
+              })
+          }
+          const paramData = {
+              id_modul: idModul,
+              nama_modul: module.moduleName,
+              deskripsi_modul: module.moduleDescription,
+              jenis_modul: module.moduleType,
+              jumlah_param: module.paramCount,
+              class_name: module.className,
+              function_name: module.functionName,
+              return_type: module.returnType,
+              parameters: paramModul,
+              tingkat_kesulitan: module.complexityLevel
+            };
+            
+            
+        const response = await fetch(`${apiUrl}/modul/editModul`, {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(paramData),
+          });
+          
+        if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error("Forbidden: Access is denied");
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+        }else{
+          await response.json();
+          if (fileSourceCode != null){
+            let dataUpload = new FormData()
+            dataUpload.append('source_code', fileSourceCode)
+            const responseUpload = await fetch(`${apiUrl}/modul/uploadSourceCode/${idModul}`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${apiKey}`,
+                },
+                body: dataUpload,
+                });
+            if (responseUpload.ok) {
+                setIsLoading(false) 
+                // navigate('/list-modules?message=addSuccess');
+                setInfoMessage("Data Modul Saved Success");
+                setTimeout(() => setInfoMessage(null), 2000);
+                setTimeout(() => navigate('/list-modules'), 2100);
+            }else{
+                setErrorMessage("Gagal Upload Source Code Data");
+                setTimeout(() => setErrorMessage(null), 2000);
+            }
+          }else{
+            if (response.ok) {
+              setIsLoading(false) 
+              // navigate('/list-modules?message=addSuccess');
+              setInfoMessage("Data Modul Saved Success");
+              setTimeout(() => setInfoMessage(null), 2000);
+              setTimeout(() => navigate('/list-modules'), 2100);
+            }else{
+                setErrorMessage("Gagal Edit Data");
+                setTimeout(() => setErrorMessage(null), 2000);
+            }
+          }
+        }
+        
+      } catch (error) {
+        console.error("Error fetching module name:", error);
+      } finally{
+        setIsLoading(false)    
+      }
+    };
     useEffect(() => {
         if (modulId !=  null){
             setScreenName("Edit Modul Program");
@@ -145,7 +243,7 @@ const ModuleTestPage = () => {
             )}
             </div>
             <div className="min-h-screen w-screen flex items-center justify-center bg-gray-100 p-10">
-                <AddModuleForm onAddModule={handleAddModule} onCancel={handleCancel} idModul={idModul} />
+                <AddModuleForm onAddModule={handleAddModule} onEditModule={handleEditModule} onCancel={handleCancel} idModul={idModul} />
             </div>
             {isLoading && <LoadingOverlay />}
         </LayoutForm>
