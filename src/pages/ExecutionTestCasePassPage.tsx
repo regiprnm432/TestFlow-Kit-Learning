@@ -115,7 +115,7 @@ const ExecutionTestCasePassPage: React.FC = () => {
                   statusEksekusi={navigationData?.status_eksekusi || false}
                   tanggalEksekusi={navigationData?.tgl_eksekusi || ""}
                   modulId={navigationData?.modul_id||""}
-                  poin={navigationData?.point||0}
+                  poin={navigationData?.points||0}
 
                 />
               </div>

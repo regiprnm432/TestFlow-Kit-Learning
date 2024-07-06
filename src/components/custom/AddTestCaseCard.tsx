@@ -157,7 +157,9 @@ const AddTestCaseCard: React.FC = () => {
   };
   
   useEffect(() => {
+    fetchResultTest();
     fetchParameters();
+    fetchTestCases();
   }, []);
 
   const fetchTestCases = async () => {
@@ -185,9 +187,44 @@ const AddTestCaseCard: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchTestCases();
-  }, []);
+  const fetchResultTest = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/modul/getResultTest/${modulId}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }else{
+        const result = await response.json();
+        const dataToPass: NavigationData = {
+          status_eksekusi: true,
+          tgl_eksekusi: result.executionDate,
+          coverage_score: result.coverageScore,
+          minimum_coverage_score: result.minimum_coverage_score,
+          points: result.point,
+          modul_id: result.modul_id,
+        };
+        console.log(result.coverageScore)
+        console.log(result.minimum_coverage_score)
+        if (result.coverageScore < result.minimum_coverage_score) {
+          navigate("/fail?topikModulId="+modulId, { state: dataToPass });
+        } else {
+          navigate("/pass?topikModulId="+modulId, { state: dataToPass });
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   // const handleEdit = (id: string) => {
   //   setEditingTestId(id);
