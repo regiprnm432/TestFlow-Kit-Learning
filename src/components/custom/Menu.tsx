@@ -91,8 +91,8 @@ export function Menu() {
           to={linkPembuatanTestCase}
           className={
             location.pathname === "/topikModul" ||
-            location.pathname === "/pass/" ||
-            location.pathname === "/fail/"
+            location.pathname === "/pass" ||
+            location.pathname === "/fail"
               ? "buttonMenu activeButton"
               : "buttonMenu inactiveButton"
           }
@@ -102,7 +102,7 @@ export function Menu() {
         <Link
           to={linkTestResult}
           className={
-            location.pathname === "#"
+            location.pathname === "/test-result"
               ? "buttonMenu activeButton"
               : "buttonMenu inactiveButton"
           }
