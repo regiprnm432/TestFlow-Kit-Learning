@@ -206,7 +206,7 @@ const AddTestCaseCard: React.FC = () => {
       }else{
         const result = await response.json();
         const dataToPass: NavigationData = {
-          status_eksekusi: true,
+          status_eksekusi: result.status_eksekusi === "Y",
           tgl_eksekusi: result.executionDate,
           coverage_score: result.coverageScore,
           minimum_coverage_score: result.minimum_coverage_score,
@@ -215,10 +215,14 @@ const AddTestCaseCard: React.FC = () => {
         };
         console.log(result.coverageScore)
         console.log(result.minimum_coverage_score)
-        if (result.coverageScore < result.minimum_coverage_score) {
+        if (result.status_eksekusi === "Y"){
+          if (result.coverageScore < result.minimum_coverage_score) {
+            navigate("/fail?topikModulId="+modulId, { state: dataToPass });
+          } else {
+            navigate("/pass?topikModulId="+modulId, { state: dataToPass });
+          }
+        }else{
           navigate("/fail?topikModulId="+modulId, { state: dataToPass });
-        } else {
-          navigate("/pass?topikModulId="+modulId, { state: dataToPass });
         }
       }
     } catch (error) {
