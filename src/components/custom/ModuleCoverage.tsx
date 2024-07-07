@@ -144,9 +144,11 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
         <div className="overflow-y-auto">
           {dataModule.data_modul && dataModule.data_parameter_modul && (
             <>
-              <h3 className="text-base font-bold mb-4 text-gray-800">Modul {dataModule.data_modul.ms_nama_modul}</h3>
-              <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
-              
+              <h3 className="text-base font-bold mb-4 text-gray-800">Spesifikasi Modul</h3>
+              <div className='border border-black p-2 mb-6 bg-slate-50'>
+                <p className="mb-4 text-sm  text-gray-600">Modul : {dataModule.data_modul.ms_nama_modul}</p>
+                <p className="mb-4 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
+              </div>
               <h4 className="text-base font-bold mb-1 text-gray-800">Code Coverage</h4>
               <div className="text-sm p-4 rounded-lg">
                 <iframe src={linkReportSourceCoverage} width={1000} height={500}>
@@ -154,6 +156,21 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
               </div>
             </>
           )}
+        </div>
+        <div className="mt-2">
+              <h4 className="text-base font-bold mb-2 text-gray-800">Legend</h4>
+              <div className="flex items-center mb-2">
+                <span className="inline-block w-4 h-4 bg-green-500 mr-2"></span>
+                <span className="text-sm text-gray-600">: Statement program telah dieksekusi</span>
+              </div>
+              <div className="flex items-center mb-2">
+                <span className="inline-block w-4 h-4 bg-yellow-500 mr-2"></span>
+                <span className="text-sm text-gray-600">: Statement program dieksekusi sebagian</span>
+              </div>
+              <div className="flex items-center">
+                <span className="inline-block w-4 h-4 bg-red-500 mr-2"></span>
+                <span className="text-sm text-gray-600">: Statement program belum dieksekusi</span>
+              </div>
         </div>
       </div>
     );
@@ -178,6 +195,21 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
               </div>
             </>
           )}
+        </div>
+        <div className="mt-2">
+              <h4 className="text-base font-bold mb-2 text-gray-800">Legend</h4>
+              <div className="flex items-center mb-2">
+                <span className="inline-block w-4 h-4 bg-green-500 mr-2"></span>
+                <span className="text-sm text-gray-600">: Statement program telah dieksekusi</span>
+              </div>
+              <div className="flex items-center mb-2">
+                <span className="inline-block w-4 h-4 bg-yellow-500 mr-2"></span>
+                <span className="text-sm text-gray-600">: Statement program dieksekusi sebagian</span>
+              </div>
+              <div className="flex items-center">
+                <span className="inline-block w-4 h-4 bg-red-500 mr-2"></span>
+                <span className="text-sm text-gray-600">: Statement program belum dieksekusi</span>
+              </div>
         </div>
       </div>
     );
