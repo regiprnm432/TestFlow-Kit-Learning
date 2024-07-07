@@ -65,11 +65,6 @@ export function Navbar() {
       console.error("Error fetching module name:", error);
     }
   };
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> add-module
   const fetchTopicName = async () => {
     try {
       const response = await fetch(`${apiUrl}/topik/getDetailData?id_topik=${idTopik}`, {
