@@ -446,7 +446,10 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                 name={`parameters.${index}.paramName`}
                 rules={{
                   required: "Nama Parameter harus diisi!",
-                  minLength: { value: 2, message: "Nama Parameter harus setidaknya 2 karakter." }
+                  pattern: {
+                    value: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
+                    message: "Nama Parameter tidak sesuai!"
+                  }
                 }}
                 render={({ field, fieldState: { error } }) => (
                   <FormItem className="w-full col-span-1">
