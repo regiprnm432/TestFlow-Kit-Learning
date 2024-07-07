@@ -99,6 +99,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
     let data = JSON.parse(e);
     let newArr = [...paramRules]
     newArr[index].jmlParam = parseInt(data.jml_param)
+    newArr[index].isCondition = data.nama_rule === "condition";
     if (data.nama_rule == "range"){
       newArr[index].nameParam1 = "Min" 
       newArr[index].nameParam2 = "Max"
@@ -530,21 +531,50 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                 )}
               />
               {paramRules[index].jmlParam >= 1 && (
-                <FormField
-                  control={form.control}
-                  name={`parameters.${index}.ruleValue1`}
-                  render={({ field }) => (
-                    <FormItem className="w-full col-span-1">
-                      <FormLabel>
-                        {paramRules[index].nameParam1}
-                        <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Input {...field} className="border rounded p-2 w-full bg-white" />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+                paramRules[index].isCondition ? (
+                  <FormField
+                    control={form.control}
+                    name={`parameters.${index}.ruleValue1`}
+                    render={({ field }) => (
+                      <FormItem className="w-full col-span-1">
+                        <FormLabel>
+                          {paramRules[index].nameParam1}
+                          <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger className="w-full bg-white">
+                              <SelectValue placeholder="Pilih" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white">
+                              <SelectGroup>
+                                {comboDataType.map((dataCombo) => (
+                                  <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <FormField
+                    control={form.control}
+                    name={`parameters.${index}.ruleValue1`}
+                    render={({ field }) => (
+                      <FormItem className="w-full col-span-1">
+                        <FormLabel>
+                          {paramRules[index].nameParam1}
+                          <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} className="border rounded p-2 w-full bg-white" />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                )
               )}
               {paramRules[index].jmlParam === 2 && (
                 <FormField
