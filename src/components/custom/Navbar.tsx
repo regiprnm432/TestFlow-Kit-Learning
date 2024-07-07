@@ -15,6 +15,7 @@ import {
   // BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import logo_polban from "../../assets/logo/polban.png";
+import logo_default from "../../assets/logo/default.png";
 import { useNavigate } from "react-router-dom";
 
 
@@ -33,6 +34,7 @@ export function Navbar() {
   const modulId = queryParameters.get("topikModulId")
   const [moduleName, setModuleName] = useState("");
   const [idTopik, setIdTopik] = useState("");
+  const [topicName, setTopicName] = useState("");
   const linkTopikModul = "/topikModul?topikModulId="+modulId
 
   const fetchModuleName = async () => {
@@ -60,9 +62,36 @@ export function Navbar() {
       console.error("Error fetching module name:", error);
     }
   };
+//http://38.9.140.56:3000/topik/getDetailData?id_topik=
+  const fetchTopicName = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/topik/getDetailData?id_topik=${idTopik}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+
+      const data = await response.json();
+      setTopicName(data.data.ms_nama_topik);
+      console.log("data topic name :", data.data.ms_nama_topik);
+    } catch (error) {
+      console.error("Error fetching module name:", error);
+    }
+  };
   
   useEffect(() => {
     fetchModuleName();
+    fetchTopicName();
   }, []);
 
   const handleBack = () => {
@@ -81,7 +110,11 @@ export function Navbar() {
           alt="Polban Logo"
           className="w-12 h-12 mr-4"
         />
-
+         <img
+          src={logo_default}
+          alt="App Logo"
+          className="w-9 h-9"
+        />
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -100,7 +133,7 @@ export function Navbar() {
                 <BreadcrumbItem>
                   <BreadcrumbLink href={linkTopikModul}>
                     <span className="text-white text-l hover:text-gray-300">
-                      Topik Pengujian
+                      {topicName || "Topik Pengujian"}
                     </span>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
