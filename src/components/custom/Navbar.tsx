@@ -62,7 +62,7 @@ export function Navbar() {
       console.error("Error fetching module name:", error);
     }
   };
-//http://38.9.140.56:3000/topik/getDetailData?id_topik=
+  
   const fetchTopicName = async () => {
     try {
       const response = await fetch(`${apiUrl}/topik/getDetailData?id_topik=${idTopik}`, {
