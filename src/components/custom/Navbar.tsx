@@ -56,13 +56,16 @@ export function Navbar() {
       }
 
       const data = await response.json();
+      console.log("data module name :", data);
       setModuleName(data.data.data_modul.ms_nama_modul); // Assuming the API response has a `name` field
       setIdTopik(data.id_topik)
+      console.log("topik id:", data.id_topik);
+
     } catch (error) {
       console.error("Error fetching module name:", error);
     }
   };
-//http://38.9.140.56:3000/topik/getDetailData?id_topik=
+
   const fetchTopicName = async () => {
     try {
       const response = await fetch(`${apiUrl}/topik/getDetailData?id_topik=${idTopik}`, {
@@ -91,8 +94,13 @@ export function Navbar() {
   
   useEffect(() => {
     fetchModuleName();
-    fetchTopicName();
-  }, []);
+  }, [apiUrl, apiKey, modulId]);
+
+  useEffect(() => {
+    if (idTopik) {
+      fetchTopicName();
+    }
+  }, [idTopik, apiUrl, apiKey]);
 
   const handleBack = () => {
     navigate("/list-challanges?idTopik="+idTopik);
