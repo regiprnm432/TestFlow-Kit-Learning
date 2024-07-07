@@ -45,12 +45,12 @@ const LoginPage = () => {
     let errors = { username: "", password: "" };
 
     if (!username) {
-      errors.username = "Username is required";
+      errors.username = "Username harus diisi";
       formIsValid = false;
     }
 
     if (!password) {
-      errors.password = "Password is required";
+      errors.password = "Password harus diisi";
       formIsValid = false;
     }
 
@@ -67,11 +67,16 @@ const LoginPage = () => {
           navigate("/dashboard-teacher")
         }
         
-      }else if (result_login.status == 400){
-        errors.username = result_login.message ;
-        errors.password = result_login.message ;
+      } else if (result_login.status === 400) {
+        if (result_login.message.includes("NIP")) {
+          errors.username = "Username tidak sesuai! Masukkan NIM atau NIP!";
+        }
+        if (result_login.message.includes("password")) {
+          errors.password = "Password yang dimasukkan tidak sesuai!";
+        }
         formIsValid = false;
       }
+    
 
       // // Check if the provided username and password match the hardcoded credentials
       // if (username === "07501030" && password === "admin123!!") {
@@ -177,7 +182,7 @@ const LoginPage = () => {
               />
               <button
                 type="button"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                className="absolute right-2 top-1/2 bg-white transform -translate-y-1/2 text-gray-500 focus:outline-none"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
