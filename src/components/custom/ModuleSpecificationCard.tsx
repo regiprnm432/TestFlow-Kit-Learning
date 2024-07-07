@@ -133,8 +133,12 @@ const ModuleSpecificationCard = () => {
         {dataModule.data_modul && dataModule.data_parameter_modul && (
           <>
             <h3 className="text-base font-bold mb-4 text-gray-800">Spesifikasi Modul</h3>
-            <p className="mb-6 text-sm  text-gray-600">Modul : {dataModule.data_modul.ms_nama_modul}</p>
-            <p className="mb-6 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
+            <div className='border border-black p-2 mb-6 bg-slate-50'>
+              <p className="mb-4 text-sm  text-gray-600">Modul : {dataModule.data_modul.ms_nama_modul}</p>
+              <p className="mb-4 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
+              <p className="mb-2 text-sm  text-gray-600">Parameter :</p>
+              <p className="mb-2 text-sm  text-gray-600">Return Value : </p>
+            </div>
             
             <div className="rounded-lg mb-6">
               <h4 className="text-base font-semibold mb-3 text-gray-700">Daftar Parameter</h4>
@@ -144,7 +148,7 @@ const ModuleSpecificationCard = () => {
                     <TableHead className="border border-black w-10">No</TableHead>
                     <TableHead className="border border-black">Nama Parameter</TableHead>
                     <TableHead className="border border-black">Tipe Data</TableHead>
-                    <TableHead className="border border-black w-full pr-4">Rules</TableHead>
+                    <TableHead className="border border-black w-full text-center pr-4">Aturan Validasi</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
