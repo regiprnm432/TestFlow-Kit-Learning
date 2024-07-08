@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import SidebarStudent from '../components/custom/SidebarStudent';
 import ChallengeCard from '../components/custom/ChallengeCard';
 import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import { FaBrain } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 
@@ -133,11 +132,14 @@ const ListChallengesPage: React.FC = () => {
               level: data.data_challenge[i].tingkat_kesulitan, 
               currentPoints: data.data_challenge[i].ongoing_point, 
               maxPoints: parseInt(data.data_challenge[i].ms_tingkat_kesulitan) * 10 * 100,
-              status: getStatusString(data.data_challenge[i].status)
+              status: getStatusString(data.data_challenge[i].status),
+              ms_tingkat_kesulitan: data.data_challenge[i].ms_tingkat_kesulitan
             }
           )
       }
-      setChallenges(tempChallanges)
+      // Urutkan tantangan berdasarkan ms_tingkat_kesulitan
+      tempChallanges.sort((a: any, b:any) => parseInt(a.ms_tingkat_kesulitan) - parseInt(b.ms_tingkat_kesulitan));
+      setChallenges(tempChallanges);
       setNamaModul(data.data_topik.ms_nama_topik)
       setCurrentXP(data.data_topik.jml_ongoing_point)
       setMaxXP(data.data_topik.jml_point)
@@ -165,18 +167,20 @@ const ListChallengesPage: React.FC = () => {
     fetchDataListChallenge("All");
   }, []);
   return (
-    <div className="flex flex-col lg:flex-row w-screen lg:w-screen bg-gray-200 min-h-screen">
+    <div className="flex flex-col lg:flex-row w-screen lg:w-screen min-h-screen bg-slate-100">
       <SidebarStudent isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
-        <div className="bg-white p-5 shadow h-full overflow-auto">
-          <div className="sticky top-0 bg-white z-10 pb-4">
-            <div className="flex justify-between items-center mb-4 mt-4">
-              <h1 className="text-xl font-bold text-blue-800">Belajar Kemampuan Pembuatan Test Case Unit</h1>
-            </div>
+        <div className="flex justify-between bg-white items-center m-6 p-4">
+          <h1 className="text-xl font-bold text-blue-800">Belajar Kemampuan Pembuatan Test Case Unit</h1>
+        </div>
+        <div className="pl-20 pr-20 shadow h-full overflow-auto bg-slate-100">
+          <div className="sticky top-0 bg-white z-10">
             <div className="flex flex-col lg:flex-row bg-white p-4 mb-4 mx-8">
               <div className="flex flex-col lg:w-1/2">
                 <h2 className="text-xl font-bold text-blue-800">{namaModul}</h2>
-                <div className="text-green-600 text-xl font-bold">{currentXP} / {maxXP} XP</div>
+                <div className="text-green-600 text-xl font-bold">
+                  {currentXP === 0 ? '—' : `${currentXP} / ${maxXP} XP`}
+                </div>
               </div>
               <div className="flex lg:w-1/2 gap-4">
                 <div className="flex flex-col flex-grow gap-4">
@@ -193,8 +197,8 @@ const ListChallengesPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <Separator className="my-4"/>
-            <div className="flex flex-row gap-4 ml-10">
+            <div className="border border-gray-300 mx-10"/>
+            <div className="flex flex-row gap-4 ml-10 pt-10">
               <div className="flex-1 overflow-y-auto">
                 <div className="grid grid-cols-1 gap-4">
                   {challenges.length > 0 ? (
@@ -215,8 +219,8 @@ const ListChallengesPage: React.FC = () => {
                 </div>
               </div>
               <div className="w-1/4 bg-white h-full overflow-auto mx-auto">
-                <h2 className="text-xl font-bold text-blue-800 mb-4">Status</h2>
-                <div className="mb-4">
+                <h2 className="text-xl font-bold text-blue-800 mb-4 mx-10">Status</h2>
+                <div className="mx-10">
                   <input
                     type="checkbox"
                     id="selesai"
@@ -225,7 +229,7 @@ const ListChallengesPage: React.FC = () => {
                   />
                   <label htmlFor="selesai" className="ml-2 text-sm font-medium text-blue-800">Selesai</label>
                 </div>
-                <div>
+                <div className="mx-10">
                   <input
                     type="checkbox"
                     id="belumSelesai"
