@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import SidebarStudent from '../components/custom/SidebarStudent';
 import ChallengeCard from '../components/custom/ChallengeCard';
-import { Progress } from '@/components/ui/progress';
-import { FaBrain } from 'react-icons/fa';
+import logo_berpikir from "../assets/logo/berpikir.png";
 import { useNavigate } from "react-router-dom";
 
 interface DataChallenges {
@@ -175,7 +174,7 @@ const ListChallengesPage: React.FC = () => {
         </div>
         <div className="pl-20 pr-20 shadow h-full overflow-auto bg-slate-100">
           <div className="sticky top-0 bg-white z-10">
-            <div className="flex flex-col lg:flex-row bg-white p-4 mb-4 mx-8">
+            <div className="flex flex-col lg:flex-row bg-white p-4 mx-8">
               <div className="flex flex-col lg:w-1/2">
                 <h2 className="text-xl font-bold text-blue-800">{namaModul}</h2>
                 <div className="text-green-600 text-xl font-bold">
@@ -186,14 +185,17 @@ const ListChallengesPage: React.FC = () => {
                 <div className="flex flex-col flex-grow gap-4">
                   <div className="text-blue-800 text-sm">{totalChallenges - completedChallenges} tantangan lagi</div>
                   <div className="w-full mt-2">
-                    <Progress value={progressPercentage} className="w-full h-2 rounded-full bg-gray-300">
-                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
-                    </Progress>
+                    <div className="w-full bg-gray-200 rounded-full h-4">
+                      <div
+                        className="bg-blue-600 h-4 rounded-full"
+                        style={{ width: `${progressPercentage}%` }}
+                      ></div>
+                    </div>
                   </div>
                   <span className="text-sm">{progressPercentage.toFixed(1)}% : {completedChallenges} / {totalChallenges}</span>
                 </div>
                 <div className="flex justify-end items-center">
-                  <FaBrain className="text-blue-600 text-6xl" />
+                  <img src={logo_berpikir} alt="Logo" className="w-40" />
                 </div>
               </div>
             </div>
