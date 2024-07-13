@@ -237,11 +237,13 @@ const AddTestCaseCard: React.FC = () => {
   const handleEdit = (id: string) => {
     setEditingTestId(id);
     setIsEditFormDialogOpen(true);
+    setHasUnexecutedChanges(true);
   };
   
   const handleDelete = (id: string) => {
     setDeletingTestId(id);
     setIsDeleteDialogOpen(true);
+    setHasUnexecutedChanges(true);
   };
 
   const confirmDelete = async () => {
@@ -296,6 +298,7 @@ const AddTestCaseCard: React.FC = () => {
   };
 
   const handleExecuteTestCase = async () => {
+    
     if (testCases.length === 0) {
       setErrorMessage("Belum ada test case yang dapat dieksekusi");
       const timer = setTimeout(() => {
@@ -305,6 +308,7 @@ const AddTestCaseCard: React.FC = () => {
     }
 
     setIsLoading(true); // Set loading state to true
+    setPreviouslyExecuted(true);
 
     try {
       const response = await fetch(`${apiUrl}/modul/run/${modulId}`, {
@@ -339,7 +343,7 @@ const AddTestCaseCard: React.FC = () => {
 
       // setNavigationData(dataToPass);
       setHasUnexecutedChanges(false);
-      setPreviouslyExecuted(true);
+     
 
       if (result.coverage_score < result.minimum_coverage_score) {
         navigate("/fail?topikModulId="+modulId, { state: dataToPass });
@@ -362,7 +366,13 @@ const AddTestCaseCard: React.FC = () => {
   return (
     <Card className="w-full flex flex-col">
       <CardHeader className="flex justify-between">
+        
         <CardTitle className="text-base module-title m-0">Test Case</CardTitle>
+        {hasUnexecutedChanges && previouslyExecuted && (
+        <div className="bg-yellow-100 text-yellow-700 p-2 mb-4 m text-sm">
+          Test case terbaru belum dieksekusi
+        </div>
+      )}
         <div className="flex space-x-2 items-center justify-end">
           <Button
             variant="outline"
@@ -381,11 +391,7 @@ const AddTestCaseCard: React.FC = () => {
         </div>
       </CardHeader>
 
-      {hasUnexecutedChanges && previouslyExecuted && (
-        <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
-          Test case terbaru belum dieksekusi
-        </div>
-      )}
+    
 
       {deleteMessage && (
         <div className="bg-blue-800 text-white font-bold p-2 pt-4 mb-4 pb-4 text-sm">
