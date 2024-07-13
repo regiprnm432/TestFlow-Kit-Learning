@@ -178,7 +178,7 @@ const ListChallengesPage: React.FC = () => {
               <div className="flex flex-col lg:w-1/2">
                 <h2 className="text-xl font-bold text-blue-800">{namaModul}</h2>
                 <div className="text-green-600 text-xl font-bold">
-                  {currentXP === 0 ? '—' : `${currentXP} / ${maxXP} XP`}
+                  ${currentXP} / ${maxXP} XP
                 </div>
               </div>
               <div className="flex lg:w-1/2 gap-4">
