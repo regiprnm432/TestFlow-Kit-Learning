@@ -56,6 +56,7 @@ interface DataResponse {
       nodes: any[];
       edges: any[];
     };
+    return_type: string; // Add this line to include the return_type property
   };
 }
 
@@ -90,6 +91,7 @@ const TestCaseFormDialog = ({
   const [existingObjectives, setExistingObjectives] = useState<string[]>([]);
   const [lastTestCaseNumber, setLastTestCaseNumber] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+  const [returnType, setReturnType] = useState("");
 
   const form = useForm({
     mode: "onBlur",
@@ -118,7 +120,9 @@ const TestCaseFormDialog = ({
   
       const responseData: DataResponse = await response.json();
       setParameters(responseData.data.data_parameter_modul);
+      setReturnType(responseData.data.data_modul.ms_return_type);
       console.log(responseData);
+      console.log(responseData.data.data_modul.ms_return_type);
   
       // const lastNumber = responseData.data.data_modul.test_cases?.length
       //   ? Math.max(
@@ -264,9 +268,8 @@ const TestCaseFormDialog = ({
   //   }
   // };
 
-
-  const getValidationDataType = (param: ParameterModul) => {
-    switch (param.ms_tipe_data) {
+  const getValidationDataTypeExpected = (expectedResult: string) => {
+    switch (expectedResult) {
       case "int":
         return {
           pattern: {
@@ -291,7 +294,43 @@ const TestCaseFormDialog = ({
       default:
         return {};
     }
-  }
+  };
+
+  const getValidationDataType = (param: ParameterModul) => {
+    switch (param.ms_tipe_data) {
+      case "int":
+        return {
+          pattern: {
+            value: /^-?[0-9]+$/,
+            message: "Masukkan angka",
+          },
+        };
+      case "float":
+        return {
+          pattern: {
+            value: /^[0-9]+(\.[0-9]+)?$/,
+            message: "Masukkan angka desimal",
+          },
+        };
+      case "string":
+        return {
+          pattern: {
+            value: /^[a-zA-Z0-9\s]+$/,
+            message: "Masukkan huruf atau angka",
+          },
+        };
+      case "boolean":
+        return {
+          pattern: {
+            value: /^(true|false)$/,
+            message: "Masukkan true atau false",
+          },
+        };
+      default:
+        return {};
+    }
+  };
+  
 
   useEffect(() => {
     if (!isDialogOpen) {
@@ -373,7 +412,16 @@ const TestCaseFormDialog = ({
 
   return (
     <>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog
+        open={isDialogOpen}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (open) {
+            form.reset(); 
+            setErrorMessage(""); 
+          }
+        }}
+      >
         <DialogTrigger asChild>
           <Button
             className="bg-blue-800 text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0 font-medium"
@@ -449,7 +497,10 @@ const TestCaseFormDialog = ({
                 <FormField
                   control={form.control}
                   name="expected"
-                  rules={{ required: "Expected result harus terisi" }}
+                  rules={{ required: "Expected result harus terisi",
+                  ...getValidationDataTypeExpected(returnType)
+
+                  }}
                   render={({ field, fieldState: { error } }) => (
                     <FormItem>
                       <FormLabel>Ekspektasi</FormLabel>
