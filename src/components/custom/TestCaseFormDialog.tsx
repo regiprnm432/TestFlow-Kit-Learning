@@ -389,6 +389,7 @@ const TestCaseFormDialog = ({
       const responseData = await response.json();
       console.log(responseData);
       form.reset();
+      onSuccess();
       setShowSuccessMessage(true);
       setTimeout(() => {
         setShowSuccessMessage(false);
@@ -397,7 +398,7 @@ const TestCaseFormDialog = ({
 
       triggerRefresh();
       fetchParameters(); 
-      onSuccess();
+    
 
       setLastTestCaseNumber((prev) => {
         const newNumber = prev + 1;
