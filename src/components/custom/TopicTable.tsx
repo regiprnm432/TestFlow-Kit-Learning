@@ -51,6 +51,11 @@ const getStatusLabel = (status: 'P' | 'D'): string => {
 //   }
 // };
 
+// Fungsi untuk memformat tampilan jumlah mahasiswa
+const formatStudentAccess = (access: number | string) => {
+  return access === 0 ? '-' : access;
+};
+
 const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort, onTogglePublish, onDelete }) => {
   return (
     <table className="min-w-full">
@@ -79,7 +84,7 @@ const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort,
             <td className="py-3 px-6 border-r">
               <span className={`px-2 py-1 rounded ${getStatusStyle(topic.status)}`}>{getStatusLabel(topic.status)}</span>
             </td>
-            <td className="py-3 px-6 border-r">{topic.studentAccess}</td>
+            <td className="py-3 px-6 border-r">{formatStudentAccess(topic.studentAccess)}</td>
             <td className="py-3 px-6 flex items-center space-x-2">
               <FaEdit className={`cursor-pointer ${topic.status === 'P' ? 'text-gray-300 cursor-not-allowed' : 'text-blue-500'}`} />
               <FaTrash className={`cursor-pointer ${topic.status === 'P' ? 'text-gray-300 cursor-not-allowed' : 'text-red-500'}`} onClick={() => topic.status !== 'P' && onDelete(topic.id)} />
