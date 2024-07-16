@@ -67,7 +67,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, leve
           <h3 className="text-lg font-bold text-blue-600">{title}</h3>
           <div className="text-l text-blue-600 flex items-center">
             <FaTrophy className="mr-1" />
-            <span>{currentPoints}/{maxPoints} XP</span>
+            <span>{currentPoints === 0 ? '---' : currentPoints}/{maxPoints} XP</span>
           </div>
         </div>
         <div className="flex justify-between items-center">

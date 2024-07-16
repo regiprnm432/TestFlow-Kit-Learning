@@ -119,25 +119,28 @@ const AddTestCaseCard: React.FC = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
-  const sessionData = localStorage.getItem('session')
-  if (sessionData == null){
-      navigate('/login');
-  }else{
-      const session = JSON.parse(sessionData);
-      apiKey = session.token
+  const sessionData = localStorage.getItem("session");
+  if (sessionData == null) {
+    navigate("/login");
+  } else {
+    const session = JSON.parse(sessionData);
+    apiKey = session.token;
   }
-  const queryParameters = new URLSearchParams(window.location.search)
-  const modulId = queryParameters.get("topikModulId")
+  const queryParameters = new URLSearchParams(window.location.search);
+  const modulId = queryParameters.get("topikModulId");
 
   const fetchParameters = async () => {
     try {
-      const response = await fetch(`${apiUrl}/modul/detailByIdTopikModul/${modulId}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-      });
+      const response = await fetch(
+        `${apiUrl}/modul/detailByIdTopikModul/${modulId}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 403) {
@@ -155,11 +158,15 @@ const AddTestCaseCard: React.FC = () => {
       console.error("Error fetching data:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchResultTest();
     fetchParameters();
     fetchTestCases();
+
+    // Load previouslyExecuted state from localStorage
+    const storedPreviouslyExecuted = localStorage.getItem('previouslyExecuted');
+    setPreviouslyExecuted(storedPreviouslyExecuted === 'true');
   }, []);
 
   const fetchTestCases = async () => {
@@ -203,7 +210,7 @@ const AddTestCaseCard: React.FC = () => {
         } else {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-      }else{
+      } else {
         const result = await response.json();
         const dataToPass: NavigationData = {
           status_eksekusi: result.status_eksekusi === "Y",
@@ -213,16 +220,16 @@ const AddTestCaseCard: React.FC = () => {
           points: result.point,
           modul_id: result.modul_id,
         };
-        console.log(result.coverageScore)
-        console.log(result.minimum_coverage_score)
-        if (result.status_eksekusi === "Y"){
+        console.log(result.coverageScore);
+        console.log(result.minimum_coverage_score);
+        if (result.status_eksekusi === "Y") {
           if (result.coverageScore < result.minimum_coverage_score) {
-            navigate("/fail?topikModulId="+modulId, { state: dataToPass });
+            navigate("/fail?topikModulId=" + modulId, { state: dataToPass });
           } else {
-            navigate("/pass?topikModulId="+modulId, { state: dataToPass });
+            navigate("/pass?topikModulId=" + modulId, { state: dataToPass });
           }
-        }else{
-          navigate("/fail?topikModulId="+modulId, { state: dataToPass });
+        } else {
+          navigate("/fail?topikModulId=" + modulId, { state: dataToPass });
         }
       }
     } catch (error) {
@@ -238,7 +245,7 @@ const AddTestCaseCard: React.FC = () => {
     setEditingTestId(id);
     setIsEditFormDialogOpen(true);
   };
-  
+
   const handleDelete = (id: string) => {
     setDeletingTestId(id);
     setIsDeleteDialogOpen(true);
@@ -276,6 +283,7 @@ const AddTestCaseCard: React.FC = () => {
       setTestCases((prevTestCases) =>
         prevTestCases.filter((test) => test.tr_id_test_case !== deletingTestId)
       );
+      setHasUnexecutedChanges(true);
       setDeleteMessage("Test case deleted successfully.");
       const timer = setTimeout(() => {
         setDeleteMessage("");
@@ -306,6 +314,7 @@ const AddTestCaseCard: React.FC = () => {
 
     setIsLoading(true); // Set loading state to true
 
+
     try {
       const response = await fetch(`${apiUrl}/modul/run/${modulId}`, {
         method: "POST",
@@ -319,12 +328,22 @@ const AddTestCaseCard: React.FC = () => {
         if (response.status === 403) {
           throw new Error("Forbidden: Access is denied");
         } else {
+          setPreviouslyExecuted(true);
+          localStorage.setItem('previouslyExecuted', 'true');
+     
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
       }
+
 
       const result = await response.json();
       console.log("Hasil eksekusi test case:", result);
+
+      setPreviouslyExecuted(true);
+      localStorage.setItem('previouslyExecuted', 'true');
+
+
       // setPercentageCoverage(result.coverage_score);
       // setMinimumCoverage(result.minimum_coverage_score);
 
@@ -339,12 +358,16 @@ const AddTestCaseCard: React.FC = () => {
 
       // setNavigationData(dataToPass);
       setHasUnexecutedChanges(false);
-      setPreviouslyExecuted(true);
+      console.log("sebelumnya false");
 
       if (result.coverage_score < result.minimum_coverage_score) {
-        navigate("/fail?topikModulId="+modulId, { state: dataToPass });
+        setPreviouslyExecuted(true);
+        console.log("previouslyExecuted true");
+        navigate("/fail?topikModulId=" + modulId, { state: dataToPass });
       } else {
-        navigate("/pass?topikModulId="+modulId, { state: dataToPass });
+        setPreviouslyExecuted(true);
+        console.log("previouslyExecuted true");
+        navigate("/pass?topikModulId=" + modulId, { state: dataToPass });
       }
 
       // setShowMessage(true);
@@ -363,6 +386,14 @@ const AddTestCaseCard: React.FC = () => {
     <Card className="w-full flex flex-col">
       <CardHeader className="flex justify-between">
         <CardTitle className="text-base module-title m-0">Test Case</CardTitle>
+        {hasUnexecutedChanges && previouslyExecuted && (
+          <>
+            {console.log("executed Changs && previouslyExecuted")}
+            <div className="bg-yellow-100 text-yellow-700 p-2 mb-4 m text-sm">
+              Test case terbaru belum dieksekusi
+            </div>
+          </>
+        )}
         <div className="flex space-x-2 items-center justify-end">
           <Button
             variant="outline"
@@ -376,16 +407,15 @@ const AddTestCaseCard: React.FC = () => {
             isDialogOpen={isFormDialogOpen}
             setIsDialogOpen={setIsFormDialogOpen}
             triggerRefresh={fetchTestCases}
-            onSuccess={() => setHasUnexecutedChanges(true)}
+            onSuccess={() => {
+              console.log(
+                "Test case added, setting hasUnexecutedChanges to true"
+              );
+              setHasUnexecutedChanges(true);
+            }}
           />
         </div>
       </CardHeader>
-
-      {hasUnexecutedChanges && previouslyExecuted && (
-        <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
-          Test case terbaru belum dieksekusi
-        </div>
-      )}
 
       {deleteMessage && (
         <div className="bg-blue-800 text-white font-bold p-2 pt-4 mb-4 pb-4 text-sm">
@@ -404,76 +434,89 @@ const AddTestCaseCard: React.FC = () => {
           <TableHeader>
             <TableRow className="bg-blue-800 text-sm text-white py-2 hover:bg-blue-600">
               <TableHead className="border border-black">No</TableHead>
-              <TableHead className="border border-black w-52">Objektif Pengujian</TableHead>
+              <TableHead className="border border-black w-52">
+                Objektif Pengujian
+              </TableHead>
               {parameters.map((param) => (
-                <TableHead key={`param_${param.ms_id_parameter}`} className="border border-black">
+                <TableHead
+                  key={`param_${param.ms_id_parameter}`}
+                  className="border border-black"
+                >
                   {param.ms_nama_parameter}
                 </TableHead>
               ))}
-              <TableHead className="border border-black w-64">Ekspektasi</TableHead>
+              <TableHead className="border border-black w-64">
+                Ekspektasi
+              </TableHead>
               <TableHead className="border border-black">Aksi</TableHead>
             </TableRow>
           </TableHeader>
-        <TableBody>
-          {testCases.map((test, index) => (
-            <TableRow
-              key={test.tr_id_test_case}
-              className={`${index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'} text-sm leading-tight`}
-            >
-              <TableCell className="py-2 border border-black">{index + 1}</TableCell>
-              <TableCell className="py-2 border border-black w-64 whitespace-nowrap">
-                {test.tr_object_pengujian}
-              </TableCell>
-              {JSON.parse(test.tr_data_test_input).map(
-                (paramData: { param_value: string }, i: number) => (
-                  <TableCell key={i} className="py-2 border border-black whitespace-nowrap">
-                    <div>
-                      <span>{paramData.param_value}</span>
-                    </div>
-                  </TableCell>
-                )
-              )}
-              <TableCell className="py-2 border border-black w-52 whitespace-nowrap">
-                {test.tr_expected_result}
-              </TableCell>
-              <TableCell className="py-2 flex items-center justify-between px-2">
-              <Button
-                  onClick={() => handleEdit(test.tr_id_test_case)}
-                  className="text-blue-500 text-base p-1"
-                >
-                  <EditTestCaseFormDialog
-                    editingTestId={editingTestId}
-                    isDialogOpen={isEditFormDialogOpen}
-                    setIsDialogOpen={setIsEditFormDialogOpen}
-                    triggerRefresh={fetchTestCases}
-                  />
-                </Button>
-                <Button
-                  onClick={() => handleDelete(test.tr_id_test_case)}
-                  className="text-red-500 text-base p-1"
-                >
-                  <FaTrash />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </CardContent>
+          <TableBody>
+            {testCases.map((test, index) => (
+              <TableRow
+                key={test.tr_id_test_case}
+                className={`${
+                  index % 2 === 0 ? "bg-blue-100" : "bg-blue-200"
+                } text-sm leading-tight`}
+              >
+                <TableCell className="py-2 border border-black">
+                  {index + 1}
+                </TableCell>
+                <TableCell className="py-2 border border-black w-64 whitespace-nowrap">
+                  {test.tr_object_pengujian}
+                </TableCell>
+                {JSON.parse(test.tr_data_test_input).map(
+                  (paramData: { param_value: string }, i: number) => (
+                    <TableCell
+                      key={i}
+                      className="py-2 border border-black whitespace-nowrap"
+                    >
+                      <div>
+                        <span>{paramData.param_value}</span>
+                      </div>
+                    </TableCell>
+                  )
+                )}
+                <TableCell className="py-2 border border-black w-52 whitespace-nowrap">
+                  {test.tr_expected_result}
+                </TableCell>
+                <TableCell className="py-2 flex items-center justify-between px-2">
+                  <Button
+                    onClick={() => handleEdit(test.tr_id_test_case)}
+                    className="text-blue-500 text-base p-1"
+                  >
+                    <EditTestCaseFormDialog
+                      editingTestId={editingTestId}
+                      isDialogOpen={isEditFormDialogOpen}
+                      setIsDialogOpen={setIsEditFormDialogOpen}
+                      triggerRefresh={fetchTestCases}
+                    />
+                  </Button>
+                  <Button
+                    onClick={() => handleDelete(test.tr_id_test_case)}
+                    className="text-red-500 text-base p-1"
+                  >
+                    <FaTrash />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
 
-    <CardFooter className="flex justify-between">
-      {/* Konten footer card di sini */}
-    </CardFooter>
+      <CardFooter className="flex justify-between">
+        {/* Konten footer card di sini */}
+      </CardFooter>
 
-    <DeleteConfirmationDialog
-      isOpen={isDeleteDialogOpen}
-      onClose={() => setIsDeleteDialogOpen(false)}
-      onConfirm={confirmDelete}
-    />
-    {isLoading && <LoadingOverlay />}
-  </Card>
-);
-
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={confirmDelete}
+      />
+      {isLoading && <LoadingOverlay />}
+    </Card>
+  );
 };
 
 export default AddTestCaseCard;
