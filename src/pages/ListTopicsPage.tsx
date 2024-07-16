@@ -165,6 +165,10 @@ const ListTopicsPage: React.FC = () => {
     navigate('/add-topics');
   };
 
+  const handleEditTopic = (id:string) => {
+    navigate(`/add-topics?id_topik=${id}`);
+  };
+
   const confirmDelete = () => {
     if (topicToDelete !== null) {
       deleteDataTopik(topicToDelete)
@@ -379,6 +383,7 @@ const ListTopicsPage: React.FC = () => {
                   onSort={handleRequestSort}
                   onTogglePublish={handleTogglePublish}
                   onDelete={handleDelete}
+                  onEdit={handleEditTopic}
                 />
                 <div className="flex justify-center items-center py-4" style={{ fontSize: '14px' }}>
                   <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />

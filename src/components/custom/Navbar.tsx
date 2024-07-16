@@ -102,7 +102,8 @@ export function Navbar() {
   }, [idTopik, apiUrl, apiKey]);
 
   const handleBack = () => {
-    navigate("/list-challanges?idTopik="+idTopik);
+    // navigate("/list-challanges?idTopik="+idTopik);
+    navigate(-1)
   };
 
   return (

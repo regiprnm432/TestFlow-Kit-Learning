@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Layout from './Layout';
+import React, { useState, useEffect } from 'react';
+import LayoutForm from './LayoutForm';
 import { Button } from "@/components/ui/button";
 import SelectModuleDialog from '@/components/custom/SelectModuleDialog';
 import { FaPlus, FaTrash } from 'react-icons/fa';
@@ -12,17 +12,32 @@ import {
 } from '@/components/ui/form';
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 interface Module {
-  id: number;
+  id: string;
   name: string;
   description: string;
   difficulty: string;
 }
 
 const AddTopicPage: React.FC = () => {
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const queryParameters = new URLSearchParams(window.location.search)
+  const topikId = queryParameters.get("id_topik");
+
+  const [screenName, setScreenName] = useState("Tambah Topik Pengujian");
   const [isSelectModuleDialogOpen, setIsSelectModuleDialogOpen] = useState(false);
   const [selectedModules, setSelectedModules] = useState<Module[]>([]);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm({
     mode: "onBlur",
@@ -32,6 +47,180 @@ const AddTopicPage: React.FC = () => {
     setSelectedModules(modules);
   };
 
+  const handleCancel = () => {
+    navigate("/list-topics");
+  };
+
+  const handleSave = () => {
+    const dataTopik = {
+      nama_topik : form.getValues("namaTopik"),
+      deskripsi_topik : form.getValues("deskripsiTopik") 
+    }
+    if (topikId !=  null){
+      editDataTopik(topikId, dataTopik, selectedModules)
+    }else{
+      addDataTopik(dataTopik, selectedModules)
+    }
+  };
+  const addDataTopik = async (topik: any, listModul:Module[]) => {
+    try {
+        // prepare param
+        // setIsLoading(true)
+        const response = await fetch(`${apiUrl}/topik/addTopik`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(topik),
+        });
+        
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }else{
+        const data = await response.json();
+        console.log(data.id_topik);
+        let listIdModul = []
+        for (let i=0; i<listModul.length; i++){
+          listIdModul.push({
+            id_modul:listModul[i].id
+          })
+        }
+        const paramMapping = {
+          id_topik : data.id_topik,
+          list_modul:listIdModul
+        }
+        const responseAddModul = await fetch(`${apiUrl}/topik/mappingModul`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify(paramMapping),
+        });
+        if (responseAddModul.ok) {
+            // navigate('/list-topics')
+            // setIsLoading(false) 
+            // navigate('/list-modules?message=addSuccess');
+            setInfoMessage("Data Topik Saved Success");
+            setTimeout(() => setInfoMessage(null), 2000);
+            setTimeout(() => navigate('/list-topics'), 2100);
+        // }else{
+            // setErrorMessage("Gagal Upload Source Code Data");
+            // setTimeout(() => setErrorMessage(null), 2000);
+        }
+      }
+      
+    } catch (error) {
+      console.error("Error fetching module name:", error);
+    } finally{
+      // setIsLoading(false)    
+    }
+  };
+  const editDataTopik = async (idTopik:string, topik: any, listModul:Module[]) => {
+    try {
+        // prepare param
+        // setIsLoading(true)
+        const param = {
+          id_topik : idTopik,
+          nama_topik : topik.nama_topik,
+          deskripsi_topik : topik.deskripsi_topik
+        }
+        const response = await fetch(`${apiUrl}/topik/editTopik`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(param),
+        });
+        
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }else{
+        let listIdModul = []
+        for (let i=0; i<listModul.length; i++){
+          listIdModul.push({
+            id_modul:listModul[i].id
+          })
+        }
+        const paramMapping = {
+          id_topik : idTopik,
+          list_modul:listIdModul
+        }
+        // navigate('/list-topics')
+        const responseAddModul = await fetch(`${apiUrl}/topik/editMappingModul`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify(paramMapping),
+        });
+        const data = await responseAddModul.json();
+        if (responseAddModul.ok) {
+            // navigate('/list-topics')
+            // setIsLoading(false) 
+            // navigate('/list-modules?message=addSuccess');
+            setInfoMessage("Data Topik Saved Success");
+            setTimeout(() => setInfoMessage(null), 2000);
+            setTimeout(() => navigate('/list-topics'), 2100);
+        }else{
+            setErrorMessage(data.message);
+            setTimeout(() => setErrorMessage(null), 2000);
+        }
+      }
+      
+    } catch (error) {
+      console.error("Error fetching module name:", error);
+    } finally{
+      // setIsLoading(false)    
+    }
+  };
+  const fetchDataTopik = async (idTopik:string) => {
+    try {
+      const response = await fetch(`${apiUrl}/topik/getDetailData?id_topik=${idTopik}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      const data = await response.json();
+      console.log(data.data.ms_nama_topik)
+      form.setValue("namaTopik", data.data.ms_nama_topik);
+      form.setValue("deskripsiTopik", data.data.ms_deskripsi_topik);
+      const dataModul = data.dataModul;
+      let tempModul = [];
+      for (let i=0; i<dataModul.length; i++){
+        tempModul.push({
+          id: dataModul[i].ms_id_modul,
+          name: dataModul[i].ms_nama_modul,
+          description: dataModul[i].ms_deskripsi_modul,
+          difficulty: dataModul[i].tingkat_kesulitan,
+        })
+      }
+      setSelectedModules(tempModul)
+    } catch (error) {
+      console.error("Error fetching module name:", error);
+    }
+  };
   const getDifficultyStyle = (difficulty: string) => {
     switch (difficulty) {
       case 'Sangat Mudah':
@@ -46,9 +235,24 @@ const AddTopicPage: React.FC = () => {
         return '';
     }
   };
-
+  useEffect(() => {
+    if (topikId !=  null){
+        setScreenName("Edit Topik Pengujian");
+        fetchDataTopik(topikId);
+    }
+  }, []); 
   return (
-    <Layout>
+    <LayoutForm screenName={screenName}>
+      {infoMessage && (
+          <div className="p-4 mb-4 text-green-500 bg-green-100 rounded-md">
+          {infoMessage}
+          </div>
+      )}
+      {errorMessage && (
+          <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md">
+          {errorMessage}
+          </div>
+      )}
       <div className="flex flex-col w-screen min-h-screen p-6">
         <Form {...form}>
           <form className="space-y-6">
@@ -137,10 +341,10 @@ const AddTopicPage: React.FC = () => {
         </div>
 
         <div className="flex justify-end mt-6">
-          <Button className="mr-4 text-blue-800 border border-blue-600 px-4 py-2 rounded-full shadow hover:bg-blue-50">
+          <Button onClick={handleCancel} className="mr-4 text-blue-800 border border-blue-600 px-4 py-2 rounded-full shadow hover:bg-blue-50">
             Batal
           </Button>
-          <Button className="mr-4 text-blue-800 border border-blue-600 px-4 py-2 rounded-full shadow hover:bg-blue-50">
+          <Button onClick={handleSave} className="mr-4 text-blue-800 border border-blue-600 px-4 py-2 rounded-full shadow hover:bg-blue-50">
             Simpan
           </Button>
         </div>
@@ -151,7 +355,7 @@ const AddTopicPage: React.FC = () => {
         onAddModules={handleAddModules}
         selectedModules={selectedModules}
       />
-    </Layout>
+    </LayoutForm>
   );
 };
 

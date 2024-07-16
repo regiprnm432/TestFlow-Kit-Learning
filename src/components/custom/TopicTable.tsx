@@ -17,6 +17,7 @@ interface TopicTableProps {
   onSort: (property: string) => void;
   onTogglePublish: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
 const getStatusStyle = (status: 'P' | 'D'): string => {
@@ -51,7 +52,7 @@ const getStatusLabel = (status: 'P' | 'D'): string => {
 //   }
 // };
 
-const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort, onTogglePublish, onDelete }) => {
+const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort, onTogglePublish, onDelete, onEdit }) => {
   return (
     <table className="min-w-full">
       <thead className="bg-blue-800 text-white" style={{ fontSize: '14px' }}>
@@ -81,7 +82,7 @@ const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort,
             </td>
             <td className="py-3 px-6 border-r">{topic.studentAccess}</td>
             <td className="py-3 px-6 flex items-center space-x-2">
-              <FaEdit className={`cursor-pointer ${topic.status === 'P' ? 'text-gray-300 cursor-not-allowed' : 'text-blue-500'}`} />
+              <FaEdit className={`cursor-pointer ${topic.status === 'P' ? 'text-gray-300 cursor-not-allowed' : 'text-blue-500'}`} onClick={() => topic.status !== 'P' && onEdit(topic.id)} />
               <FaTrash className={`cursor-pointer ${topic.status === 'P' ? 'text-gray-300 cursor-not-allowed' : 'text-red-500'}`} onClick={() => topic.status !== 'P' && onDelete(topic.id)} />
               {topic.status === 'D' ? (
                 <FaCloudUploadAlt className="cursor-pointer text-green-500" onClick={() => onTogglePublish(topic.id)} />
