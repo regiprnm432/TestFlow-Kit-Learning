@@ -2,7 +2,7 @@ import React from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
 interface Student {
-  id: number;
+  id: string;
   nim: string;
   name: string;
   class: string;
@@ -11,8 +11,8 @@ interface Student {
 
 interface StudentTableProps {
   students: Student[];
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 const StudentTable: React.FC<StudentTableProps> = ({ students, onEdit, onDelete }) => {

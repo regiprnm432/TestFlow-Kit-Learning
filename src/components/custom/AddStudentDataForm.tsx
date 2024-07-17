@@ -17,6 +17,7 @@ import {
     FormLabel, 
     FormControl,
 } from '@/components/ui/form';
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   nim: string;
@@ -28,12 +29,26 @@ interface FormData {
 interface AddStudentFormProps {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
+  idStudent: string;
+  setIdStudent: (id: string) => void;
+  afterSave: () => void;
 }
 
 const AddStudentDataForm = ({
   isDialogOpen,
   setIsDialogOpen,
+  idStudent,
+  setIdStudent,
+  afterSave
 }: AddStudentFormProps) => {
+    const navigate = useNavigate();
+    const apiUrl = import.meta.env.VITE_API_URL;
+    let apiKey = import.meta.env.VITE_API_KEY;
+    const sessionData = localStorage.getItem('session')
+    if (sessionData != null){
+        const session = JSON.parse(sessionData);
+        apiKey = session.token
+    }
 
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -43,21 +58,126 @@ const AddStudentDataForm = ({
     });
 
     const onSubmit = (data: FormData) => {
-        console.log(data);
-        setShowSuccessMessage(true);
-        setTimeout(() => {
-            setShowSuccessMessage(false);
-            setIsDialogOpen(false);
-        }, 3000); // Hide the message after 3 seconds
+        // console.log(data.kelas);
+        handleSave(data)
     };
-
+    const handleSave = (data: FormData) => {
+        const dataStudent = {
+          ms_student_nim: data.nim,
+          ms_student_name: data.nama,
+          ms_student_kelas: data.kelas,
+          ms_student_prodi: data.prodi
+        }
+        console.log(idStudent)
+        if (idStudent != "0"){
+          editDataStudent(idStudent, dataStudent)
+        }else{
+          addDataStudent(dataStudent)
+        }
+      };
+    const addDataStudent = async (student: any) => {
+    try {
+            // prepare param
+            // setIsLoading(true)
+            const response = await fetch(`${apiUrl}/student`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify(student),
+            });
+            
+            if (!response.ok) {
+                if (response.status === 403) {
+                    navigate("/error")
+                } else {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            }else{
+                setShowSuccessMessage(true);
+                setTimeout(() => {
+                    setShowSuccessMessage(false);
+                    setIsDialogOpen(false);
+                }, 3000); // Hide the message after 3 seconds
+                afterSave();
+            }
+            
+        } catch (error) {
+            console.error("Error fetching module name:", error);
+        } 
+    };
+      const editDataStudent = async (id:string, student: any) => {
+        try {
+            // prepare param
+            // setIsLoading(true)
+            const response = await fetch(`${apiUrl}/student/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify(student),
+            });
+            
+          if (!response.ok) {
+            if (response.status === 403) {
+              navigate("/error")
+            } else {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+          }else{
+            setShowSuccessMessage(true);
+            setTimeout(() => {
+                setShowSuccessMessage(false);
+                setIsDialogOpen(false);
+            }, 3000); // Hide the message after 3 seconds
+            afterSave();
+          }
+          
+        } catch (error) {
+          console.error("Error fetching module name:", error);
+        }
+      };
+      const fetchDataStudent = async (id:string) => {
+        try {
+          const response = await fetch(`${apiUrl}/student/${id}`, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+          });
+    
+          if (!response.ok) {
+            if (response.status === 403) {
+              navigate("/error")
+            } else {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+          }
+          const data = await response.json();
+          form.setValue("nim", data.data.ms_student_nim);
+          form.setValue("nama", data.data.ms_student_name);
+          form.setValue("kelas", data.data.ms_student_kelas);
+          form.setValue("prodi", data.data.ms_student_prodi);
+        } catch (error) {
+          console.error("Error fetching module name:", error);
+        }
+      };
     useEffect(() => {
         if (!isDialogOpen) {
             form.reset();
             setShowSuccessMessage(false);
             setErrorMessage("");
         }
-    }, [isDialogOpen, form]);
+        if (idStudent != "0"){
+            form.reset();
+            fetchDataStudent(idStudent);
+        }else{
+            form.reset();
+        }
+    }, [isDialogOpen, form, idStudent]);
 
     return (
         <>
@@ -66,6 +186,7 @@ const AddStudentDataForm = ({
                     <Button
                         className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
                         style={{ fontSize: "14px" }}
+                        onClick={() =>setIdStudent("0")}
                     >
                         <FaPlus className="mr-2" />
                         Tambah
@@ -217,7 +338,7 @@ const AddStudentDataForm = ({
                         <div className="absolute inset-x-0 top-0 flex items-center justify-center h-full bg-black bg-opacity-30">
                             <div className="bg-blue-800 p-4 rounded-lg shadow-lg">
                                 <p className="text-white font-bold">
-                                    Data Mahasiswa Baru Berhasil Disimpan!
+                                    Data Mahasiswa Berhasil Disimpan!
                                 </p>
                             </div>
                         </div>
