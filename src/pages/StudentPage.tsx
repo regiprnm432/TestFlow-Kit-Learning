@@ -7,7 +7,6 @@ import Sidebar from "@/components/custom/Sidebar";
 import AddStudentDataForm from "@/components/custom/AddStudentDataForm";
 import UploadStudentDataForm from "@/components/custom/UploadStudentDataForm";
 import { useNavigate } from "react-router-dom";
-import { findDOMNode } from "react-dom";
 
 interface Student {
   id: string;
