@@ -190,6 +190,7 @@ const StudentPage: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    fetchDataStudent(page, searchQuery);
   };
 
   const handleEdit = (id:string) => {
@@ -214,6 +215,9 @@ const StudentPage: React.FC = () => {
     setStudentToDelete(null);
   };
   const handleAfterSave = () => {
+    fetchDataStudent(currentPage, searchQuery);
+  };
+  const handleAfterUpload = () => {
     fetchDataStudent(currentPage, searchQuery);
   };
 
@@ -346,6 +350,9 @@ const StudentPage: React.FC = () => {
                 <UploadStudentDataForm
                   isDialogOpen={isUploadStudentFormOpen}
                   setIsDialogOpen={setIsUploadStudentFormOpen}
+                  setInfoMessage={setInfoMessage}
+                  setErrorMessage={setErrorMessage}
+                  afterUpload={handleAfterUpload}
                 />
                 <AddStudentDataForm 
                   isDialogOpen={isAddStudentFormOpen}
