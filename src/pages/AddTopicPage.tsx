@@ -38,6 +38,7 @@ const AddTopicPage: React.FC = () => {
   const [selectedModules, setSelectedModules] = useState<Module[]>([]);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [moduleError, setModuleError] = useState<string | null>(null);
 
   const form = useForm({
     mode: "onBlur",
@@ -52,6 +53,11 @@ const AddTopicPage: React.FC = () => {
   };
 
   const handleSave = () => {
+    if (selectedModules.length === 0) {
+      setModuleError("Topik Setidaknya harus memiliki satu modul!");
+      setTimeout(() => setModuleError(null), 2000);
+      return;
+    }
     const dataTopik = {
       nama_topik : form.getValues("namaTopik"),
       deskripsi_topik : form.getValues("deskripsiTopik") 
@@ -253,6 +259,11 @@ const AddTopicPage: React.FC = () => {
           {errorMessage}
           </div>
       )}
+      {moduleError && (
+          <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md">
+           {moduleError}
+          </div>
+      )}
       <div className="flex flex-col w-screen min-h-screen p-6">
         <Form {...form}>
           <form className="space-y-6">
@@ -349,10 +360,10 @@ const AddTopicPage: React.FC = () => {
         </div>
 
         <div className="flex justify-end mt-6">
-          <Button onClick={handleCancel} className="mr-4 text-blue-800 border border-blue-600 px-4 py-2 rounded-full shadow hover:bg-blue-50">
+          <Button onClick={handleCancel} className="mr-4 text-blue-800 border border-blue-600 px-4 py-2 rounded-full shadow hover:bg-blue-100">
             Batal
           </Button>
-          <Button onClick={handleSave} className="mr-4 text-blue-800 border border-blue-600 px-4 py-2 rounded-full shadow hover:bg-blue-50">
+          <Button onClick={handleSave} className="mr-4 text-blue-800 border border-blue-600 px-4 py-2 rounded-full shadow hover:bg-blue-100">
             Simpan
           </Button>
         </div>
