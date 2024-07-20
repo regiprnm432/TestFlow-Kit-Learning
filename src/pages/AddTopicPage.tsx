@@ -302,12 +302,12 @@ const AddTopicPage: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-gray-700 text-xl font-bold">Daftar Modul Program <span className="text-red-500">*</span></h2>
+            <h2 className="text-gray-700 text-lg font-bold">Daftar Modul Program <span className="text-red-500">*</span></h2>
             <Button className="text-white bg-blue-800 px-3 py-2 shadow hover:bg-blue-700 rounded-full" onClick={() => setIsSelectModuleDialogOpen(true)}>
               <FaPlus />
             </Button>
           </div>
-          <table className="min-w-full bg-white border rounded-lg shadow-md">
+          <table className="min-w-full bg-white border rounded-lg shadow-md text-sm">
             <thead>
               <tr className="bg-blue-800 text-white">
                 <th className="py-2 px-4 border">No</th>

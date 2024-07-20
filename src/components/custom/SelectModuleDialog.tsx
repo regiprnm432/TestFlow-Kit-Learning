@@ -133,13 +133,13 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogContent className="bg-white p-10 rounded-lg shadow-lg max-w-3xl mx-auto">
+      <DialogContent className="bg-white p-4 md:p-10 rounded-lg shadow-lg max-w-4xl mx-auto max-h-screen overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg text-center font-bold mb-4">
-            Tambahkan Tantangan Pada Topik {`{Nama Topik}`}
+          <DialogTitle className="text-lg text-center font-bold mb-2">
+            Tambahkan Tantangan Pada Topik
           </DialogTitle>
         </DialogHeader>
-        <div>
+        <div className="overflow-x-auto text-sm">
           <table className="min-w-full bg-white border rounded-lg shadow-md">
             <thead>
               <tr className="bg-blue-800 text-white">
@@ -172,7 +172,7 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
               ))}
             </tbody>
           </table>
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-2">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
@@ -180,7 +180,7 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
             />
           </div>
         </div>
-        <div className="flex justify-end space-x-4 w-full mt-6">
+        <div className="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-4 w-full">
           <Button className="bg-transparent border border-blue-800 text-blue-800 rounded-full px-4 py-2 hover:bg-blue-100" onClick={() => setIsDialogOpen(false)}>
             Kembali
           </Button>
