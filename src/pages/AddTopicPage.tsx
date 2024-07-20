@@ -261,7 +261,9 @@ const AddTopicPage: React.FC = () => {
                 <FormField
                   control={form.control}
                   name="namaTopik"
-                  rules={{ required: "Nama topik harus diisi!" }}
+                  rules={{ 
+                    required: "Nama Topik harus diisi!",
+                    maxLength: { value: 50, message: "Nama Topik tidak sesuai!" } }}
                   render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center w-full">
                       <FormLabel className="text-gray-700 font-bold text-base w-1/4">
