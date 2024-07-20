@@ -261,7 +261,8 @@ const AddTopicPage: React.FC = () => {
                 <FormField
                   control={form.control}
                   name="namaTopik"
-                  render={({ field }) => (
+                  rules={{ required: "Nama topik harus diisi!" }}
+                  render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center w-full">
                       <FormLabel className="text-gray-700 font-bold text-base w-1/4">
                         Nama Topik <span className="text-red-500">*</span>
@@ -273,6 +274,11 @@ const AddTopicPage: React.FC = () => {
                           <p className="text-gray-500 text-sm mt-1">
                             * Nama topik harus unik, belum pernah dibuat sebelumnya.
                           </p>
+                          {error && (
+                          <p className="text-red-600 text-sm mt-1">
+                            {error.message}
+                          </p>
+                        )}
                         </div>
                       </FormControl>
                     </FormItem>
