@@ -2,19 +2,44 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { FaUpload, FaCloudUploadAlt, FaTrashAlt } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
+import { ClipLoader } from "react-spinners";
 
 interface UploadStudentDataProps {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
+  setInfoMessage: (msg: string) => void;
+  setErrorMessage: (msg: string) => void;
+  afterUpload: () => void;
 }
 
 const UploadStudentDataForm = ({
   isDialogOpen,
   setIsDialogOpen,
+  setInfoMessage,
+  setErrorMessage,
+  afterUpload
 }: UploadStudentDataProps) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const LoadingOverlay: React.FC = () => (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-4 rounded shadow-lg flex items-center">
+        <ClipLoader size={35} color={"#123abc"} loading={true} />
+        <span className="ml-2">Upload and Saving Data...</span>
+      </div>
+    </div>
+  );
+
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -54,13 +79,39 @@ const UploadStudentDataForm = ({
 
   const handleUpload = () => {
     if (file) {
-      console.log('File uploaded');
-      handleClose();
+      uploadDataSiswa(file)
     } else {
       console.log('No file to upload');
     }
   };
-
+  const uploadDataSiswa = async (file:any) => {
+    try {
+        // prepare param
+        setIsLoading(true)
+        let dataUpload = new FormData()
+        dataUpload.append('file', file)
+        const responseUpload = await fetch(`${apiUrl}/student/upload`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+            },
+            body: dataUpload,
+            });
+        if (responseUpload.ok) {
+            setIsLoading(false) 
+            // navigate('/list-modules?message=addSuccess');
+            setInfoMessage("Data Saved Success");
+            setTimeout(() => setInfoMessage(""), 3000);
+        }else{
+            setErrorMessage("Gagal Upload Data");
+            setTimeout(() => setErrorMessage(""), 3000);
+        }
+    } finally{
+      setIsLoading(false) 
+      handleClose();
+      afterUpload();   
+    }
+  };
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
@@ -132,6 +183,7 @@ const UploadStudentDataForm = ({
             </Button>
           </div>
         </div>
+        {isLoading && <LoadingOverlay />}
       </DialogContent>
     </Dialog>
   );

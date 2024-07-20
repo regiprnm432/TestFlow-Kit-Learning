@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/custom/Pagination';
+import { useNavigate } from "react-router-dom";
 
 interface Module {
-  id: number;
+  id: string;
   name: string;
   description: string;
   difficulty: string;
@@ -18,32 +19,42 @@ interface SelectModuleDialogProps {
 }
 
 const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, setIsDialogOpen, onAddModules, selectedModules }) => {
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [modules, setModules] = useState<Module[]>([]);
   const itemsPerPage = 4; // Number of items per page
 
-  const allModules: Module[] = [
-    { id: 1, name: 'Perkalian', description: 'Modul mengalikan dua buah bilangan', difficulty: 'Sangat Mudah' },
-    { id: 2, name: 'Penambahan', description: 'Modul menambahkan dua buah bilangan', difficulty: 'Mudah' },
-    { id: 3, name: 'Pembagian', description: 'Modul pembagian dua bilangan', difficulty: 'Sedang' },
-    { id: 4, name: 'Pengurangan', description: 'Modul pengurangan dua buah bilangan', difficulty: 'Sulit' },
-    { id: 5, name: 'Modul 5', description: 'Deskripsi Modul 5', difficulty: 'Mudah' },
-    { id: 6, name: 'Modul 6', description: 'Deskripsi Modul 6', difficulty: 'Sulit' },
-    { id: 7, name: 'Modul 7', description: 'Deskripsi Modul 7', difficulty: 'Sedang' },
-    { id: 8, name: 'Modul 8', description: 'Deskripsi Modul 8', difficulty: 'Sangat Mudah' },
-    { id: 9, name: 'Modul 9', description: 'Deskripsi Modul 9', difficulty: 'Mudah' },
-    { id: 10, name: 'Modul 10', description: 'Deskripsi Modul 10', difficulty: 'Sulit' },
-    { id: 11, name: 'Modul 11', description: 'Deskripsi Modul 11', difficulty: 'Sedang' },
-    { id: 12, name: 'Modul 12', description: 'Deskripsi Modul 12', difficulty: 'Sangat Mudah' },
-    { id: 13, name: 'Modul 13', description: 'Deskripsi Modul 13', difficulty: 'Mudah' },
-    { id: 14, name: 'Modul 14', description: 'Deskripsi Modul 14', difficulty: 'Sulit' },
-    { id: 15, name: 'Modul 15', description: 'Deskripsi Modul 15', difficulty: 'Sedang' },
-    { id: 16, name: 'Modul 16', description: 'Deskripsi Modul 16', difficulty: 'Sangat Mudah' },
-    { id: 17, name: 'Modul 17', description: 'Deskripsi Modul 17', difficulty: 'Mudah' },
-    { id: 18, name: 'Modul 18', description: 'Deskripsi Modul 18', difficulty: 'Sulit' },
-    { id: 19, name: 'Modul 19', description: 'Deskripsi Modul 19', difficulty: 'Sedang' },
-    { id: 20, name: 'Modul 20', description: 'Deskripsi Modul 20', difficulty: 'Sangat Mudah' },
-  ];
+  // const allModules: Module[] = [
+  //   { id: '1', name: 'Perkalian', description: 'Modul mengalikan dua buah bilangan', difficulty: 'Sangat Mudah' },
+  //   { id: '2', name: 'Penambahan', description: 'Modul menambahkan dua buah bilangan', difficulty: 'Mudah' },
+  //   { id: '3', name: 'Pembagian', description: 'Modul pembagian dua bilangan', difficulty: 'Sedang' },
+  //   { id: '4', name: 'Pengurangan', description: 'Modul pengurangan dua buah bilangan', difficulty: 'Sulit' },
+  //   { id: '5', name: 'Modul 5', description: 'Deskripsi Modul 5', difficulty: 'Mudah' },
+  //   { id: '6', name: 'Modul 6', description: 'Deskripsi Modul 6', difficulty: 'Sulit' },
+  //   { id: '7', name: 'Modul 7', description: 'Deskripsi Modul 7', difficulty: 'Sedang' },
+  //   { id: '8', name: 'Modul 8', description: 'Deskripsi Modul 8', difficulty: 'Sangat Mudah' },
+  //   { id: '9', name: 'Modul 9', description: 'Deskripsi Modul 9', difficulty: 'Mudah' },
+  //   { id: '10', name: 'Modul 10', description: 'Deskripsi Modul 10', difficulty: 'Sulit' },
+  //   { id: '11', name: 'Modul 11', description: 'Deskripsi Modul 11', difficulty: 'Sedang' },
+  //   { id: '12', name: 'Modul 12', description: 'Deskripsi Modul 12', difficulty: 'Sangat Mudah' },
+  //   { id: '13', name: 'Modul 13', description: 'Deskripsi Modul 13', difficulty: 'Mudah' },
+  //   { id: '14', name: 'Modul 14', description: 'Deskripsi Modul 14', difficulty: 'Sulit' },
+  //   { id: '15', name: 'Modul 15', description: 'Deskripsi Modul 15', difficulty: 'Sedang' },
+  //   { id: '16', name: 'Modul 16', description: 'Deskripsi Modul 16', difficulty: 'Sangat Mudah' },
+  //   { id: '17', name: 'Modul 17', description: 'Deskripsi Modul 17', difficulty: 'Mudah' },
+  //   { id: '18', name: 'Modul 18', description: 'Deskripsi Modul 18', difficulty: 'Sulit' },
+  //   { id: '19', name: 'Modul 19', description: 'Deskripsi Modul 19', difficulty: 'Sedang' },
+  //   { id: '20', name: 'Modul 20', description: 'Deskripsi Modul 20', difficulty: 'Sangat Mudah' },
+  // ];
 
   useEffect(() => {
     fetchModules(currentPage);
@@ -51,11 +62,46 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
 
   const fetchModules = async (page: number) => {
     // Simulate fetching modules from an API or data source
-    setModules(allModules.slice((page - 1) * itemsPerPage, page * itemsPerPage));
+    // setModules(allModules.slice((page - 1) * itemsPerPage, page * itemsPerPage));
+    setCurrentPage(page);
+    try {
+      const response = await fetch(`${apiUrl}/modul/search?page=${page}&limit=${itemsPerPage}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      
+      const data = await response.json();
+      let tempModules = [];
+      for (let i = 0; i < data.data.length; i++) {
+        tempModules.push(
+            { id: data.data[i].ms_id_modul, 
+              name: data.data[i].ms_nama_modul, 
+              description: data.data[i].ms_deskripsi_modul, 
+              difficulty: data.data[i].tingkat_kesulitan, 
+            }     
+          )
+      }
+      setModules(tempModules)
+      setTotalPages(data.max_page)
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
-  const toggleModuleSelection = (moduleId: number) => {
-    const selectedModule = allModules.find(m => m.id === moduleId);
+  const toggleModuleSelection = (moduleId: string) => {
+    const selectedModule = modules.find(m => m.id === moduleId);
     if (selectedModule) {
       if (selectedModules.some(m => m.id === moduleId)) {
         onAddModules(selectedModules.filter(m => m.id !== moduleId));
@@ -63,11 +109,12 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
         onAddModules([...selectedModules, selectedModule]);
       }
     }
+    
   };
 
-  const isSelected = (moduleId: number) => selectedModules.some(m => m.id === moduleId);
+  const isSelected = (moduleId: string) => selectedModules.some(m => m.id === moduleId);
 
-  const totalPages = Math.ceil(allModules.length / itemsPerPage);
+  // const totalPages = Math.ceil(allModules.length / itemsPerPage);
 
   const getDifficultyStyle = (difficulty: string) => {
     switch (difficulty) {
@@ -137,9 +184,9 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
           <Button className="bg-transparent border border-blue-800 text-blue-800 rounded-full px-4 py-2 hover:bg-blue-100" onClick={() => setIsDialogOpen(false)}>
             Kembali
           </Button>
-          <Button className="bg-blue-800 text-white rounded-full px-4 py-2 hover:bg-blue-700" onClick={() => setIsDialogOpen(false)}>
+          {/* <Button className="bg-blue-800 text-white rounded-full px-4 py-2 hover:bg-blue-700" onClick={() => setIsDialogOpen(false)}>
             Tambahkan
-          </Button>
+          </Button> */}
         </div>
       </DialogContent>
     </Dialog>
