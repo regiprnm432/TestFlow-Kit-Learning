@@ -108,7 +108,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
     }else if (data.nama_rule == "countOfLength"){
       newArr[index].nameParam1 = "Length" 
     }else if (data.nama_rule == "condition"){
-      newArr[index].nameParam1 = "Operator"
+      newArr[index].nameParam1 = "Condition"
       newArr[index].nameParam2 = "Value" 
     }
     setParamRules(newArr);
@@ -168,7 +168,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
               form.setValue(`parameters.${i}.ruleValue1`, dataRule.value);
               dataRule.value="";
             }else if (dataRule.nama_rule == "condition"){
-              tempParamRules[i].nameParam1 = "Operator";
+              tempParamRules[i].nameParam1 = "Condition";
               tempParamRules[i].nameParam2 = "Value";
               form.setValue(`parameters.${i}.ruleValue1`, dataRule.condition);
               form.setValue(`parameters.${i}.ruleValue2`, dataRule.value);
@@ -321,6 +321,16 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
       onAddModule(data, mode, fileSourceCode);
     }
   };
+
+  //Combo untuk condition validation sementara
+  const conditionType = [
+    {value: "1", label: "!="},
+    {value: "2", label: "<="},
+    {value: "3", label: ">="},
+    {value: "4", label: "<"},
+    {value: "5", label: ">"}
+  ];
+  
 
   return (
     <Form {...form}>
@@ -532,6 +542,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
               />
               {paramRules[index].jmlParam >= 1 && (
                 paramRules[index].isCondition ? (
+                  //FormField untuk condition validation
                   <FormField
                     control={form.control}
                     name={`parameters.${index}.ruleValue1`}
@@ -548,7 +559,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                             </SelectTrigger>
                             <SelectContent className="bg-white">
                               <SelectGroup>
-                                {comboDataType.map((dataCombo) => (
+                                {conditionType.map((dataCombo) => (
                                   <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
                                 ))}
                               </SelectGroup>
