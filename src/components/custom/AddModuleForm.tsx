@@ -51,6 +51,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
   const [defaultValueLevel, setDefaultValueLevel] = useState('');
   const [defaultValueReturnType, setDefaultValueReturnType] = useState('');
   const [editMode, setEditMode] = useState(false);
+  const [selectedDataType, setSelectedDataType] = useState('');
 
 
   // const handleFileChange = (e:any, field:any) => {
@@ -94,6 +95,11 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
     form.setValue(`moduleType`, e);
     setDefaultValueJenisModul(e);
   }
+  const handleDataTypeChange = (e: any, index: number) => {
+    form.setValue(`parameters.${index}.paramType`, e);
+    setSelectedDataType(e);
+    fetchDataComboValidationType(e);
+  };
   const handlingRuleChange = (e:any, index:number) =>{
     form.setValue(`parameters.${index}.validationRule`, e);
     let data = JSON.parse(e);
@@ -206,9 +212,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
       console.error("Error fetching module name:", error);
     }
   };
-  const fetchDataComboValidationType = async () => {
+  const fetchDataComboValidationType = async (dataType: string) => {
     try {
-      const response = await fetch(`${apiUrl}/combo/validasi_parameter`, {
+      const response = await fetch(`${apiUrl}/combo/validasi_parameter?data_type=${dataType}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -304,7 +310,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
     fetchDataComboDataType()
     fetchDataComboModuleType()
     fetchDataComboLevel()
-    fetchDataComboValidationType()
+    fetchDataComboValidationType(selectedDataType)
   }, [paramCount, fields.length, append, remove]);
   useEffect(() => {
     if (idModul != "0"){  
@@ -324,11 +330,30 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
 
   //Combo untuk condition validation sementara
   const conditionType = [
-    {value: "1", label: "!="},
-    {value: "2", label: "<="},
-    {value: "3", label: ">="},
-    {value: "4", label: "<"},
-    {value: "5", label: ">"}
+    {
+      "label": "!=",
+      "value": "!="
+    },
+    {
+      "label": "<",
+      "value": "<"
+    },
+    {
+      "label": "<=",
+      "value": "<="
+    },
+    {
+      "label": "=",
+      "value": "="
+    },
+    {
+      "label": ">",
+      "value": ">"
+    },
+    {
+      "label": ">=",
+      "value": ">="
+    }
   ];
   
 
@@ -490,7 +515,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                       <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={(e) => handleDataTypeChange(e, index)} defaultValue={field.value}>
                         <SelectTrigger className="w-full bg-white">
                           <SelectValue placeholder="Pilih" />
                         </SelectTrigger>
