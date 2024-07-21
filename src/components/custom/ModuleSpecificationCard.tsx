@@ -136,8 +136,6 @@ const ModuleSpecificationCard = () => {
             <div className='border border-black p-2 mb-6 bg-slate-50'>
               <p className="mb-4 text-sm  text-gray-600">Modul : {dataModule.data_modul.ms_nama_modul}</p>
               <p className="mb-4 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
-              <p className="mb-2 text-sm  text-gray-600">Parameter :</p>
-              <p className="mb-2 text-sm  text-gray-600">Return Value : </p>
             </div>
             
             <div className="rounded-lg mb-6">
