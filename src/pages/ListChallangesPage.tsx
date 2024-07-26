@@ -130,7 +130,7 @@ const ListChallengesPage: React.FC = () => {
               title: data.data_challenge[i].ms_nama_modul, 
               level: data.data_challenge[i].tingkat_kesulitan, 
               currentPoints: data.data_challenge[i].ongoing_point, 
-              maxPoints: parseInt(data.data_challenge[i].ms_tingkat_kesulitan) * 10 * 100,
+              maxPoints: parseInt(data.data_challenge[i].ms_tingkat_kesulitan) * 100,
               status: getStatusString(data.data_challenge[i].status),
               ms_tingkat_kesulitan: data.data_challenge[i].ms_tingkat_kesulitan
             }

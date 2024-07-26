@@ -112,7 +112,8 @@ const TopicPage: React.FC = () => {
   };
 
   const handleCompletedTopicClick = (id: string) => {
-    console.log(`Clicked on topic id: ${id}`);
+    // console.log(`Clicked on topic id: ${id}`);
+    navigate("/list-challanges?idTopik="+id);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
