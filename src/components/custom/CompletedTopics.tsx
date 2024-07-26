@@ -32,7 +32,7 @@ const CompletedTopics: React.FC<CompletedTopicsProps> = ({ topics, searchQuery, 
             {filteredCompletedTopics.map((topic) => (
               <div
                 key={topic.id}
-                onClick={() => onTopicClick(topic.title)}
+                onClick={() => onTopicClick(topic.id)}
                 className="bg-blue-50 text-black p-4 rounded-lg shadow-lg border-2 border-blue-800 cursor-pointer transition-transform transform hover:scale-105"
               >
                 <div className="flex justify-between items-center">

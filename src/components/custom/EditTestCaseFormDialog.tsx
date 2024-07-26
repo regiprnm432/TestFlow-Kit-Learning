@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -16,14 +15,13 @@ import {
   FormControl,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { FaEdit } from "react-icons/fa";
 
 
 interface EditFormDialogProps {
   isEditFormDialogOpen: boolean;
   setIsEditFormDialogOpen: (open: boolean) => void;
   triggerRefresh: () => void;
-  editingTestId: string | null;
+  editingTestId: string;
 }
 
 interface ParameterModul {
@@ -48,16 +46,16 @@ interface ParameterModul {
 //   }[];
 // }
 
-interface TestCaseData {
-  tr_id_test_case: string;
-  tr_object_pengujian: string;
-  tr_expected_result: string;
-  tr_data_test_input: {
-    param_name: string;  
-    param_type: string;  
-    param_value: string;
-  }[];
-}
+// interface TestCaseData {
+//   tr_id_test_case: string;
+//   tr_object_pengujian: string;
+//   tr_expected_result: string;
+//   tr_data_test_input: {
+//     param_name: string;  
+//     param_type: string;  
+//     param_value: string;
+//   }[];
+// }
 
 interface DataResponse {
   message: string;
@@ -95,7 +93,6 @@ const EditTestCaseFormDialog = ({
   const modulId = queryParameters.get("topikModulId")
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [editingTestCaseData, setEditingTestCaseData] = useState<TestCaseData | null>(null);
   const isSubmitted = useRef(false);
 
   const form = useForm<FormValues>({
@@ -128,10 +125,10 @@ const EditTestCaseFormDialog = ({
     }
   };
 
-  const fetchTestCaseData = async () => {
-    if (editingTestId) {
+  const fetchTestCaseData = async (id:string) => {
+   
       try {
-        const response = await fetch(`${apiUrl}/modul/TestCase/${modulId}`, {
+        const response = await fetch(`${apiUrl}/modul/DetailTestCase/${id}`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -144,24 +141,14 @@ const EditTestCaseFormDialog = ({
         }
   
         const responseData = await response.json();
-        const testCaseData = responseData.data.find(
-          (testCase: TestCaseData) => testCase.tr_id_test_case === editingTestId
-        );
-  
-        if (!testCaseData) {
-          throw new Error("Test case not found");
-        }
-    
-          // Cek apakah data test case yang diambil berbeda dengan data sebelumnya
-        if (editingTestCaseData && editingTestCaseData.tr_id_test_case === testCaseData.tr_id_test_case) {
-          return;
-        }
+        const testCaseData = responseData.data
 
         form.setValue("no", testCaseData.tr_no);
         form.setValue("objective", testCaseData.tr_object_pengujian);
         form.setValue("expected", testCaseData.tr_expected_result);
   
         const dataTestInputParsed = JSON.parse(testCaseData.tr_data_test_input);
+        console.log(dataTestInputParsed)
         dataTestInputParsed.forEach((input: any) => {
           const param = parameters.find((p) => p.ms_nama_parameter === input.param_name);
           if (param) {
@@ -169,18 +156,11 @@ const EditTestCaseFormDialog = ({
           }
         });
   
-        setEditingTestCaseData(testCaseData);
-        console.log(testCaseData.tr_id_test_case)
       } catch (error) {
         console.error("Error fetching test case data:", error);
       }
-    }
   };
   
-  useEffect(() => {
-    fetchParameters();
-  }, [editingTestId]);
-
 
   // const getValidationRule = (param: ParameterModul) => {
   //   let rules;
@@ -307,20 +287,15 @@ const EditTestCaseFormDialog = ({
 
 
   useEffect(() => {
-    if (isEditFormDialogOpen && editingTestId) {
-      fetchTestCaseData();
-    } else {
-      setEditingTestCaseData(null); // Reset data test case
-      form.reset(); // Reset form
-    }
+      fetchParameters();
+      fetchTestCaseData(editingTestId); 
   }, [isEditFormDialogOpen, editingTestId]);
   
 
   const handleSubmit: SubmitHandler<FormValues> = async (data) => {
     isSubmitted.current = true;
-    if (editingTestCaseData) {
       const formattedData = {
-        id_test_case: editingTestCaseData.tr_id_test_case,
+        id_test_case: editingTestId,
         id_topik_modul: modulId,
         no: data.no,
         object_pengujian: data.objective,
@@ -333,7 +308,7 @@ const EditTestCaseFormDialog = ({
       };
 
       try {
-        form.reset(); // Reset form
+        //form.reset(); // Reset form
         const response = await fetch(`${apiUrl}/modul/editTestCase`, {
           method: "PUT",
           headers: {
@@ -351,28 +326,23 @@ const EditTestCaseFormDialog = ({
           }
         }
 
-        triggerRefresh();
-
         const responseData: DataResponse = await response.json();
         console.log(responseData);
         setShowSuccessMessage(true);
         setTimeout(() => {
           setShowSuccessMessage(false);
           setIsEditFormDialogOpen(false);
+          triggerRefresh();
         }, 3000);
       } catch (error) {
         console.error("Error saving data:", error);
       }
-    }
   };
   
 
   return (
     <>
       <Dialog open={isEditFormDialogOpen} onOpenChange={setIsEditFormDialogOpen}>
-        <DialogTrigger asChild>
-          <FaEdit />
-        </DialogTrigger>
         <DialogContent className="bg-white rounded-[20] overflow-y-auto max-h-[80vh] p-6">
           <DialogHeader>
           <DialogTitle className="text-lg text-center font-bold mb-4">
@@ -443,9 +413,9 @@ const EditTestCaseFormDialog = ({
                 <div className="flex justify-end gap-4">
                   <Button
                      onClick={(e) => {
-                      e.preventDefault()
+                      e.preventDefault();
                       setIsEditFormDialogOpen(false);
-                      // form.reset(); // Reset form
+                      //form.reset(); // Reset form
                       isSubmitted.current = false; // Set isSubmitted menjadi false
                     }}
                     className="border border-black hover:bg-gray-200"

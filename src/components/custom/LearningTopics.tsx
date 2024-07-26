@@ -1,6 +1,7 @@
 import React from 'react';
 import logo_berpikir from "../../assets/logo/berpikir.png";
 import logo_skor from "../../assets/logo/skor.png";
+import { useNavigate } from "react-router-dom";
 
 interface LearningTopic {
   id: string;
@@ -16,6 +17,7 @@ interface LearningTopicsProps {
 }
 
 const LearningTopics: React.FC<LearningTopicsProps> = ({ topics, searchQuery }) => {
+  const navigate = useNavigate();
   const filterTopics = (topics: LearningTopic[], query: string) => {
     if (!query) return topics;
     return topics.filter((topic) =>
@@ -24,7 +26,9 @@ const LearningTopics: React.FC<LearningTopicsProps> = ({ topics, searchQuery }) 
   };
 
   const filteredLearningTopics = filterTopics(topics, searchQuery);
-
+  const onLearn = (id: string) => {
+    navigate("/list-challanges?idTopik="+id);
+  };
   return (
     <>
       {filteredLearningTopics.length > 0 && (
@@ -51,7 +55,7 @@ const LearningTopics: React.FC<LearningTopicsProps> = ({ topics, searchQuery }) 
                   <img src={logo_skor} alt="Logo" className="w-10 mr-2" />
                   <p className="font-semibold">{topic.xp} XP</p>
                 </div>
-                <button className="bg-blue-800 hover:bg-blue-500 text-white px-4 py-2 rounded">
+                <button onClick={() => onLearn(topic.id)} className="bg-blue-800 hover:bg-blue-500 text-white px-4 py-2 rounded">
                   Pelajari
                 </button>
               </div>

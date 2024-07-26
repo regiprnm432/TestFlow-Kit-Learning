@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import { FaEdit } from "react-icons/fa";
 
 import "../../index.css";
 
@@ -54,7 +55,7 @@ const AddTestCaseCard: React.FC = () => {
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [parameters, setParameters] = useState<ParameterModul[]>([]);
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
-  const [editingTestId, setEditingTestId] = useState<string | null>(null);
+  const [editingTestId, setEditingTestId] = useState<string>("0");
   const [isEditFormDialogOpen, setIsEditFormDialogOpen] = useState(false);
   const [deletingTestId, setDeletingTestId] = useState<string | null>(null);
   // const [executedTestCase, setExecutedTestCase] = useState(false);
@@ -414,6 +415,12 @@ const AddTestCaseCard: React.FC = () => {
               setHasUnexecutedChanges(true);
             }}
           />
+          <EditTestCaseFormDialog
+                      editingTestId={editingTestId}
+                      isEditFormDialogOpen={isEditFormDialogOpen}
+                      setIsEditFormDialogOpen={setIsEditFormDialogOpen}
+                      triggerRefresh={fetchTestCases}
+                    />
         </div>
       </CardHeader>
 
@@ -485,12 +492,7 @@ const AddTestCaseCard: React.FC = () => {
                     onClick={() => handleEdit(test.tr_id_test_case)}
                     className="text-blue-500 text-base p-1"
                   >
-                    <EditTestCaseFormDialog
-                      editingTestId={editingTestId}
-                      isEditFormDialogOpen={isEditFormDialogOpen}
-                      setIsEditFormDialogOpen={setIsEditFormDialogOpen}
-                      triggerRefresh={fetchTestCases}
-                    />
+                    <FaEdit />
                   </Button>
                   <Button
                     onClick={() => handleDelete(test.tr_id_test_case)}

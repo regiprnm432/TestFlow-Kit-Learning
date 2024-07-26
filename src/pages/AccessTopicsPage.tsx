@@ -111,8 +111,8 @@ const TopicPage: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleCompletedTopicClick = (title: string) => {
-    console.log(`Clicked on topic: ${title}`);
+  const handleCompletedTopicClick = (id: string) => {
+    console.log(`Clicked on topic id: ${id}`);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
