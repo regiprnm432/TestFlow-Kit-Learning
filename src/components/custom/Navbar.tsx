@@ -36,6 +36,7 @@ export function Navbar() {
   const [idTopik, setIdTopik] = useState("");
   const [topicName, setTopicName] = useState("");
   const linkTopikModul = "/topikModul?topikModulId="+modulId
+  const linkChallanges = "/list-challanges?idTopik="+idTopik
 
   const fetchModuleName = async () => {
     try {
@@ -102,8 +103,8 @@ export function Navbar() {
   }, [idTopik, apiUrl, apiKey]);
 
   const handleBack = () => {
-    // navigate("/list-challanges?idTopik="+idTopik);
-    navigate(-1)
+    navigate(linkChallanges);
+    // navigate(-1)
   };
 
   return (
@@ -139,7 +140,7 @@ export function Navbar() {
               </BreadcrumbSeparator>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href={linkTopikModul}>
+                  <BreadcrumbLink href={linkChallanges}>
                     <span className="text-white text-l hover:text-gray-300">
                       {topicName || "Topik Pengujian"}
                     </span>
@@ -149,7 +150,7 @@ export function Navbar() {
                   <FaAngleRight />
                 </BreadcrumbSeparator>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/components">
+                  <BreadcrumbLink href={linkTopikModul}>
                     <span className="text-white hover:text-gray-300">
                       {moduleName || "Modul Program"}
                     </span>

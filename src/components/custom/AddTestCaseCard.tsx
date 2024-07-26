@@ -487,8 +487,8 @@ const AddTestCaseCard: React.FC = () => {
                   >
                     <EditTestCaseFormDialog
                       editingTestId={editingTestId}
-                      isDialogOpen={isEditFormDialogOpen}
-                      setIsDialogOpen={setIsEditFormDialogOpen}
+                      isEditFormDialogOpen={isEditFormDialogOpen}
+                      setIsEditFormDialogOpen={setIsEditFormDialogOpen}
                       triggerRefresh={fetchTestCases}
                     />
                   </Button>

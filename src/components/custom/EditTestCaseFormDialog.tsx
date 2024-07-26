@@ -20,8 +20,8 @@ import { FaEdit } from "react-icons/fa";
 
 
 interface EditFormDialogProps {
-  isDialogOpen: boolean;
-  setIsDialogOpen: (open: boolean) => void;
+  isEditFormDialogOpen: boolean;
+  setIsEditFormDialogOpen: (open: boolean) => void;
   triggerRefresh: () => void;
   editingTestId: string | null;
 }
@@ -78,8 +78,8 @@ interface FormValues {
 }
 
 const EditTestCaseFormDialog = ({
-  isDialogOpen,
-  setIsDialogOpen,
+  isEditFormDialogOpen,
+  setIsEditFormDialogOpen,
   editingTestId,
   triggerRefresh
 }: EditFormDialogProps) => {
@@ -179,7 +179,7 @@ const EditTestCaseFormDialog = ({
   
   useEffect(() => {
     fetchParameters();
-  }, []);
+  }, [editingTestId]);
 
 
   // const getValidationRule = (param: ParameterModul) => {
@@ -282,14 +282,14 @@ const EditTestCaseFormDialog = ({
       case "int":
         return {
           pattern: {
-            value: /^[0-9]+$/,
+            value: /^-?[0-9]+$/,
             message: "Masukkan angka",
           },
         };
       case "float":
         return {
           pattern: {
-            value: /^[0-9]+(\.[0-9]+)?$/,
+            value: /^-?[0-9]+(\.[0-9]+)?$/,
             message: "Masukkan angka desimal",
           },
         };
@@ -307,13 +307,13 @@ const EditTestCaseFormDialog = ({
 
 
   useEffect(() => {
-    if (isDialogOpen && editingTestId) {
+    if (isEditFormDialogOpen && editingTestId) {
       fetchTestCaseData();
     } else {
       setEditingTestCaseData(null); // Reset data test case
       form.reset(); // Reset form
     }
-  }, [isDialogOpen, editingTestId]);
+  }, [isEditFormDialogOpen, editingTestId]);
   
 
   const handleSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -358,7 +358,7 @@ const EditTestCaseFormDialog = ({
         setShowSuccessMessage(true);
         setTimeout(() => {
           setShowSuccessMessage(false);
-          setIsDialogOpen(false);
+          setIsEditFormDialogOpen(false);
         }, 3000);
       } catch (error) {
         console.error("Error saving data:", error);
@@ -369,7 +369,7 @@ const EditTestCaseFormDialog = ({
 
   return (
     <>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isEditFormDialogOpen} onOpenChange={setIsEditFormDialogOpen}>
         <DialogTrigger asChild>
           <FaEdit />
         </DialogTrigger>
@@ -442,9 +442,10 @@ const EditTestCaseFormDialog = ({
                 />
                 <div className="flex justify-end gap-4">
                   <Button
-                     onClick={() => {
-                      setIsDialogOpen(false);
-                      form.reset(); // Reset form
+                     onClick={(e) => {
+                      e.preventDefault()
+                      setIsEditFormDialogOpen(false);
+                      // form.reset(); // Reset form
                       isSubmitted.current = false; // Set isSubmitted menjadi false
                     }}
                     className="border border-black hover:bg-gray-200"
