@@ -48,7 +48,12 @@ const UploadStudentDataForm = ({
     if (selectedFile) {
       const fileExtension = selectedFile.name.split('.').pop();
       if (fileExtension !== 'xls') {
-        setFileErrorMessage("File yang diunggah harus berformat .xls");
+        setFileErrorMessage("File yang diunggah harus berformat .xls!");
+        setTimeout(() => setFileErrorMessage(""), 3000);
+        return;
+      }
+      if (selectedFile.size > 2 * 1024 * 1024) { 
+        setFileErrorMessage("Ukuran file maksimal 2 MB!");
         setTimeout(() => setFileErrorMessage(""), 3000);
         return;
       }
@@ -83,7 +88,7 @@ const UploadStudentDataForm = ({
     setUploadProgress(0);
     setUploadComplete(false);
     setIsDialogOpen(false);
-  };
+  };  
 
   const handleUpload = () => {
     if (file) {
@@ -172,7 +177,7 @@ const UploadStudentDataForm = ({
             </div>
           )}
           <p className="text-gray-500 text-sm text-center">
-            File yang diunggah harus berstensi .xls dan maksimal 2 MB
+            File yang diunggah harus berekstensi .xls dan maksimal 2 MB
           </p>
           {fileErrorMessage && (
               <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md w-full">
