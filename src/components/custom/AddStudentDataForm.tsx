@@ -52,6 +52,7 @@ const AddStudentDataForm = ({
 
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [formTitle, setFormTitle] = useState("Form Tambah Data Mahasiswa");
 
     const form = useForm<FormData>({
         mode: "onBlur",
@@ -185,8 +186,10 @@ const AddStudentDataForm = ({
         if (idStudent != "0"){
             form.reset();
             fetchDataStudent(idStudent);
+            setFormTitle("Form Edit Data Mahasiswa");
         }else{
             form.reset();
+            setFormTitle("Form Tambah Data Mahasiswa");
         }
     }, [isDialogOpen, form, idStudent]);
 
@@ -205,7 +208,7 @@ const AddStudentDataForm = ({
                 </DialogTrigger>
                 <DialogContent className="bg-white p-10 rounded-lg shadow-lg max-w-2xl mx-auto">
                     <DialogHeader>
-                        <DialogTitle className="text-lg text-center font-bold mb-4">Form Tambah Data Mahasiswa</DialogTitle>
+                        <DialogTitle className="text-lg text-center font-bold mb-4">{formTitle}</DialogTitle>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                                 <FormField
