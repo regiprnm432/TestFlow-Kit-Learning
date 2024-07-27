@@ -40,10 +40,18 @@ const UploadStudentDataForm = ({
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
+      const fileExtension = selectedFile.name.split('.').pop();
+      if (fileExtension !== 'xls') {
+        setFileErrorMessage("File yang diunggah harus berformat .xls");
+        setTimeout(() => setFileErrorMessage(""), 3000);
+        return;
+      }
       setFile(selectedFile);
       setUploadProgress(0);
       setUploadComplete(false);
@@ -166,6 +174,11 @@ const UploadStudentDataForm = ({
           <p className="text-gray-500 text-sm text-center">
             File yang diunggah harus berstensi .xls dan maksimal 2 MB
           </p>
+          {fileErrorMessage && (
+              <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md w-full">
+                {fileErrorMessage}
+              </div>
+          )}
           <div className="flex justify-end space-x-4 w-full mt-6">
             <Button
               type="button"
