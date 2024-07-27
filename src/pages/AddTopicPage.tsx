@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import SelectModuleDialog from '@/components/custom/SelectModuleDialog';
 import ConfirmationModal from '../components/custom/ConfirmationModal';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+import { AiFillCaretUp, AiFillCaretDown } from 'react-icons/ai';
 import { 
   Form, 
   FormField, 
@@ -256,7 +257,7 @@ const AddTopicPage: React.FC = () => {
   const confirmDelete = () => {
     if (moduleToDelete) {
       setSelectedModules(prev => prev.filter(m => m.id !== moduleToDelete.id));
-      setInfoModuleMessage("Modul berhasil dihapus.");
+      setInfoModuleMessage("Modul berhasil dihapus");
       setShowConfirmation(false);
       setModuleToDelete(null);
       setTimeout(() => setInfoModuleMessage(null), 2000);
@@ -266,6 +267,26 @@ const AddTopicPage: React.FC = () => {
   const cancelDelete = () => {
     setShowConfirmation(false);
     setModuleToDelete(null);
+  };
+
+  const moveModuleUp = (index: number) => {
+    if (index > 0) {
+      const newModules = [...selectedModules];
+      const temp = newModules[index];
+      newModules[index] = newModules[index - 1];
+      newModules[index - 1] = temp;
+      setSelectedModules(newModules);
+    }
+  };
+
+  const moveModuleDown = (index: number) => {
+    if (index < selectedModules.length - 1) {
+      const newModules = [...selectedModules];
+      const temp = newModules[index];
+      newModules[index] = newModules[index + 1];
+      newModules[index + 1] = temp;
+      setSelectedModules(newModules);
+    }
   };
 
   useEffect(() => {
@@ -389,9 +410,23 @@ const AddTopicPage: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 border">
-                    <Button onClick={() => handleDeleteModule(module)} className="text-red-600">
-                      <FaTrash />
-                    </Button>
+                    <div className="flex justify-center items-center space-x-2">
+                      <div className="flex flex-col items-center">
+                        {index > 0 && (
+                          <Button onClick={() => moveModuleUp(index)} className="text-blue-600">
+                            <AiFillCaretUp />
+                          </Button>
+                        )}
+                        {index < selectedModules.length - 1 && (
+                          <Button onClick={() => moveModuleDown(index)} className="text-blue-600">
+                            <AiFillCaretDown />
+                          </Button>
+                        )}
+                      </div>
+                      <Button onClick={() => handleDeleteModule(module)} className="text-red-600 self-center">
+                        <FaTrash />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
