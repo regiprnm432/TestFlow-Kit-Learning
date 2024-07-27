@@ -45,13 +45,23 @@ const AddTopicPage: React.FC = () => {
   const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null);
   const [infoModuleMessage, setInfoModuleMessage] = useState<string | null>(null);
   const [topicName, setTopicName] = useState<string>("");
+  const [isSortedInitially, setIsSortedInitially] = useState(true);
 
   const form = useForm({
     mode: "onBlur",
   });
 
+
+  const difficultyOrder:any = {
+    'Sangat Mudah': 1,
+    'Mudah': 2,
+    'Sedang': 3,
+    'Sulit': 4
+  };
+
   const handleAddModules = (modules: Module[]) => {
     setSelectedModules(modules);
+    setIsSortedInitially(true);
   };
 
   const handleCancel = () => {
@@ -229,11 +239,29 @@ const AddTopicPage: React.FC = () => {
           difficulty: dataModul[i].tingkat_kesulitan,
         })
       }
-      setSelectedModules(tempModul)
+      setSelectedModules(tempModul);
+      setIsSortedInitially(true);
     } catch (error) {
       console.error("Error fetching module name:", error);
     }
   };
+  
+
+  useEffect(() => {
+    if (topikId !=  null){
+        setScreenName("Edit Topik Pengujian");
+        fetchDataTopik(topikId);
+    }
+  }, []); 
+
+  useEffect(() => {
+    if (isSortedInitially) {
+      const sortedModules = [...selectedModules].sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+      setSelectedModules(sortedModules);
+      setIsSortedInitially(false);
+    }
+  }, [selectedModules, isSortedInitially]);
+
   const getDifficultyStyle = (difficulty: string) => {
     switch (difficulty) {
       case 'Sangat Mudah':
@@ -289,12 +317,6 @@ const AddTopicPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (topikId !=  null){
-        setScreenName("Edit Topik Pengujian");
-        fetchDataTopik(topikId);
-    }
-  }, []); 
   return (
     <LayoutForm screenName={screenName}>
       {infoMessage && (
@@ -399,7 +421,7 @@ const AddTopicPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {selectedModules.map((module, index) => (
+              {selectedModules.map((module: Module, index: number) => (
                 <tr key={module.id} className={`text-center ${index % 2 === 0 ? 'bg-blue-50' : 'bg-white'}`}>
                   <td className="py-2 px-4 border">{index + 1}</td>
                   <td className="py-2 px-4 border">{module.name}</td>
@@ -411,19 +433,19 @@ const AddTopicPage: React.FC = () => {
                   </td>
                   <td className="py-2 px-4 border">
                     <div className="flex justify-center items-center space-x-2">
-                      <div className="flex flex-col items-center">
+                      <div className="flex flex-col items-center bg-transparent">
                         {index > 0 && (
-                          <Button onClick={() => moveModuleUp(index)} className="text-blue-600">
+                          <Button onClick={() => moveModuleUp(index)} className="text-blue-600 bg-transparent">
                             <AiFillCaretUp />
                           </Button>
                         )}
                         {index < selectedModules.length - 1 && (
-                          <Button onClick={() => moveModuleDown(index)} className="text-blue-600">
+                          <Button onClick={() => moveModuleDown(index)} className="text-blue-600 bg-transparent">
                             <AiFillCaretDown />
                           </Button>
                         )}
                       </div>
-                      <Button onClick={() => handleDeleteModule(module)} className="text-red-600 self-center">
+                      <Button onClick={() => handleDeleteModule(module)} className="text-red-600 self-center bg-transparent">
                         <FaTrash />
                       </Button>
                     </div>
