@@ -43,6 +43,7 @@ const AddTopicPage: React.FC = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null);
   const [infoModuleMessage, setInfoModuleMessage] = useState<string | null>(null);
+  const [topicName, setTopicName] = useState<string>("");
 
   const form = useForm({
     mode: "onBlur",
@@ -216,6 +217,7 @@ const AddTopicPage: React.FC = () => {
       console.log(data.data.ms_nama_topik)
       form.setValue("namaTopik", data.data.ms_nama_topik);
       form.setValue("deskripsiTopik", data.data.ms_deskripsi_topik);
+      setTopicName(data.data.ms_nama_topik);
       const dataModul = data.dataModul;
       let tempModul = [];
       for (let i=0; i<dataModul.length; i++){
@@ -308,7 +310,16 @@ const AddTopicPage: React.FC = () => {
                       <div className="w-1/12 text-center">:</div>
                       <FormControl className="flex-1">
                         <div>
-                          <Input {...field} id="nama-topik" type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                        <Input
+                            {...field}
+                            id="nama-topik"
+                            type="text"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setTopicName(e.target.value);
+                            }}
+                          />
                           <p className="text-gray-500 text-sm mt-1">
                             * Nama topik harus unik, belum pernah dibuat sebelumnya.
                           </p>
@@ -403,6 +414,7 @@ const AddTopicPage: React.FC = () => {
         setIsDialogOpen={setIsSelectModuleDialogOpen}
         onAddModules={handleAddModules}
         selectedModules={selectedModules}
+        topicName={topicName}
       />
        {showConfirmation && (
         <ConfirmationModal 

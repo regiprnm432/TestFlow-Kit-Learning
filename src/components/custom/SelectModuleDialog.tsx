@@ -16,9 +16,10 @@ interface SelectModuleDialogProps {
   setIsDialogOpen: (open: boolean) => void;
   onAddModules: (modules: Module[]) => void;
   selectedModules: Module[];
+  topicName: string;
 }
 
-const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, setIsDialogOpen, onAddModules, selectedModules }) => {
+const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, setIsDialogOpen, onAddModules, selectedModules, topicName }) => {
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
@@ -32,6 +33,7 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [modules, setModules] = useState<Module[]>([]);
   const itemsPerPage = 4; // Number of items per page
+  const [tempSelectedModules, setTempSelectedModules] = useState<Module[]>(selectedModules);
 
   // const allModules: Module[] = [
   //   { id: '1', name: 'Perkalian', description: 'Modul mengalikan dua buah bilangan', difficulty: 'Sangat Mudah' },
@@ -59,6 +61,10 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
   useEffect(() => {
     fetchModules(currentPage);
   }, [currentPage]);
+
+  useEffect(() => {
+    setTempSelectedModules(selectedModules);
+  }, [isDialogOpen]);
 
   const fetchModules = async (page: number) => {
     // Simulate fetching modules from an API or data source
@@ -103,16 +109,16 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
   const toggleModuleSelection = (moduleId: string) => {
     const selectedModule = modules.find(m => m.id === moduleId);
     if (selectedModule) {
-      if (selectedModules.some(m => m.id === moduleId)) {
-        onAddModules(selectedModules.filter(m => m.id !== moduleId));
+      if (tempSelectedModules.some(m => m.id === moduleId)) {
+        setTempSelectedModules(tempSelectedModules.filter(m => m.id !== moduleId));
       } else {
-        onAddModules([...selectedModules, selectedModule]);
+        setTempSelectedModules([...tempSelectedModules, selectedModule]);
       }
     }
-    
   };
 
-  const isSelected = (moduleId: string) => selectedModules.some(m => m.id === moduleId);
+  const isSelected = (moduleId: string) => tempSelectedModules.some(m => m.id === moduleId);
+
 
   // const totalPages = Math.ceil(allModules.length / itemsPerPage);
 
@@ -131,12 +137,23 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
     }
   };
 
+  const handleCancel = () => {
+    setTempSelectedModules(selectedModules); // Reset to original selected modules
+    setIsDialogOpen(false);
+  };
+
+  const handleAdd = () => {
+    onAddModules(tempSelectedModules); // Keep the changes
+    setIsDialogOpen(false);
+  };
+
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent className="bg-white p-4 md:p-10 rounded-lg shadow-lg max-w-4xl mx-auto max-h-screen overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg text-center font-bold mb-2">
-            Tambahkan Tantangan Pada Topik
+            Tambahkan Tantangan Pada Topik {topicName}
           </DialogTitle>
         </DialogHeader>
         <div className="overflow-x-auto text-sm">
@@ -145,7 +162,7 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
               <tr className="bg-blue-800 text-white">
                 <th className="py-2 px-4 border">No</th>
                 <th className="py-2 px-4 border">Select</th>
-                <th className="py-2 px-4 border">Nama Tantangan</th>
+                <th className="py-2 px-4 border">Nama Modul Program</th>
                 <th className="py-2 px-4 border">Deskripsi</th>
                 <th className="py-2 px-4 border">Tingkat Kesulitan</th>
               </tr>
@@ -181,12 +198,12 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
           </div>
         </div>
         <div className="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-4 w-full">
-          <Button className="bg-transparent border border-blue-800 text-blue-800 rounded-full px-4 py-2 hover:bg-blue-100" onClick={() => setIsDialogOpen(false)}>
+          <Button className="bg-transparent border border-blue-800 text-blue-800 rounded-full px-4 py-2 hover:bg-blue-100" onClick={handleCancel}>
             Kembali
           </Button>
-          {/* <Button className="bg-blue-800 text-white rounded-full px-4 py-2 hover:bg-blue-700" onClick={() => setIsDialogOpen(false)}>
+          <Button className="bg-blue-800 text-white rounded-full px-4 py-2 hover:bg-blue-700" onClick={handleAdd}>
             Tambahkan
-          </Button> */}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
