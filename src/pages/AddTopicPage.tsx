@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LayoutForm from './LayoutForm';
 import { Button } from "@/components/ui/button";
 import SelectModuleDialog from '@/components/custom/SelectModuleDialog';
+import ConfirmationModal from '../components/custom/ConfirmationModal';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import { 
   Form, 
@@ -39,6 +40,9 @@ const AddTopicPage: React.FC = () => {
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [moduleError, setModuleError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null);
+  const [infoModuleMessage, setInfoModuleMessage] = useState<string | null>(null);
 
   const form = useForm({
     mode: "onBlur",
@@ -241,6 +245,27 @@ const AddTopicPage: React.FC = () => {
         return '';
     }
   };
+
+  const handleDeleteModule = (module: Module) => {
+    setShowConfirmation(true);
+    setModuleToDelete(module);
+  };
+
+  const confirmDelete = () => {
+    if (moduleToDelete) {
+      setSelectedModules(prev => prev.filter(m => m.id !== moduleToDelete.id));
+      setInfoModuleMessage("Modul berhasil dihapus.");
+      setShowConfirmation(false);
+      setModuleToDelete(null);
+      setTimeout(() => setInfoModuleMessage(null), 2000);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowConfirmation(false);
+    setModuleToDelete(null);
+  };
+
   useEffect(() => {
     if (topikId !=  null){
         setScreenName("Edit Topik Pengujian");
@@ -320,12 +345,17 @@ const AddTopicPage: React.FC = () => {
         </Form>
 
         <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-3">
             <h2 className="text-gray-700 text-lg font-bold">Daftar Modul Program <span className="text-red-500">*</span></h2>
             <Button className="text-white bg-blue-800 px-3 py-2 shadow hover:bg-blue-700 rounded-full" onClick={() => setIsSelectModuleDialogOpen(true)}>
               <FaPlus />
             </Button>
           </div>
+          {infoModuleMessage && (
+            <div className="p-2 mb-3 text-green-500 bg-green-100 rounded-md">
+            {infoModuleMessage}
+            </div>
+          )}
           <table className="min-w-full bg-white border rounded-lg shadow-md text-sm">
             <thead>
               <tr className="bg-blue-800 text-white">
@@ -348,7 +378,7 @@ const AddTopicPage: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 border">
-                    <Button onClick={() => setSelectedModules(prev => prev.filter(m => m.id !== module.id))} className="text-red-600">
+                    <Button onClick={() => handleDeleteModule(module)} className="text-red-600">
                       <FaTrash />
                     </Button>
                   </td>
@@ -374,6 +404,13 @@ const AddTopicPage: React.FC = () => {
         onAddModules={handleAddModules}
         selectedModules={selectedModules}
       />
+       {showConfirmation && (
+        <ConfirmationModal 
+          message="Apakah Anda yakin ingin menghapus modul ini?" 
+          onConfirm={confirmDelete} 
+          onCancel={cancelDelete} 
+        />
+      )}
     </LayoutForm>
   );
 };
