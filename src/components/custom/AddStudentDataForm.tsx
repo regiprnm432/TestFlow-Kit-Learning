@@ -106,7 +106,7 @@ const AddStudentDataForm = ({
                 setTimeout(() => {
                     setShowSuccessMessage(false);
                     setIsDialogOpen(false);
-                }, 3000); // Hide the message after 3 seconds
+                }, 2000); // Hide the message after 2 seconds
                 afterSave();
             }
             
@@ -144,7 +144,7 @@ const AddStudentDataForm = ({
             setTimeout(() => {
                 setShowSuccessMessage(false);
                 setIsDialogOpen(false);
-            }, 3000); // Hide the message after 3 seconds
+            }, 2000); // Hide the message after 2 seconds
             afterSave();
           }
         } catch (error) {
