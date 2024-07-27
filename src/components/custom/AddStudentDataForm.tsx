@@ -87,12 +87,18 @@ const AddStudentDataForm = ({
             },
             body: JSON.stringify(student),
             });
-            
+
+            const data = await response.json();
+
             if (!response.ok) {
                 if (response.status === 403) {
                     navigate("/error")
+                } else if (response.status == 400){
+                    setErrorMessage(data.message);
+                    setTimeout(() => setErrorMessage(""), 2000);
                 } else {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    setErrorMessage(`HTTP error! status: ${response.status}`);
+                    setTimeout(() => setErrorMessage(""), 2000);
                 }
             }else{
                 setShowSuccessMessage(true);
@@ -119,12 +125,18 @@ const AddStudentDataForm = ({
             },
             body: JSON.stringify(student),
             });
+
+            const data = await response.json();
             
           if (!response.ok) {
             if (response.status === 403) {
               navigate("/error")
+            } else if (response.status == 400){
+                setErrorMessage(data.message);
+                setTimeout(() => setErrorMessage(""), 2000);
             } else {
-              throw new Error(`HTTP error! status: ${response.status}`);
+                setErrorMessage(`HTTP error! status: ${response.status}`);
+                setTimeout(() => setErrorMessage(""), 2000);
             }
           }else{
             setShowSuccessMessage(true);
@@ -134,7 +146,6 @@ const AddStudentDataForm = ({
             }, 3000); // Hide the message after 3 seconds
             afterSave();
           }
-          
         } catch (error) {
           console.error("Error fetching module name:", error);
         }
@@ -312,8 +323,8 @@ const AddStudentDataForm = ({
                                     )}
                                 />
                                 {errorMessage && (
-                                    <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
-                                        {errorMessage}
+                                    <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md">
+                                    {errorMessage}
                                     </div>
                                 )}
                                 <div className="flex justify-end gap-4">
