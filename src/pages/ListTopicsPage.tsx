@@ -131,7 +131,7 @@ const ListTopicsPage: React.FC = () => {
   const [totalPages,setTotalPages]= useState<number>(1);
   
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   const navigate = useNavigate();
 
@@ -335,7 +335,7 @@ const ListTopicsPage: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className={`flex-1 ${isSidebarOpen ? 'ml-64' : 'ml-20'} transition-all duration-300`}>
+      <div className={`flex-1 ${isSidebarOpen ? 'ml-64' : 'ml-20'} transition-all duration-300 overflow-x-auto`}>
         <div className="w-full bg-white p-4 shadow mb-6">
           <div className="max-w-screen-xl mx-auto">
             <h1 className="text-2xl font-bold text-blue-800 mb-6 mt-4">Kelola Data Topik Pengujian</h1>
@@ -360,7 +360,7 @@ const ListTopicsPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="min-h-screen p-4 md:p-6">
+        <div className="min-h-screen p-4 md:p-6 ">
           <div className="bg-white shadow-md rounded-lg overflow-x-auto">
           {infoMessage && (
               <div className="p-4 mb-4 text-green-500 bg-green-100 rounded-md">

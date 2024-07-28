@@ -59,7 +59,7 @@ const formatStudentAccess = (access: number | string) => {
 
 const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort, onTogglePublish, onDelete, onEdit }) => {
   return (
-    <table className="min-w-full">
+    <table className="min-w-full ">
       <thead className="bg-blue-800 text-white" style={{ fontSize: '14px' }}>
         <tr>
           <th className="py-3 px-6 text-left border-b border-r">Nama Topik</th>

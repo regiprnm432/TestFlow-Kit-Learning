@@ -119,7 +119,7 @@ const ListModulesPage = () => {
       }else{
         setDeleteMessage("Modul berhasil dihapus.");
         setTimeout(() => setDeleteMessage(null), 2000);
-        fetchDataModul(currentPage, searchTerm);
+        fetchDataModul(1, searchTerm); 
       }
     } catch (error) {
       console.error('Error fetching data:', error);

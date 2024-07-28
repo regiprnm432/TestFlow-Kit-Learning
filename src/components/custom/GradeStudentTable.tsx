@@ -31,7 +31,7 @@ const GradeStudentTable: React.FC<StudentTableProps> = ({ students, onSort, sort
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="bg-white shadow-md rounded-lg overflow-x-auto">
       <table className="min-w-full">
         <thead className="bg-blue-800 text-white" style={{ fontSize: '14px' }}>
           <tr>

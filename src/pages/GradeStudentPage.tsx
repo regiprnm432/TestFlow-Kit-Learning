@@ -147,7 +147,7 @@ const GradeStudentPage: React.FC = () => {
     }
   };
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   // let filteredStudents = students;
   // if (searchQuery) {
@@ -299,8 +299,8 @@ const GradeStudentPage: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className={`flex-1 ${isSidebarOpen ? "ml-64" : "ml-20"} transition-all duration-300`}>
-        <div className="w-full bg-white p-4 shadow mb-6">
+      <div className={`flex-1 ${isSidebarOpen ? "ml-64" : "ml-20"} transition-all duration-300 `}>
+        <div className="w-full bg-white p-4 shadow mb-6 ">
           <div className="max-w-screen-xl mx-auto">
             <h1 className="text-2xl font-bold text-blue-800 mb-6 mt-4">
               Grade Pencapaian Mahasiswa
@@ -343,7 +343,7 @@ const GradeStudentPage: React.FC = () => {
             <FaDownload className="mr-2" />
             Unduh
           </button>
-          <div className="bg-white shadow-md rounded-lg overflow-x-auto">
+          <div className="bg-white shadow-md rounded-lg">
             {students.length === 0 ? (
               <div className="p-4 text-center text-red-500">
                 Data tidak ditemukan

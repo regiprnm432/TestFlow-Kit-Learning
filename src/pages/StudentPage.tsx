@@ -182,7 +182,7 @@ const StudentPage: React.FC = () => {
   const [isAddStudentFormOpen, setIsAddStudentFormOpen] = useState(false);
   const [isUploadStudentFormOpen, setIsUploadStudentFormOpen] = useState(false);
   const [totalPages,setTotalPages]= useState<number>(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
