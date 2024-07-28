@@ -15,6 +15,15 @@ import {
 import PassCard from "@/components/custom/PassCard";
 
 const ExecutionTestCasePassPage: React.FC = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
+
   const [showCyclomaticComplexity] = useState(true);
   const [showCodeCoverage] = useState(false);
   // const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
@@ -64,12 +73,47 @@ const ExecutionTestCasePassPage: React.FC = () => {
     const handleNavigateToTestResult = () => {
       const dataToPass: NavigationDataModul = {
         modul_id: navigationData?.modul_id,
-        };
+      };
   
-        // SetDataIdModul(dataToPass);
-        navigate("/test-result?topikModulId="+modulId, { state: dataToPass });
-      }  
-
+      // SetDataIdModul(dataToPass);
+      navigate("/test-result?topikModulId="+modulId, { state: dataToPass });
+    } 
+    
+    const handleNavigateNextChallenge = async() => {
+      try {
+        const response = await fetch(`${apiUrl}/topik/nextChallenge?idTopikModul=${modulId}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          }
+        });
+  
+        if (!response.ok) {
+          if (response.status === 403) {
+            // throw new Error('Forbidden: Access is denied');
+            navigate('/error');
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+        }
+        
+        const data = await response.json();
+        if (data.data){
+          navigate({
+            pathname: '/topikModul',
+            search: '?topikModulId='+data.data.ms_id_topik_modul,
+          });
+        } else{
+          navigate({
+            pathname: '/list-challanges',
+            search: '?idTopik='+data.data_current.ms_id_topik,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+     } 
 
   useEffect(() => {
     // Mendapatkan nilai percentageCoverage, minimumCoverage, dan points dari URL query params
@@ -131,6 +175,7 @@ const ExecutionTestCasePassPage: React.FC = () => {
                         </Button>
                         <Button
                             className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
+                            onClick={handleNavigateNextChallenge}
                         >
                             Kasus Selanjutnya
                         </Button>
