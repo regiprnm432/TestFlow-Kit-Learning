@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import LayoutForm from './LayoutForm';
 import { Button } from "@/components/ui/button";
 import SelectModuleDialog from '@/components/custom/SelectModuleDialog';
+import ConfirmationModal from '../components/custom/ConfirmationModal';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+import { AiFillCaretUp, AiFillCaretDown } from 'react-icons/ai';
 import { 
   Form, 
   FormField, 
@@ -39,13 +41,27 @@ const AddTopicPage: React.FC = () => {
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [moduleError, setModuleError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null);
+  const [infoModuleMessage, setInfoModuleMessage] = useState<string | null>(null);
+  const [topicName, setTopicName] = useState<string>("");
+  const [isSortedInitially, setIsSortedInitially] = useState(true);
 
   const form = useForm({
     mode: "onBlur",
   });
 
+
+  const difficultyOrder:any = {
+    'Sangat Mudah': 1,
+    'Mudah': 2,
+    'Sedang': 3,
+    'Sulit': 4
+  };
+
   const handleAddModules = (modules: Module[]) => {
     setSelectedModules(modules);
+    setIsSortedInitially(true);
   };
 
   const handleCancel = () => {
@@ -212,6 +228,7 @@ const AddTopicPage: React.FC = () => {
       console.log(data.data.ms_nama_topik)
       form.setValue("namaTopik", data.data.ms_nama_topik);
       form.setValue("deskripsiTopik", data.data.ms_deskripsi_topik);
+      setTopicName(data.data.ms_nama_topik);
       const dataModul = data.dataModul;
       let tempModul = [];
       for (let i=0; i<dataModul.length; i++){
@@ -222,11 +239,29 @@ const AddTopicPage: React.FC = () => {
           difficulty: dataModul[i].tingkat_kesulitan,
         })
       }
-      setSelectedModules(tempModul)
+      setSelectedModules(tempModul);
+      setIsSortedInitially(true);
     } catch (error) {
       console.error("Error fetching module name:", error);
     }
   };
+  
+
+  useEffect(() => {
+    if (topikId !=  null){
+        setScreenName("Edit Topik Pengujian");
+        fetchDataTopik(topikId);
+    }
+  }, []); 
+
+  useEffect(() => {
+    if (isSortedInitially) {
+      const sortedModules = [...selectedModules].sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+      setSelectedModules(sortedModules);
+      setIsSortedInitially(false);
+    }
+  }, [selectedModules, isSortedInitially]);
+
   const getDifficultyStyle = (difficulty: string) => {
     switch (difficulty) {
       case 'Sangat Mudah':
@@ -241,12 +276,47 @@ const AddTopicPage: React.FC = () => {
         return '';
     }
   };
-  useEffect(() => {
-    if (topikId !=  null){
-        setScreenName("Edit Topik Pengujian");
-        fetchDataTopik(topikId);
+
+  const handleDeleteModule = (module: Module) => {
+    setShowConfirmation(true);
+    setModuleToDelete(module);
+  };
+
+  const confirmDelete = () => {
+    if (moduleToDelete) {
+      setSelectedModules(prev => prev.filter(m => m.id !== moduleToDelete.id));
+      setInfoModuleMessage("Modul berhasil dihapus");
+      setShowConfirmation(false);
+      setModuleToDelete(null);
+      setTimeout(() => setInfoModuleMessage(null), 2000);
     }
-  }, []); 
+  };
+
+  const cancelDelete = () => {
+    setShowConfirmation(false);
+    setModuleToDelete(null);
+  };
+
+  const moveModuleUp = (index: number) => {
+    if (index > 0) {
+      const newModules = [...selectedModules];
+      const temp = newModules[index];
+      newModules[index] = newModules[index - 1];
+      newModules[index - 1] = temp;
+      setSelectedModules(newModules);
+    }
+  };
+
+  const moveModuleDown = (index: number) => {
+    if (index < selectedModules.length - 1) {
+      const newModules = [...selectedModules];
+      const temp = newModules[index];
+      newModules[index] = newModules[index + 1];
+      newModules[index + 1] = temp;
+      setSelectedModules(newModules);
+    }
+  };
+
   return (
     <LayoutForm screenName={screenName}>
       {infoMessage && (
@@ -283,7 +353,16 @@ const AddTopicPage: React.FC = () => {
                       <div className="w-1/12 text-center">:</div>
                       <FormControl className="flex-1">
                         <div>
-                          <Input {...field} id="nama-topik" type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                        <Input
+                            {...field}
+                            id="nama-topik"
+                            type="text"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setTopicName(e.target.value);
+                            }}
+                          />
                           <p className="text-gray-500 text-sm mt-1">
                             * Nama topik harus unik, belum pernah dibuat sebelumnya.
                           </p>
@@ -320,12 +399,17 @@ const AddTopicPage: React.FC = () => {
         </Form>
 
         <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-3">
             <h2 className="text-gray-700 text-lg font-bold">Daftar Modul Program <span className="text-red-500">*</span></h2>
             <Button className="text-white bg-blue-800 px-3 py-2 shadow hover:bg-blue-700 rounded-full" onClick={() => setIsSelectModuleDialogOpen(true)}>
               <FaPlus />
             </Button>
           </div>
+          {infoModuleMessage && (
+            <div className="p-2 mb-3 text-green-500 bg-green-100 rounded-md">
+            {infoModuleMessage}
+            </div>
+          )}
           <table className="min-w-full bg-white border rounded-lg shadow-md text-sm">
             <thead>
               <tr className="bg-blue-800 text-white">
@@ -337,7 +421,7 @@ const AddTopicPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {selectedModules.map((module, index) => (
+              {selectedModules.map((module: Module, index: number) => (
                 <tr key={module.id} className={`text-center ${index % 2 === 0 ? 'bg-blue-50' : 'bg-white'}`}>
                   <td className="py-2 px-4 border">{index + 1}</td>
                   <td className="py-2 px-4 border">{module.name}</td>
@@ -348,9 +432,23 @@ const AddTopicPage: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 border">
-                    <Button onClick={() => setSelectedModules(prev => prev.filter(m => m.id !== module.id))} className="text-red-600">
-                      <FaTrash />
-                    </Button>
+                    <div className="flex justify-center items-center space-x-2">
+                      <div className="flex flex-col items-center bg-transparent">
+                        {index > 0 && (
+                          <Button onClick={() => moveModuleUp(index)} className="text-blue-600 bg-transparent">
+                            <AiFillCaretUp />
+                          </Button>
+                        )}
+                        {index < selectedModules.length - 1 && (
+                          <Button onClick={() => moveModuleDown(index)} className="text-blue-600 bg-transparent">
+                            <AiFillCaretDown />
+                          </Button>
+                        )}
+                      </div>
+                      <Button onClick={() => handleDeleteModule(module)} className="text-red-600 self-center bg-transparent">
+                        <FaTrash />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -373,7 +471,15 @@ const AddTopicPage: React.FC = () => {
         setIsDialogOpen={setIsSelectModuleDialogOpen}
         onAddModules={handleAddModules}
         selectedModules={selectedModules}
+        topicName={topicName}
       />
+       {showConfirmation && (
+        <ConfirmationModal 
+          message="Apakah Anda yakin ingin menghapus modul ini?" 
+          onConfirm={confirmDelete} 
+          onCancel={cancelDelete} 
+        />
+      )}
     </LayoutForm>
   );
 };

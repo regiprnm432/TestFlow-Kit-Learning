@@ -52,6 +52,7 @@ const AddStudentDataForm = ({
 
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [formTitle, setFormTitle] = useState("Form Tambah Data Mahasiswa");
 
     const form = useForm<FormData>({
         mode: "onBlur",
@@ -87,19 +88,25 @@ const AddStudentDataForm = ({
             },
             body: JSON.stringify(student),
             });
-            
+
+            const data = await response.json();
+
             if (!response.ok) {
                 if (response.status === 403) {
                     navigate("/error")
+                } else if (response.status == 400){
+                    setErrorMessage(data.message);
+                    setTimeout(() => setErrorMessage(""), 2000);
                 } else {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    setErrorMessage(`HTTP error! status: ${response.status}`);
+                    setTimeout(() => setErrorMessage(""), 2000);
                 }
             }else{
                 setShowSuccessMessage(true);
                 setTimeout(() => {
                     setShowSuccessMessage(false);
                     setIsDialogOpen(false);
-                }, 3000); // Hide the message after 3 seconds
+                }, 2000); // Hide the message after 2 seconds
                 afterSave();
             }
             
@@ -119,22 +126,27 @@ const AddStudentDataForm = ({
             },
             body: JSON.stringify(student),
             });
+
+            const data = await response.json();
             
           if (!response.ok) {
             if (response.status === 403) {
               navigate("/error")
+            } else if (response.status == 400){
+                setErrorMessage(data.message);
+                setTimeout(() => setErrorMessage(""), 2000);
             } else {
-              throw new Error(`HTTP error! status: ${response.status}`);
+                setErrorMessage(`HTTP error! status: ${response.status}`);
+                setTimeout(() => setErrorMessage(""), 2000);
             }
           }else{
             setShowSuccessMessage(true);
             setTimeout(() => {
                 setShowSuccessMessage(false);
                 setIsDialogOpen(false);
-            }, 3000); // Hide the message after 3 seconds
+            }, 2000); // Hide the message after 2 seconds
             afterSave();
           }
-          
         } catch (error) {
           console.error("Error fetching module name:", error);
         }
@@ -174,8 +186,10 @@ const AddStudentDataForm = ({
         if (idStudent != "0"){
             form.reset();
             fetchDataStudent(idStudent);
+            setFormTitle("Form Edit Data Mahasiswa");
         }else{
             form.reset();
+            setFormTitle("Form Tambah Data Mahasiswa");
         }
     }, [isDialogOpen, form, idStudent]);
 
@@ -194,7 +208,7 @@ const AddStudentDataForm = ({
                 </DialogTrigger>
                 <DialogContent className="bg-white p-10 rounded-lg shadow-lg max-w-2xl mx-auto">
                     <DialogHeader>
-                        <DialogTitle className="text-lg text-center font-bold mb-4">Form Tambah Data Mahasiswa</DialogTitle>
+                        <DialogTitle className="text-lg text-center font-bold mb-4">{formTitle}</DialogTitle>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                                 <FormField
@@ -312,8 +326,8 @@ const AddStudentDataForm = ({
                                     )}
                                 />
                                 {errorMessage && (
-                                    <div className="bg-red-100 text-red-700 p-2 mb-4 text-sm">
-                                        {errorMessage}
+                                    <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md">
+                                    {errorMessage}
                                     </div>
                                 )}
                                 <div className="flex justify-end gap-4">

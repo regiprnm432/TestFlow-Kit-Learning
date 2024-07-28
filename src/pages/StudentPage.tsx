@@ -304,9 +304,17 @@ const StudentPage: React.FC = () => {
             }
         )
       }
-      setStudents(tempStudents)
-      setTotalPages(data.max_page)
       
+      // setStudents(tempStudents)
+      // setTotalPages(data.max_page)
+
+      if (tempStudents.length === 0 && page > 1) {
+        setCurrentPage(page - 1); // Go to the previous page if no data in the current page
+        fetchDataStudent(page - 1, keyword);
+      } else {
+        setStudents(tempStudents);
+        setTotalPages(data.max_page);
+      }
     } catch (error) {
       setErrorMessage("Error fetching data");
       setTimeout(() => setErrorMessage(""), 3000);
