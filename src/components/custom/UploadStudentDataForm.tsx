@@ -47,22 +47,38 @@ const UploadStudentDataForm = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      const fileExtension = selectedFile.name.split('.').pop();
-      if (fileExtension !== 'xls') {
-        setFileErrorMessage("File yang diunggah harus berformat .xls!");
-        setTimeout(() => setFileErrorMessage(""), 3000);
-        return;
-      }
-      if (selectedFile.size > 2 * 1024 * 1024) {
-        setFileErrorMessage("Ukuran file maksimal 2 MB!");
-        setTimeout(() => setFileErrorMessage(""), 3000);
-        return;
-      }
-      setFile(selectedFile);
-      setUploadProgress(0);
-      setUploadComplete(false);
-      simulateUploadProgress();
+      validateAndSetFile(selectedFile);
     }
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const selectedFile = event.dataTransfer.files?.[0];
+    if (selectedFile) {
+      validateAndSetFile(selectedFile);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const validateAndSetFile = (selectedFile: File) => {
+    const fileExtension = selectedFile.name.split('.').pop();
+    if (fileExtension !== 'xlsx') {
+      setFileErrorMessage("File yang diunggah harus berformat .xlsx!");
+      setTimeout(() => setFileErrorMessage(""), 3000);
+      return;
+    }
+    if (selectedFile.size > 2 * 1024 * 1024) {
+      setFileErrorMessage("Ukuran file maksimal 2 MB!");
+      setTimeout(() => setFileErrorMessage(""), 3000);
+      return;
+    }
+    setFile(selectedFile);
+    setUploadProgress(0);
+    setUploadComplete(false);
+    simulateUploadProgress();
   };
 
   const handleDeleteFile = () => {
@@ -142,7 +158,11 @@ const UploadStudentDataForm = ({
         <DialogHeader>
           <DialogTitle className="text-lg text-center font-bold mb-4">File Unggah Data Mahasiswa</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col items-center space-y-4">
+        <div 
+          className="flex flex-col items-center space-y-4" 
+          onDrop={handleDrop} 
+          onDragOver={handleDragOver}
+        >
           {!file && (
             <div className="w-full border-2 border-dashed border-blue-400 rounded-lg p-8 flex flex-col items-center justify-center text-blue-400">
               <FaCloudUploadAlt size={50} />
