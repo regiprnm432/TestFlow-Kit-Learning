@@ -68,7 +68,12 @@ const AddTopicPage: React.FC = () => {
     navigate("/list-topics");
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const isValid = await form.trigger();
+    if (!isValid) {
+      return;
+    }
+
     if (selectedModules.length === 0) {
       setModuleError("Topik Setidaknya harus memiliki satu modul!");
       setTimeout(() => setModuleError(null), 2000);
