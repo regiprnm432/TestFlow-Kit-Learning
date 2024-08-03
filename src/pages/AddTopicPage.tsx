@@ -298,7 +298,7 @@ const AddTopicPage: React.FC = () => {
   };
 
   const moveModuleUp = (index: number) => {
-    if (index > 0) {
+    if (index > 0 && selectedModules[index].difficulty === selectedModules[index - 1].difficulty) {
       const newModules = [...selectedModules];
       const temp = newModules[index];
       newModules[index] = newModules[index - 1];
@@ -306,16 +306,16 @@ const AddTopicPage: React.FC = () => {
       setSelectedModules(newModules);
     }
   };
-
+  
   const moveModuleDown = (index: number) => {
-    if (index < selectedModules.length - 1) {
+    if (index < selectedModules.length - 1 && selectedModules[index].difficulty === selectedModules[index + 1].difficulty) {
       const newModules = [...selectedModules];
       const temp = newModules[index];
       newModules[index] = newModules[index + 1];
       newModules[index + 1] = temp;
       setSelectedModules(newModules);
     }
-  };
+  };  
 
   return (
     <LayoutForm screenName={screenName}>
