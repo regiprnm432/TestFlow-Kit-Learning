@@ -32,7 +32,7 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [modules, setModules] = useState<Module[]>([]);
-  const itemsPerPage = 4; // Number of items per page
+  const itemsPerPage = 8; // Number of items per page
   const [tempSelectedModules, setTempSelectedModules] = useState<Module[]>(selectedModules);
 
   // const allModules: Module[] = [
