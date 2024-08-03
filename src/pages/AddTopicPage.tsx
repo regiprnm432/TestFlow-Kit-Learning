@@ -413,39 +413,39 @@ const AddTopicPage: React.FC = () => {
           <table className="min-w-full bg-white border rounded-lg shadow-md text-sm">
             <thead>
               <tr className="bg-blue-800 text-white">
-                <th className="py-2 px-4 border">No</th>
-                <th className="py-2 px-4 border">Nama Modul Program</th>
-                <th className="py-2 px-4 border">Deskripsi</th>
-                <th className="py-2 px-4 border">Tingkat Kesulitan</th>
-                <th className="py-2 px-4 border">Action</th>
+                <th className="py-3 px-2 md:px-6 border">No</th>
+                <th className="py-3 px-2 md:px-6 border">Nama Modul Program</th>
+                <th className="py-3 px-2 md:px-6 border">Deskripsi</th>
+                <th className="py-3 px-2 md:px-6 border">Tingkat Kesulitan</th>
+                <th className="py-3 px-2 md:px-6 border">Action</th>
               </tr>
             </thead>
             <tbody>
               {selectedModules.map((module: Module, index: number) => (
-                <tr key={module.id} className={`text-center ${index % 2 === 0 ? 'bg-blue-50' : 'bg-white'}`}>
-                  <td className="py-2 px-4 border">{index + 1}</td>
-                  <td className="py-2 px-4 border">{module.name}</td>
-                  <td className="py-2 px-4 border">{module.description}</td>
-                  <td className="py-2 px-4 border">
-                    <span className={`inline-block w-32 px-2 py-1 rounded-full ${getDifficultyStyle(module.difficulty)}`}>
+                <tr key={module.id} className={`${index % 2 === 0 ? 'bg-blue-50' : 'bg-white'}`}>
+                  <td className="py-3 px-2 md:px-6 border text-center">{index + 1}</td>
+                  <td className="py-3 px-2 md:px-6 border">{module.name}</td>
+                  <td className="py-3 px-2 md:px-6 border">{module.description}</td>
+                  <td className="py-3 px-2 md:px-6 border">
+                    <span className={`inline-block w-32 px-2 py-1 text-center rounded-full ${getDifficultyStyle(module.difficulty)}`}>
                       {module.difficulty}
                     </span>
                   </td>
-                  <td className="py-2 px-4 border">
+                  <td className="py-3 px-2 md:px-6 border">
                     <div className="flex justify-center items-center space-x-2">
                       <div className="flex flex-col items-center bg-transparent">
                         {index > 0 && (
-                          <Button onClick={() => moveModuleUp(index)} className="text-blue-600 bg-transparent">
+                          <Button onClick={() => moveModuleUp(index)} className="text-blue-600 bg-transparent p-0 h-auto">
                             <AiFillCaretUp />
                           </Button>
                         )}
                         {index < selectedModules.length - 1 && (
-                          <Button onClick={() => moveModuleDown(index)} className="text-blue-600 bg-transparent">
+                          <Button onClick={() => moveModuleDown(index)} className="text-blue-600 bg-transparent p-0 h-auto">
                             <AiFillCaretDown />
                           </Button>
                         )}
                       </div>
-                      <Button onClick={() => handleDeleteModule(module)} className="text-red-600 self-center bg-transparent">
+                      <Button onClick={() => handleDeleteModule(module)} className="text-red-600 self-center bg-transparent p-0 h-auto">
                         <FaTrash />
                       </Button>
                     </div>
