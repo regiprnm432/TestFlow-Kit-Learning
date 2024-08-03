@@ -83,12 +83,13 @@ const UploadStudentDataForm = ({
     }, 200);
   };
 
+  
   const handleClose = () => {
     setFile(null);
     setUploadProgress(0);
     setUploadComplete(false);
     setIsDialogOpen(false);
-  };  
+  };
 
   const handleUpload = () => {
     if (file) {
