@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { FaUpload, FaCloudUploadAlt, FaTrashAlt } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
@@ -21,12 +21,14 @@ const UploadStudentDataForm = ({
 }: UploadStudentDataProps) => {
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
-  // const modulId = import.meta.env.VITE_MODULE_ID;
-  const sessionData = localStorage.getItem('session')
+  const sessionData = localStorage.getItem('session');
   if (sessionData != null){
       const session = JSON.parse(sessionData);
-      apiKey = session.token
+      apiKey = session.token;
   }
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const LoadingOverlay: React.FC = () => (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-4 rounded shadow-lg flex items-center">
@@ -39,9 +41,8 @@ const UploadStudentDataForm = ({
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [isLoading, setIsLoading] = useState(false);
   const [fileErrorMessage, setFileErrorMessage] = useState<string>("");
-
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -52,7 +53,7 @@ const UploadStudentDataForm = ({
         setTimeout(() => setFileErrorMessage(""), 3000);
         return;
       }
-      if (selectedFile.size > 2 * 1024 * 1024) { 
+      if (selectedFile.size > 2 * 1024 * 1024) {
         setFileErrorMessage("Ukuran file maksimal 2 MB!");
         setTimeout(() => setFileErrorMessage(""), 3000);
         return;
@@ -83,7 +84,6 @@ const UploadStudentDataForm = ({
     }, 200);
   };
 
-  
   const handleClose = () => {
     setFile(null);
     setUploadProgress(0);
@@ -92,40 +92,41 @@ const UploadStudentDataForm = ({
   };
 
   const handleUpload = () => {
-    if (file) {
-      uploadDataSiswa(file)
-    } else {
-      console.log('No file to upload');
+    if (!file) {
+      setFileErrorMessage("File harus diisi sebelum menyimpan!");
+      setTimeout(() => setFileErrorMessage(""), 3000);
+      return;
     }
+    uploadDataSiswa(file);
   };
-  const uploadDataSiswa = async (file:any) => {
+
+  const uploadDataSiswa = async (file: File) => {
     try {
-        // prepare param
-        setIsLoading(true)
-        let dataUpload = new FormData()
-        dataUpload.append('file', file)
-        const responseUpload = await fetch(`${apiUrl}/student/upload`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${apiKey}`,
-            },
-            body: dataUpload,
-            });
-        if (responseUpload.ok) {
-            setIsLoading(false) 
-            // navigate('/list-modules?message=addSuccess');
-            setInfoMessage("Data Saved Success");
-            setTimeout(() => setInfoMessage(""), 3000);
-        }else{
-            setErrorMessage("Gagal Upload Data");
-            setTimeout(() => setErrorMessage(""), 3000);
-        }
-    } finally{
-      setIsLoading(false) 
+      setIsLoading(true);
+      let dataUpload = new FormData();
+      dataUpload.append('file', file);
+      const responseUpload = await fetch(`${apiUrl}/student/upload`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: dataUpload,
+      });
+      if (responseUpload.ok) {
+        setIsLoading(false);
+        setInfoMessage("Data Saved Success");
+        setTimeout(() => setInfoMessage(""), 3000);
+      } else {
+        setErrorMessage("Gagal Upload Data");
+        setTimeout(() => setErrorMessage(""), 3000);
+      }
+    } finally {
+      setIsLoading(false);
       handleClose();
-      afterUpload();   
+      afterUpload();
     }
   };
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
@@ -145,8 +146,13 @@ const UploadStudentDataForm = ({
           {!file && (
             <div className="w-full border-2 border-dashed border-blue-400 rounded-lg p-8 flex flex-col items-center justify-center text-blue-400">
               <FaCloudUploadAlt size={50} />
-              <p className="mt-4">Unggah File atau <span className="text-blue-600 cursor-pointer">Jelajahi</span></p>
-              <input type="file" className="opacity-0 absolute inset-0 w-full h-full cursor-pointer" onChange={handleFileChange} />
+              <p className="mt-4">Unggah File atau <span className="text-blue-600 cursor-pointer" onClick={() => fileInputRef.current?.click()}>Jelajahi</span></p>
+              <input
+                type="file"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
             </div>
           )}
           {file && (
@@ -181,9 +187,9 @@ const UploadStudentDataForm = ({
             File yang diunggah harus berekstensi .xls dan maksimal 2 MB
           </p>
           {fileErrorMessage && (
-              <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md w-full">
-                {fileErrorMessage}
-              </div>
+            <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md w-full">
+              {fileErrorMessage}
+            </div>
           )}
           <div className="flex justify-end space-x-4 w-full mt-6">
             <Button
