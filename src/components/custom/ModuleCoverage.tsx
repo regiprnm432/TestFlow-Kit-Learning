@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import "../../index.css";
-import { CopyBlock, dracula } from 'react-code-blocks';
+// import { CopyBlock, dracula } from 'react-code-blocks';
 
 
 
@@ -71,7 +71,7 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
   const modulId = queryParameters.get("topikModulId")
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [sourceCode, setSourceCode] = useState<string | null>(null);
+  //const [sourceCode, setSourceCode] = useState<string | null>(null);
   const linkReportSourceCoverage = apiUrl+"/"+dataResultTest.linkSourceCoverage
   
   useEffect(() => {
@@ -97,36 +97,36 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
         console.log(data);
         setDataModule(data.data || null);
 
-        if (data.data) {
-          fetchSourceCodeText(data.data.data_modul.ms_id_modul);
-        }
+        // if (data.data) {
+          // fetchSourceCodeText(data.data.data_modul.ms_id_modul);
+        // }
       } catch (error) {
         console.error('Error fetching data:', error);
         setError((error as Error).message);
       }
     };
 
-    const fetchSourceCodeText = async (modulId: string) => {
-      try {
-        const response = await fetch(`${apiUrl}/modul/getSourceCodeText/${modulId}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          }
-        });
+    // const fetchSourceCodeText = async (modulId: string) => {
+    //   try {
+    //     const response = await fetch(`${apiUrl}/modul/getSourceCodeText/${modulId}`, {
+    //       method: 'GET',
+    //       headers: {
+    //         'Accept': 'application/json',
+    //         'Authorization': `Bearer ${apiKey}`
+    //       }
+    //     });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+    //     if (!response.ok) {
+    //       throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
 
-        const data = await response.json();
-        setSourceCode(data.data);
-      } catch (error) {
-        console.error('Error fetching source code text:', error);
-        setError((error as Error).message);
-      }
-    };
+    //     const data = await response.json();
+    //     setSourceCode(data.data);
+    //   } catch (error) {
+    //     console.error('Error fetching source code text:', error);
+    //     setError((error as Error).message);
+    //   }
+    // };
 
     fetchDataModule();
   }, []);
