@@ -49,6 +49,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
   const [comboValidationType, setComboValidationType] = useState<ComboData[]>(defaultCombo);
   const [comboModuleType, setComboModuleType] = useState<ComboData[]>(defaultCombo);
   const [comboLevel, setComboLevel] = useState<ComboData[]>(defaultCombo);
+  const [comboCondition, setComboCondition] = useState<ComboData[]>(defaultCombo);
   const [defaultValueJenisModul, setDefaultValueJenisModul] = useState('');
   const [defaultValueLevel, setDefaultValueLevel] = useState('');
   const [defaultValueReturnType, setDefaultValueReturnType] = useState('');
@@ -102,6 +103,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
     form.setValue(`parameters.${index}.paramType`, e);
     setSelectedDataType(e);
     fetchDataComboValidationType(e);
+    fetchDataComboConditionType(e);
   };
   const handlingRuleChange = (e:any, index:number) =>{
     form.setValue(`parameters.${index}.validationRule`, e);
@@ -243,6 +245,29 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
       console.error("Error fetching module name:", error);
     }
   };
+  const fetchDataComboConditionType = async (dataType: string) => {
+    try {
+      const response = await fetch(`${apiUrl}/combo/condition?data_type=${dataType}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("Forbidden: Access is denied");
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      const data = await response.json();
+      setComboCondition(data.data);
+     } catch (error) {
+      console.error("Error fetching module name:", error);
+    }
+  };
   const fetchDataComboModuleType = async () => {
     try {
       const response = await fetch(`${apiUrl}/combo/module_type`, {
@@ -319,6 +344,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
     fetchDataComboModuleType()
     fetchDataComboLevel()
     fetchDataComboValidationType(selectedDataType)
+    fetchDataComboConditionType(selectedDataType)
   }, [paramCount, fields.length, append, remove]);
   useEffect(() => {
     if (idModul != "0"){  
@@ -337,32 +363,32 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
   };
 
   //Combo untuk condition validation sementara
-  const conditionType = [
-    {
-      "label": "!=",
-      "value": "!="
-    },
-    {
-      "label": "<",
-      "value": "<"
-    },
-    {
-      "label": "<=",
-      "value": "<="
-    },
-    {
-      "label": "=",
-      "value": "="
-    },
-    {
-      "label": ">",
-      "value": ">"
-    },
-    {
-      "label": ">=",
-      "value": ">="
-    }
-  ];
+  // const conditionType = [
+  //   {
+  //     "label": "!=",
+  //     "value": "!="
+  //   },
+  //   {
+  //     "label": "<",
+  //     "value": "<"
+  //   },
+  //   {
+  //     "label": "<=",
+  //     "value": "<="
+  //   },
+  //   {
+  //     "label": "=",
+  //     "value": "="
+  //   },
+  //   {
+  //     "label": ">",
+  //     "value": ">"
+  //   },
+  //   {
+  //     "label": ">=",
+  //     "value": ">="
+  //   }
+  // ];
   
 
   return (
@@ -592,7 +618,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                             </SelectTrigger>
                             <SelectContent className="bg-white">
                               <SelectGroup>
-                                {conditionType.map((dataCombo) => (
+                                {comboCondition.map((dataCombo) => (
                                   <SelectItem value={dataCombo.value}>{dataCombo.label}</SelectItem>
                                 ))}
                               </SelectGroup>
