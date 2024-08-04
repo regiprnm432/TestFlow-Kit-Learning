@@ -125,20 +125,14 @@ const ListChallengesPage: React.FC = () => {
       console.log(data)
       let tempChallanges = [];
       for (let i = 0; i < data.data_challenge.length; i++) {
-        let statusTemp = data.data_challenge[i].status;
-        if (statusTemp === "B"){
-           if (data.data_challenge[i].status_test_case != "Kosong"){
-              statusTemp = "N";
-           }
-        }
-
         tempChallanges.push(
             { id: data.data_challenge[i].ms_id_topik_modul, 
               title: data.data_challenge[i].ms_nama_modul, 
               level: data.data_challenge[i].tingkat_kesulitan, 
               currentPoints: data.data_challenge[i].ongoing_point, 
               maxPoints: parseInt(data.data_challenge[i].ms_tingkat_kesulitan) * 100,
-              status: getStatusString(statusTemp),
+              // status: getStatusString(data.data_challenge[i].status),
+              status: data.data_challenge[i].status,
               ms_tingkat_kesulitan: data.data_challenge[i].ms_tingkat_kesulitan
             }
           )
@@ -157,18 +151,18 @@ const ListChallengesPage: React.FC = () => {
       console.error('Error fetching data:', error);
     }
   };
-  const getStatusString = (status: string): string => {
-    switch (status) {
-      case "N":
-        return "Ongoing";
-      case "B":
-        return "Not Started";
-      case "Y":
-        return "Completed";
-      default:
-        return "Not Started";
-    }
-  };
+  // const getStatusString = (status: string): string => {
+  //   switch (status) {
+  //     case "N":
+  //       return "Ongoing";
+  //     case "B":
+  //       return "Not Started";
+  //     case "Y":
+  //       return "Completed";
+  //     default:
+  //       return "Not Started";
+  //   }
+  // };
   useEffect(() => {
     fetchDataListChallenge("All");
   }, []);
