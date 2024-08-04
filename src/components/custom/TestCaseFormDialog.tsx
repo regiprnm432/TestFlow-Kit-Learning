@@ -445,6 +445,10 @@ const TestCaseFormDialog = ({
                   name="objective"
                   rules={{
                     required: "Objective harus terisi",
+                    pattern: {
+                      value: /^[a-zA-Z0-9\s]+$/,
+                      message: "Masukkan huruf atau angka",
+                    },
                     validate: (value) =>
                       existingObjectives.includes(value)
                         ? "Objective already exists"

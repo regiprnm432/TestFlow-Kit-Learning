@@ -353,7 +353,12 @@ const EditTestCaseFormDialog = ({
                 <FormField
                   control={form.control}
                   name="objective"
-                  rules={{ required: "Objektif Pengujian harus terisi" }}
+                  rules={{ required: "Objektif Pengujian harus terisi",
+                            pattern: {
+                              value: /^[a-zA-Z0-9\s]+$/,
+                              message: "Masukkan huruf atau angka",
+                            },
+                  }}
                   render={({ field, fieldState: { error } }) => (
                     <FormItem>
                       <FormLabel>Objektif Pengujian</FormLabel>
