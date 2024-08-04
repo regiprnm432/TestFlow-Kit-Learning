@@ -93,7 +93,12 @@ const ModuleTestPage = () => {
           if (!response.ok) {
             if (response.status === 403) {
               throw new Error("Forbidden: Access is denied");
-            } else {
+            } else if (response.status === 422) {
+              const data = await response.json();
+              console.log(data.message);
+              setErrorMessage(data.message);
+              setTimeout(() => setErrorMessage(null), 2000);
+            }  else {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
           }else{
