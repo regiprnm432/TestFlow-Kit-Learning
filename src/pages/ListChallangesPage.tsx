@@ -131,7 +131,8 @@ const ListChallengesPage: React.FC = () => {
               level: data.data_challenge[i].tingkat_kesulitan, 
               currentPoints: data.data_challenge[i].ongoing_point, 
               maxPoints: parseInt(data.data_challenge[i].ms_tingkat_kesulitan) * 100,
-              status: getStatusString(data.data_challenge[i].status),
+              // status: getStatusString(data.data_challenge[i].status),
+              status: data.data_challenge[i].status,
               ms_tingkat_kesulitan: data.data_challenge[i].ms_tingkat_kesulitan
             }
           )
@@ -150,18 +151,18 @@ const ListChallengesPage: React.FC = () => {
       console.error('Error fetching data:', error);
     }
   };
-  const getStatusString = (status: string): string => {
-    switch (status) {
-      case "N":
-        return "Ongoing";
-      case "B":
-        return "Not Started";
-      case "Y":
-        return "Completed";
-      default:
-        return "Not Started";
-    }
-  };
+  // const getStatusString = (status: string): string => {
+  //   switch (status) {
+  //     case "N":
+  //       return "Ongoing";
+  //     case "B":
+  //       return "Not Started";
+  //     case "Y":
+  //       return "Completed";
+  //     default:
+  //       return "Not Started";
+  //   }
+  // };
   useEffect(() => {
     fetchDataListChallenge("All");
   }, []);

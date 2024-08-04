@@ -31,11 +31,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, leve
 
   const getButtonStyle = (status: string) => {
     switch (status) {
-      case 'Ongoing':
+      case 'N':
         return 'bg-green-600 text-white';
-      case 'Completed':
+      case 'Y':
         return 'bg-blue-600 text-white';
-      case 'Not Started':
+      case 'B':
         return 'border border-blue-600 bg-white text-blue-600';
       default:
         return 'border border-blue-600 bg-white text-blue-600';
@@ -44,16 +44,17 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, leve
 
   const getButtonLabel = (status: string) => {
     switch (status) {
-      case 'Ongoing':
+      case 'N':
         return 'Lanjutkan';
-      case 'Completed':
-        return 'Selesai';
-      case 'Not Started':
+      case 'B':
         return 'Selesaikan';
+      case 'Y':
+        return 'Selesai';
       default:
-        return 'Status Unknown';
+        return 'Selesaikan';
     }
   };
+
   const goToTestCasePage = () => {
     navigate({
       pathname: '/topikModul',
