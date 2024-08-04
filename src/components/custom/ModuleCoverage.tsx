@@ -185,14 +185,15 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
               
               <h4 className="text-base font-bold mb-1 text-gray-800">Code Coverage</h4>
               <div className="text-sm p-4 rounded-lg">
-                <CopyBlock
+                {/* <CopyBlock
                   language="java"
                   text={sourceCode || 'Loading source code...'}
                   showLineNumbers={true}
                   theme={dracula}
                   codeBlock
-                />
+                /> */}
               </div>
+              <p className="mb-6 text-sm  text-red-600">Code Coverage Gagal Terbentuk, karena terdapat test case dengan status Fail</p>
             </>
           )}
         </div>

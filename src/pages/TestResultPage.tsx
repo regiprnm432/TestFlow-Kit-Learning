@@ -132,13 +132,15 @@ const TestResultPage = () => {
                   />
                   <TestResultCard dataResultTest = {dataTestResult}/>
                   <div className="flex justify-end space-x-2 items-center pr-4">
-                      <Button
-                          variant="outline"
-                          className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10px] hover:bg-blue-800 hover:text-white"
-                          onClick={handleCoverageTestReport}
-                      >
+                      {dataTestResult.totalFailedTestCase == 0 && (
+                        <Button
+                        variant="outline"
+                        className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10px] hover:bg-blue-800 hover:text-white"
+                        onClick={handleCoverageTestReport}
+                        >
                           Coverage Test
-                      </Button>
+                        </Button>
+                      )}
                       <Button
                           className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[10px] pt-0 pb-0"
                           onClick={handleTestReport}

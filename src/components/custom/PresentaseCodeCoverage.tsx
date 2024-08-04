@@ -11,7 +11,7 @@ const PercentageCodeCoverage: React.FC<PercentageCircleProps> = ({ percentage })
     <div style={{ width: '100px', height: '100px' }}>
       <CircularProgressbar
         value={percentage}
-        text={`${percentage}%`}
+        text={`${percentage==0?'-':percentage + "%"}`}
         styles={buildStyles({
           textColor: '#000',
           pathColor: '#0000ff',
