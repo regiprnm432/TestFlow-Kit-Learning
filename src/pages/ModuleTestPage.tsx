@@ -56,7 +56,8 @@ const ModuleTestPage = () => {
                 }else if (tempRule.nama_rule == "enumerasi"){
                   tempRule.value = module.parameters[i].ruleValue1; 
                 }else if (tempRule.nama_rule == "countOfLength"){
-                  tempRule.value = module.parameters[i].ruleValue1; 
+                  tempRule.min_value = module.parameters[i].ruleValue1;
+                  tempRule.max_value = module.parameters[i].ruleValue2;
                 }else if (tempRule.nama_rule == "condition"){
                   tempRule.condition = module.parameters[i].ruleValue1;
                   tempRule.value = module.parameters[i].ruleValue2; 
@@ -139,7 +140,8 @@ const ModuleTestPage = () => {
               }else if (tempRule.nama_rule == "enumerasi"){
                 tempRule.value = module.parameters[i].ruleValue1; 
               }else if (tempRule.nama_rule == "countOfLength"){
-                tempRule.value = module.parameters[i].ruleValue1; 
+                tempRule.min_value = module.parameters[i].ruleValue1;
+                tempRule.max_value = module.parameters[i].ruleValue2;
               }else if (tempRule.nama_rule == "condition"){
                 tempRule.condition = module.parameters[i].ruleValue1;
                 tempRule.value = module.parameters[i].ruleValue2; 

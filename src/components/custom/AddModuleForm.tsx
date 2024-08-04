@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useNavigate } from "react-router-dom";
 
 interface AddModuleFormProps {
   onAddModule: (module: any, mode: string, fileSourceCode:any) => void;
@@ -31,6 +32,7 @@ interface ComboData {
   value: string;
 }
 const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule, onCancel, idModul}) => {
+  const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
@@ -52,6 +54,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
   const [defaultValueReturnType, setDefaultValueReturnType] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [selectedDataType, setSelectedDataType] = useState('');
+  const [fileName, setFileName] = useState('');
 
 
   // const handleFileChange = (e:any, field:any) => {
@@ -112,7 +115,8 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
     }else if (data.nama_rule == "enumerasi"){
       newArr[index].nameParam1 = "Enum" 
     }else if (data.nama_rule == "countOfLength"){
-      newArr[index].nameParam1 = "Length" 
+      newArr[index].nameParam1 = "Min" 
+      newArr[index].nameParam2 = "Max"
     }else if (data.nama_rule == "condition"){
       newArr[index].nameParam1 = "Condition"
       newArr[index].nameParam2 = "Value" 
@@ -131,7 +135,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
 
           if (!response.ok) {
             if (response.status === 403) {
-              throw new Error("Forbidden: Access is denied");
+              navigate("/error")
             } else {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -170,9 +174,12 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
               form.setValue(`parameters.${i}.ruleValue1`, dataRule.value);
               dataRule.value="";
             }else if (dataRule.nama_rule == "countOfLength"){
-              tempParamRules[i].nameParam1 = "Length";
-              form.setValue(`parameters.${i}.ruleValue1`, dataRule.value);
-              dataRule.value="";
+              tempParamRules[i].nameParam1 = "Min";
+              tempParamRules[i].nameParam2 = "Max";
+              form.setValue(`parameters.${i}.ruleValue1`, dataRule.min_value);
+              form.setValue(`parameters.${i}.ruleValue2`, dataRule.max_value);
+              dataRule.min_value = "";
+              dataRule.max_value = "";  
             }else if (dataRule.nama_rule == "condition"){
               tempParamRules[i].nameParam1 = "Condition";
               tempParamRules[i].nameParam2 = "Value";
@@ -184,6 +191,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
             form.setValue(`parameters.${i}.validationRule`, JSON.stringify(dataRule));
           }
           setParamRules(tempParamRules);
+          setFileName(data.data.data_modul.ms_source_code);
         } catch (error) {
           console.error("Error fetching module name:", error);
         }
@@ -692,6 +700,12 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                             onChange={(e) => handleFileChange(e, field)}
                             className="border rounded p-2 w-full bg-gray-50"
                         />
+                        {fileName && (
+                          <FormLabel className="w-1/3">
+                              {fileName}
+                          </FormLabel>
+                        )}
+                        
                         <FormDescription className="text-xs text-gray-500 mt-1">File harus berekstensi .java dan memiliki ukuran maksimal 2MB</FormDescription>
                     </div>
                 </FormControl>
