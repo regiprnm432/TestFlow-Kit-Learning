@@ -144,7 +144,7 @@ const ListChallengesPage: React.FC = () => {
           )
       }
       // Urutkan tantangan berdasarkan ms_tingkat_kesulitan
-      tempChallanges.sort((a: any, b:any) => parseInt(a.ms_tingkat_kesulitan) - parseInt(b.ms_tingkat_kesulitan));
+      // tempChallanges.sort((a: any, b:any) => parseInt(a.ms_tingkat_kesulitan) - parseInt(b.ms_tingkat_kesulitan)); // sort dilakukan di BE
       setChallenges(tempChallanges);
       setNamaModul(data.data_topik.ms_nama_topik)
       setCurrentXP(data.data_topik.jml_ongoing_point)
