@@ -133,7 +133,8 @@ const UploadStudentDataForm = ({
         setInfoMessage("Data Saved Success");
         setTimeout(() => setInfoMessage(""), 3000);
       } else {
-        setErrorMessage("Gagal Upload Data");
+        const data = await responseUpload.json();
+        setErrorMessage(data.message);
         setTimeout(() => setErrorMessage(""), 3000);
       }
     } finally {
