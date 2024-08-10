@@ -28,8 +28,9 @@ const AddTopicPage: React.FC = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
   const sessionData = localStorage.getItem('session')
+  let session = null
   if (sessionData != null){
-      const session = JSON.parse(sessionData);
+      session = JSON.parse(sessionData);
       apiKey = session.token
   }
   const queryParameters = new URLSearchParams(window.location.search)
@@ -253,9 +254,17 @@ const AddTopicPage: React.FC = () => {
   
 
   useEffect(() => {
-    if (topikId !=  null){
-        setScreenName("Edit Topik Pengujian");
-        fetchDataTopik(topikId);
+    if (session != null){
+      if (session.login_type != "teacher"){
+          navigate("/dashboard-student")
+      }else{
+        if (topikId !=  null){
+          setScreenName("Edit Topik Pengujian");
+          fetchDataTopik(topikId);
+        }
+      }
+    }else{
+      navigate("/login")
     }
   }, []); 
 

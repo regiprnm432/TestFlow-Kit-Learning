@@ -102,8 +102,9 @@ const GradeStudentPage: React.FC = () => {
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
   const sessionData = localStorage.getItem('session')
+  let session = null
   if (sessionData != null){
-      const session = JSON.parse(sessionData);
+      session = JSON.parse(sessionData);
       apiKey = session.token
   }
 
@@ -293,8 +294,16 @@ const GradeStudentPage: React.FC = () => {
     }
   };
   useEffect(() => {
-    fetchDataComboTopics()
-    fetchDataGrade(1,searchQuery, selectedTopic)
+    if (session != null){
+      if (session.login_type != "teacher"){
+          navigate("/dashboard-student")
+      }else{
+        fetchDataComboTopics()
+        fetchDataGrade(1,searchQuery, selectedTopic)
+      }
+    }else{
+      navigate("/login")
+    }
   },[]);
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">

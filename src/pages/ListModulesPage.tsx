@@ -35,8 +35,9 @@ const ListModulesPage = () => {
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
   const sessionData = localStorage.getItem('session')
+  let session = null
   if (sessionData != null){
-      const session = JSON.parse(sessionData);
+      session = JSON.parse(sessionData);
       apiKey = session.token
   }
   const [currentPage, setCurrentPage] = useState(1);
@@ -167,7 +168,16 @@ const ListModulesPage = () => {
   // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   // const currentItems = filteredModules.slice(indexOfFirstItem, indexOfLastItem);
   useEffect(() => {
-    fetchDataModul(1,searchTerm)
+    if (session != null){
+      if (session.login_type != "teacher"){
+          navigate("/dashboard-student")
+      }else{
+        fetchDataModul(1,searchTerm)
+      }
+    }else{
+      navigate("/login")
+    }
+    
   }, []);
 
   const addModul = () => {

@@ -113,8 +113,9 @@ const ListTopicsPage: React.FC = () => {
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
   const sessionData = localStorage.getItem('session')
+  let session = null
   if (sessionData != null){
-      const session = JSON.parse(sessionData);
+      session = JSON.parse(sessionData);
       apiKey = session.token
   }
 
@@ -329,7 +330,15 @@ const ListTopicsPage: React.FC = () => {
 
 
   useEffect(() => {
-    fetchDataTopik(1,searchQuery,orderBy, order)
+    if (session != null){
+      if (session.login_type != "teacher"){
+          navigate("/dashboard-student")
+      }else{
+        fetchDataTopik(1,searchQuery,orderBy, order)
+      }
+    }else{
+      navigate("/login")
+    }
   }, []);
 
   return (
