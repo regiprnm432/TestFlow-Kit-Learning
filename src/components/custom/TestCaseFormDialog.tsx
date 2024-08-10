@@ -280,7 +280,7 @@ const TestCaseFormDialog = ({
       case "float":
         return {
           pattern: {
-            value: /^[0-9]+(\.[0-9]+)?$/,
+            value: /^-?[0-9]+(\.[0-9]+)?$/,
             message: "Masukkan angka desimal",
           },
         };
@@ -308,7 +308,7 @@ const TestCaseFormDialog = ({
       case "float":
         return {
           pattern: {
-            value: /^[0-9]+(\.[0-9]+)?$/,
+            value: /^-?[0-9]+(\.[0-9]+)?$/,
             message: "Masukkan angka desimal",
           },
         };

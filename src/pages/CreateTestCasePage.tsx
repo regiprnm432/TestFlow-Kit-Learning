@@ -1,5 +1,5 @@
 import Layout from "./Layout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu } from "@/components/custom/Menu";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
 import AddTestCaseCard from "@/components/custom/AddTestCaseCard";
@@ -19,9 +19,19 @@ const CreateTestCasePage: React.FC = () => {
   const cyclomaticComplexityValue = 0;
   const codeCoveragePercentage = 80;
   const sessionData = localStorage.getItem('session')
-  if (sessionData == null){
-      navigate('/login');
+  let session = null
+  if (sessionData != null){
+      session = JSON.parse(sessionData);
   }
+  useEffect(() => {
+    if (session != null){
+        if (session.login_type != "student"){
+            navigate("/dashboard-teacher")
+        }
+    }else{
+      navigate("/login")
+    }
+  }, [sessionData]);
 
   return (
     <Layout>

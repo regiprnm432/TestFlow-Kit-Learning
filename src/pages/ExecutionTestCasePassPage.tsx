@@ -19,10 +19,20 @@ const ExecutionTestCasePassPage: React.FC = () => {
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
   const sessionData = localStorage.getItem('session')
+  let session = null
   if (sessionData != null){
-      const session = JSON.parse(sessionData);
+      session = JSON.parse(sessionData);
       apiKey = session.token
   }
+  useEffect(() => {
+    if (session != null){
+        if (session.login_type != "student"){
+            navigate("/dashboard-teacher")
+        }
+    }else{
+      navigate("/login")
+    }
+  }, []);
 
   const [showCyclomaticComplexity] = useState(true);
   const [showCodeCoverage] = useState(false);

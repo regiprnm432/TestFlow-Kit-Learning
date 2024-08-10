@@ -121,10 +121,11 @@ const AddTestCaseCard: React.FC = () => {
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
   const sessionData = localStorage.getItem("session");
+  let session = null
   if (sessionData == null) {
     navigate("/login");
   } else {
-    const session = JSON.parse(sessionData);
+    session = JSON.parse(sessionData);
     apiKey = session.token;
   }
   const queryParameters = new URLSearchParams(window.location.search);
@@ -161,13 +162,19 @@ const AddTestCaseCard: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchResultTest();
-    fetchParameters();
-    fetchTestCases();
-
-    // Load previouslyExecuted state from localStorage
-    const storedPreviouslyExecuted = localStorage.getItem('previouslyExecuted');
-    setPreviouslyExecuted(storedPreviouslyExecuted === 'true');
+    if (session === null){
+       navigate("/login")
+    }else if (session.login_type != "student"){
+       navigate("/dashboard-teacher")
+    }else{
+      fetchResultTest();
+      fetchParameters();
+      fetchTestCases();
+  
+      // Load previouslyExecuted state from localStorage
+      const storedPreviouslyExecuted = localStorage.getItem('previouslyExecuted');
+      setPreviouslyExecuted(storedPreviouslyExecuted === 'true');
+    }
   }, []);
 
   const fetchTestCases = async () => {

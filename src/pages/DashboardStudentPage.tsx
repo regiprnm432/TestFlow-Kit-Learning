@@ -1,17 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import Sidebar from "../components/custom/SidebarStudent";
 import "../index.css"
+import { useNavigate } from "react-router-dom";
 
 const DashboardPage: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+  const navigate = useNavigate();
   // Dummy account
   let accountName = "Dea Salma Isnaini";
   const sessionData = localStorage.getItem('session')
+  let session = null
   if (sessionData != null){
-      const session = JSON.parse(sessionData);
+      session = JSON.parse(sessionData);
       accountName = session.name;
   }
+
+  useEffect(() => {
+    if (session != null){
+        if (session.login_type != "student"){
+            navigate("/dashboard-teacher")
+        }
+    }else{
+      navigate("/login")
+    }
+  }, [sessionData]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
