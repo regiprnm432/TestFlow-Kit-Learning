@@ -114,7 +114,7 @@ const CFGCard: React.FC<CFGCardProps> = ({
   return (
     <div className="h-full w-full">
       <Card>
-        <CardHeader className="pt-4">
+        <CardHeader className="pt-6">
           <CardTitle className="text-base module-title">Struktur Program</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col">
