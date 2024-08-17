@@ -17,8 +17,7 @@ import FailCard from "@/components/custom/FailCard";
 const ExecutionTestCaseFailPage: React.FC = () => {
   const [showCyclomaticComplexity] =useState(true);
   const [showCodeCoverage] = useState(false);
-  const [cyclomaticComplexityValue] = useState(5);
-  const [codeCoveragePercentage] = useState(80);
+  const [codeCoveragePercentage] = useState(0);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -91,7 +90,6 @@ const ExecutionTestCaseFailPage: React.FC = () => {
               >
                 <CFGCard
                   showCyclomaticComplexity={showCyclomaticComplexity}
-                  cyclomaticComplexityValue={cyclomaticComplexityValue}
                   showCodeCoverage={showCodeCoverage}
                   codeCoveragePercentage={codeCoveragePercentage}
                 />

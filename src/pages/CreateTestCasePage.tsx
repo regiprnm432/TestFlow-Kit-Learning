@@ -16,8 +16,7 @@ const CreateTestCasePage: React.FC = () => {
   const navigate = useNavigate();
   const [showCyclomaticComplexity] = useState(true);
   const [showCodeCoverage] = useState(false);
-  const cyclomaticComplexityValue = 0;
-  const codeCoveragePercentage = 80;
+  const codeCoveragePercentage = 0;
   const sessionData = localStorage.getItem('session')
   let session = null
   if (sessionData != null){
@@ -51,7 +50,6 @@ const CreateTestCasePage: React.FC = () => {
             <div className="flex flex-col overflow-auto pr-4 pl-4 pb-4 gap-4">
               <CFGCard
                 showCyclomaticComplexity={showCyclomaticComplexity}
-                cyclomaticComplexityValue={cyclomaticComplexityValue}
                 showCodeCoverage={showCodeCoverage}
                 codeCoveragePercentage={codeCoveragePercentage}
               />

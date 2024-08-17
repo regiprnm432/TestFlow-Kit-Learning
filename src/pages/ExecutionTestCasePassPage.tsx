@@ -39,8 +39,7 @@ const ExecutionTestCasePassPage: React.FC = () => {
   // const [percentageCoverage, setPercentageCoverage] = useState<number>(0);
   // const [minimumCoverage, setMinimumCoverage] = useState<number>(0);
   // const [points, setPoints] = useState<number>(0);
-  const [cyclomaticComplexityValue ] = useState(5);
-  const [codeCoveragePercentage] = useState(80);
+  const [codeCoveragePercentage] = useState(0);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -157,7 +156,6 @@ const ExecutionTestCasePassPage: React.FC = () => {
               style={{ overflowY: "auto" }}>
               <CFGCard 
                   showCyclomaticComplexity={showCyclomaticComplexity}
-                  cyclomaticComplexityValue={cyclomaticComplexityValue}
                   showCodeCoverage={showCodeCoverage}
                   codeCoveragePercentage={codeCoveragePercentage}
                 />
