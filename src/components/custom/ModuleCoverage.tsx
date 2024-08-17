@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import "../../index.css";
+import { Skeleton } from "@/components/ui/skeleton";
 // import { CopyBlock, dracula } from 'react-code-blocks';
 
 
@@ -71,6 +72,7 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
   const modulId = queryParameters.get("topikModulId")
   const [dataModule, setDataModule] = useState<Data | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   //const [sourceCode, setSourceCode] = useState<string | null>(null);
   const linkReportSourceCoverage = apiUrl+"/"+dataResultTest.linkSourceCoverage
   
@@ -103,6 +105,8 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
       } catch (error) {
         console.error('Error fetching data:', error);
         setError((error as Error).message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -135,14 +139,33 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
     return <div className="p-4 bg-white rounded-lg shadow-md h-screen">Error: {error}</div>;
   }
 
-  if (!dataModule) {
-    return <div className="p-4 bg-white rounded-lg shadow-md h-screen">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-lg h-full space-y-6">
+        {/* Kotak Spesifikasi Modul */}
+        <div className="bg-gray-100 p-4 rounded-lg">
+          <Skeleton className="h-5 w-32 mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+        </div>
+
+        {/* Kotak Code Coverage */}
+        <div className="bg-gray-100 p-4 rounded-lg">
+          <Skeleton className="h-5 w-32 mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+        </div>
+      </div>
+
+    );
   }
+
   if (dataResultTest.totalTestCase == dataResultTest.totalPassTestCase){
     return (
       <div className="p-6 bg-white rounded-lg shadow-lg h-full">
         <div className="overflow-y-auto">
-          {dataModule.data_modul && dataModule.data_parameter_modul && (
+          {dataModule && dataModule.data_modul && dataModule.data_parameter_modul && (
             <>
               <h3 className="text-base font-bold mb-4 text-gray-800">Spesifikasi Modul</h3>
               <div className='border border-black p-2 mb-6 bg-slate-50'>
@@ -178,7 +201,7 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
     return (
       <div className="p-6 bg-white rounded-lg shadow-lg h-full">
         <div className="overflow-y-auto">
-          {dataModule.data_modul && dataModule.data_parameter_modul && (
+          {dataModule && dataModule.data_modul && dataModule.data_parameter_modul && (
             <>
               <h3 className="text-base font-bold mb-4 text-gray-800">Spesifikasi Modul</h3>
               <div className='border border-black p-2 mb-6 bg-slate-50'>
