@@ -120,7 +120,7 @@ const ListTopicsPage: React.FC = () => {
   }
 
   const [topics, setTopics] = useState(initialTopics);
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
@@ -330,16 +330,19 @@ const ListTopicsPage: React.FC = () => {
 
 
   useEffect(() => {
-    if (session != null){
-      if (session.login_type != "teacher"){
-          navigate("/dashboard-student")
-      }else{
-        fetchDataTopik(1,searchQuery,orderBy, order)
-      }
-    }else{
-      navigate("/login")
-    }
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
+      setIsSidebarOpen(event.matches);
+    };
+
+    setIsSidebarOpen(mediaQuery.matches);
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
   }, []);
+
 
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">

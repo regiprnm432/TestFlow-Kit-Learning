@@ -27,6 +27,21 @@ const DashboardPage: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
+      setIsSidebarOpen(event.matches);
+    };
+
+    setIsSidebarOpen(mediaQuery.matches);
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
+  }, []);
+
+
   return (
     <div className="flex h-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

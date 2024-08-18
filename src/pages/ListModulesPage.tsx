@@ -186,6 +186,22 @@ const ListModulesPage = () => {
   const editModul = (module: Module) => {
     navigate("/module?idModul="+module.id)
   };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
+      setIsSidebarOpen(event.matches);
+    };
+
+    setIsSidebarOpen(mediaQuery.matches);
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
+  }, []);
+
+
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

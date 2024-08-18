@@ -172,6 +172,22 @@ const ListChallengesPage: React.FC = () => {
   useEffect(() => {
     fetchDataListChallenge("All");
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
+      setIsSidebarOpen(event.matches);
+    };
+
+    setIsSidebarOpen(mediaQuery.matches);
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
+  }, []);
+
+
   return (
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen min-h-screen bg-slate-100">
       <SidebarStudent isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
