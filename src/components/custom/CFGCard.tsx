@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import "../../index.css";
 
 const calculateCyclomaticComplexity = (edgesCount: number, nodesCount: number) => {
@@ -89,10 +90,12 @@ const CFGCard: React.FC<CFGCardProps> = ({
   
       setNodes(nodesData);
       setEdges(edgesData);
-      setLoading(false);
     })
     .catch((error) => {
       console.error("Failed to fetch data:", error);
+    })
+    .finally(() => {
+      setLoading(false);
     });
   };
   useEffect(() => {
@@ -101,7 +104,20 @@ const CFGCard: React.FC<CFGCardProps> = ({
   
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-lg h-full space-y-6">
+        <div className="bg-gray-100 p-4 rounded-lg">
+          <Skeleton className="h-5 w-32 bg-gray-200" />
+        </div>
+        <div className="bg-gray-100 p-4 rounded-lg">
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+        </div>
+      </div>
+
+    );
   }
 
   const cyclomaticComplexity = calculateCyclomaticComplexity(edges.length, nodes.length);

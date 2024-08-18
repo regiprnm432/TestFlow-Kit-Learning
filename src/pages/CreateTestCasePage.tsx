@@ -38,7 +38,7 @@ const CreateTestCasePage: React.FC = () => {
       <div className="flex flex-col w-screen min-h-screen">
         <ResizablePanelGroup
           direction="horizontal"
-          className="flex-grow"
+          className="w-full rounded-lg border flex-grow"
         >
           <ResizablePanel defaultSize={50}>
             <div className="flex flex-col h-full">
