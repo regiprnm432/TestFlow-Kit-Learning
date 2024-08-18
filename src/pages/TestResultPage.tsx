@@ -60,7 +60,6 @@ const TestResultPage = () => {
     };
     const [showCyclomaticComplexity] = useState(false);
     const [showCodeCoverage] = useState(true);
-    const cyclomaticComplexityValue = 5; 
     const [dataTestResult, setDataTestResult] = useState<DataResultTest>(defaultData);
     const [error, setError] = useState<string | null>(null);
     const fetchDataTestResult = async () => {
@@ -133,7 +132,6 @@ const TestResultPage = () => {
                 <div className="flex flex-col overflow-auto pr-4 pl-4 pb-4 gap-4">
                   <CFGCard 
                     showCyclomaticComplexity={showCyclomaticComplexity}
-                    cyclomaticComplexityValue={cyclomaticComplexityValue}
                     showCodeCoverage={showCodeCoverage}
                     codeCoveragePercentage={dataTestResult.coverageScore}
                   />

@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import "../../index.css";
 
 const calculateCyclomaticComplexity = (edgesCount: number, nodesCount: number) => {
@@ -32,14 +33,12 @@ type Edge = {
 
 type CFGCardProps = {
   showCyclomaticComplexity?: boolean;
-  cyclomaticComplexityValue?: number;
   showCodeCoverage?: boolean;
   codeCoveragePercentage?: number;
 };
 
 const CFGCard: React.FC<CFGCardProps> = ({
   showCyclomaticComplexity = false,
-  cyclomaticComplexityValue,
   showCodeCoverage = false,
   codeCoveragePercentage,
 }) => {
@@ -91,10 +90,12 @@ const CFGCard: React.FC<CFGCardProps> = ({
   
       setNodes(nodesData);
       setEdges(edgesData);
-      setLoading(false);
     })
     .catch((error) => {
       console.error("Failed to fetch data:", error);
+    })
+    .finally(() => {
+      setLoading(false);
     });
   };
   useEffect(() => {
@@ -103,18 +104,23 @@ const CFGCard: React.FC<CFGCardProps> = ({
   
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-lg h-full space-y-6">
+        <div className="bg-gray-100 p-4 rounded-lg">
+          <Skeleton className="h-5 w-32 bg-gray-200" />
+        </div>
+        <div className="bg-gray-100 p-4 rounded-lg">
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+          <Skeleton className="h-5 w-full mb-4 bg-gray-200" />
+        </div>
+      </div>
+
+    );
   }
 
-  const cyclomaticComplexity = cyclomaticComplexityValue ?? calculateCyclomaticComplexity(edges.length, nodes.length);
-  const cyclomaticComplexityFormula = `V(G) = Edges - Nodes + 2`;
-
-  const parameterStyle = {
-    fontSize: "15px",
-    fontWeight: "500",
-    color: "black",
-    marginBottom: "0.5rem",
-  };
+  const cyclomaticComplexity = calculateCyclomaticComplexity(edges.length, nodes.length);
 
   const containerStyle = {
     display: "flex",
@@ -124,13 +130,13 @@ const CFGCard: React.FC<CFGCardProps> = ({
   return (
     <div className="h-full w-full">
       <Card>
-        <CardHeader className="p-4">
+        <CardHeader className="pt-6">
           <CardTitle className="text-base module-title">Struktur Program</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col">
           <div className="w-full" style={containerStyle}>
-            <div style={{ width: "60%" }}>
-              <p style={parameterStyle}>Control Flow Graph</p>
+            <div className="w-1/2">
+              <p className="text-sm font-medium mb-2">Control Flow Graph</p>
               <div className="text-sm h-96 relative react-flow-container">
                 <ReactFlow
                   nodes={nodes}
@@ -144,24 +150,30 @@ const CFGCard: React.FC<CFGCardProps> = ({
                 </ReactFlow>
               </div>
             </div>
-            <div style={{ width: "40%", marginLeft: "20px" }}>
+            <div className="w-1/2 ml-3 flex flex-col items-center">
               {showCodeCoverage && codeCoveragePercentage !== undefined && (
                 <>
-                  <p style={parameterStyle}>Presentase Code Coverage</p>
+                  <p className="text-sm font-medium mb-5">Presentase Code Coverage</p>
                   <PercentageCodeCoverage percentage={codeCoveragePercentage} />
                 </>
               )}
               {showCyclomaticComplexity && (
                 <>
-                  <p style={parameterStyle}>Nilai Cyclomatic Complexity</p>
-                  <span style={{ fontSize: "13px" }}>
-                    {cyclomaticComplexityFormula}
-                  </span>
-                  <br />
-                  <span style={{ fontSize: "13px" }}>
-                    Cyclomatic Complexity: {cyclomaticComplexity}
-                  </span>
-                </>
+                <p className="text-sm font-medium mb-2">Nilai Cyclomatic Complexity</p>
+                <div className="text-sm flex items-start"> 
+                  <div className="mr-4"> 
+                    <div>V(G)</div>
+                  </div>
+                  <div>
+                    <div className="flex flex-col"> 
+                      <span>= E - N + 2</span>
+                      <span>= {edges.length} - {nodes.length} + 2</span>
+                      <span>= {cyclomaticComplexity}</span>
+                    </div>
+                  </div>
+                </div>
+              </>
+              
               )}
             </div>
           </div>
