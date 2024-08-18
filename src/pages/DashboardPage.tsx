@@ -4,7 +4,7 @@ import "../index.css";
 import { useNavigate } from "react-router-dom";
 
 const DashboardPage: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
   // Dummy account
   let accountName = "Asri Maspupah";
