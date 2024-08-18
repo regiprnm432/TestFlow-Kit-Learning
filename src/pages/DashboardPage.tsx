@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/custom/Sidebar";
-import "../index.css"
+import "../index.css";
 import { useNavigate } from "react-router-dom";
 
 const DashboardPage: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   // Dummy account
   let accountName = "Asri Maspupah";
-  const sessionData = localStorage.getItem('session')
-  let session = null
-  if (sessionData != null){
-      session = JSON.parse(sessionData);
-      accountName = session.name;
+  const sessionData = localStorage.getItem("session");
+  let session = null;
+  if (sessionData != null) {
+    session = JSON.parse(sessionData);
+    accountName = session.name;
   }
   useEffect(() => {
-    if (session != null){
-        if (session.login_type != "teacher"){
-            navigate("/dashboard-student")
-        }
-    }else{
-      navigate("/login")
+    if (session != null) {
+      if (session.login_type !== "teacher") {
+        navigate("/dashboard-student");
+      }
+    } else {
+      navigate("/login");
     }
   }, [sessionData]);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -32,11 +33,16 @@ const DashboardPage: React.FC = () => {
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div
         className={`flex-1 transition-all duration-300 flex items-center justify-center ${
-          isSidebarOpen ? "ml-64" : "ml-20"
+          isSidebarOpen ? "ml-64 lg:ml-64" : "ml-10 lg:ml-20"
         }`}
       >
-        <h1 className="text-7xl font-bold text-blue-800 ml-20 justify-center animate-fade-in">
-          Selamat Datang <br />{accountName}
+        <h1
+          className={`ml-10 text-3xl md:text-5xl lg:text-7xl font-bold text-blue-800 justify-center animate-fade-in ${
+            isSidebarOpen ? "hidden md:block" : "ml-20"
+          }`}
+        >
+          Selamat Datang <br />
+          {accountName}
         </h1>
       </div>
     </div>
