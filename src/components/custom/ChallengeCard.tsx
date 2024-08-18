@@ -63,19 +63,22 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, leve
   };
   return (
     <Card className="mb-4 border border-blue-800 rounded">
-      <CardContent className="p-4">
+      <CardContent className="lg:p-4 p-2">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-bold text-blue-600">{title}</h3>
-          <div className="text-l text-blue-600 flex items-center">
+          <h3 className="lg:text-lg md:text-base text-sm font-bold text-blue-600">{title}</h3>
+          <div className="lg:text-base md:text-sm text-xs text-blue-600 flex items-center">
             <FaTrophy className="mr-1" />
             <span>{currentPoints === 0 ? '---' : currentPoints}/{maxPoints} XP</span>
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <div className="text-l font-semibold">
+          <div className="lg:text-base md:text-sm text-xs font-semibold">
             <span className={getLevelColor(level)}>{level}</span>, Max Points : {maxPoints} XP
           </div>
-          <button onClick={goToTestCasePage} className={`px-4 py-2 font-bold rounded ${getButtonStyle(status)}`}>
+          <button
+            onClick={goToTestCasePage}
+            className={`font-bold rounded lg:text-base md:text-sm text-xs lg:py-2 lg:px-4 py-1 px-2 ${getButtonStyle(status)}`}
+          >
             {getButtonLabel(status)}
           </button>
         </div>

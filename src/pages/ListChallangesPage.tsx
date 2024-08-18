@@ -192,40 +192,40 @@ const ListChallengesPage: React.FC = () => {
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen min-h-screen bg-slate-100">
       <SidebarStudent isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
-        <div className="flex justify-between bg-white items-center m-6 p-4">
-          <h1 className="text-xl font-bold text-blue-800">Belajar Kemampuan Pembuatan Test Case Unit</h1>
+        <div className="flex justify-between bg-white items-center m-5 p-4">
+          <h1 className="lg:text-xl md:text-lg text-base font-bold text-blue-800">Belajar Kemampuan Pembuatan Test Case Unit</h1>
         </div>
-        <div className="pl-20 pr-20 shadow h-full overflow-auto bg-slate-100">
+        <div className="lg:px-20 md:px-2  shadow h-full overflow-auto bg-slate-100">
           <div className="sticky top-0 bg-white z-10">
             <div className="flex flex-col lg:flex-row bg-white p-4 mx-8">
               <div className="flex flex-col lg:w-1/2">
-                <h2 className="text-xl font-bold text-blue-800">{namaModul}</h2>
-                <div className="text-green-600 text-xl font-bold">
+                <h2 className="lg:text-xl md:text-lg text-base font-bold text-blue-800">{namaModul}</h2>
+                <div className="text-green-600 lg:text-lg md:text-base text-sm font-bold">
                   {currentXP} / {maxXP} XP
                 </div>
               </div>
               <div className="flex lg:w-1/2 gap-4">
                 <div className="flex flex-col flex-grow gap-4">
-                  <div className="text-blue-800 text-sm">{totalChallenges - completedChallenges} tantangan lagi</div>
-                  <div className="w-full mt-2">
-                    <div className="w-full bg-gray-200 rounded-full h-4">
+                  <div className="text-blue-800 lg:text-sm md:text-xs text-xs">{totalChallenges - completedChallenges} tantangan lagi</div>
+                  <div className="w-full lg:mt-2">
+                    <div className="w-full bg-gray-200 rounded-full">
                       <div
-                        className="bg-blue-600 h-4 rounded-full"
+                        className="bg-blue-600 lg:h-4 md:h-3 h-2 rounded-full"
                         style={{ width: `${progressPercentage}%` }}
                       ></div>
                     </div>
                   </div>
-                  <span className="text-sm">{progressPercentage.toFixed(1)}% : {completedChallenges} / {totalChallenges}</span>
+                  <span className="lg:text-sm md:text-xs text-xs">{progressPercentage.toFixed(1)}% : {completedChallenges} / {totalChallenges}</span>
                 </div>
                 <div className="flex justify-end items-center">
-                  <img src={logo_berpikir} alt="Logo" className="w-40" />
+                  <img src={logo_berpikir} alt="Logo" className="lg:w-40 md:w-30 w-20" />
                 </div>
               </div>
             </div>
-            <div className="border border-gray-300 mx-10"/>
-            <div className="flex flex-row gap-4 ml-10 pt-10">
+            <div className="border border-gray-300 lg:mx-10 md:mx-5 mx-4"/>
+            <div className="flex flex-row gap-4 lg:mx-10 lg:mt-10 md:mx-6 md:mt-6 mx-4 mt-4 ">
               <div className="flex-1 overflow-y-auto">
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 lg:gap-4 md:gap-2 gap-1">
                   {challenges.length > 0 ? (
                     challenges.map((challenge, index) => (
                       <ChallengeCard
@@ -244,24 +244,24 @@ const ListChallengesPage: React.FC = () => {
                 </div>
               </div>
               <div className="w-1/4 bg-white h-full overflow-auto mx-auto">
-                <h2 className="text-xl font-bold text-blue-800 mb-4 mx-10">Status</h2>
-                <div className="mx-10">
+                <h2 className="lg:text-lg md:text-base text-sm font-bold text-blue-800 mb-4 lg:mx-6 md:mx-4 mx-2">Status</h2>
+                <div className="lg:mx-6 md:mx-4 mx-2">
                   <input
                     type="checkbox"
                     id="selesai"
                     checked={isSelesaiChecked}
                     onChange={e => handleSelesaiChecked(e)}
                   />
-                  <label htmlFor="selesai" className="ml-2 text-sm font-medium text-blue-800">Selesai</label>
+                  <label htmlFor="selesai" className="ml-2 lg:text-base md:text-sm text-xs font-medium text-blue-800">Selesai</label>
                 </div>
-                <div className="mx-10">
+                <div className="lg:mx-6 md:mx-4 mx-2">
                   <input
                     type="checkbox"
                     id="belumSelesai"
                     checked={isBlmSelesaiChecked}
                     onChange={e => handleBlmSelesaiChecked(e)}
                   />
-                  <label htmlFor="belumSelesai" className="ml-2 text-sm font-medium text-blue-800">Belum Selesai</label>
+                  <label htmlFor="belumSelesai" className="ml-2 lg:text-base md:text-sm text-xs font-medium text-blue-800">Belum Selesai</label>
                 </div>
               </div>
             </div>
