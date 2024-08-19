@@ -34,7 +34,7 @@ const ModulesTable = ({
 }) => {
   return (
     <table className="min-w-full">
-      <thead className="bg-blue-800 text-white lg:text-sm text-xs">
+      <thead className="bg-blue-800 text-white" style={{ fontSize: "14px" }}>
         <tr>
           <th className="py-3 px-2 md:px-6 text-left border-b border-r">Nama Modul</th>
           <th className="py-3 px-2 md:px-6 text-left border-b border-r">Jenis Modul</th>
@@ -42,7 +42,7 @@ const ModulesTable = ({
           <th className="py-3 px-2 md:px-6 text-left border-b">Action</th>
         </tr>
       </thead>
-      <tbody className="lg:text-sm text-xs">
+      <tbody style={{ fontSize: "14px" }}>
         {modules.map((module, index) => (
           <tr key={module.id} className={`border-b ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             <td className="py-3 px-2 md:px-6 border-r">{module.name}</td>
