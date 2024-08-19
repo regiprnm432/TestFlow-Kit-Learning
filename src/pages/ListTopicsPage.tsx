@@ -350,24 +350,24 @@ const ListTopicsPage: React.FC = () => {
       <div className={`flex-1 ${isSidebarOpen ? 'ml-64' : 'ml-20'} transition-all duration-300 overflow-x-auto`}>
         <div className="w-full bg-white p-4 shadow mb-6">
           <div className="max-w-screen-xl mx-auto">
-            <h1 className="text-2xl font-bold text-blue-800 mb-6 mt-4">Kelola Data Topik Pengujian</h1>
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+            <h1 className="lg:text-2xl text-xl font-bold text-blue-800 mb-6 mt-4">Kelola Data Topik Pengujian</h1>
+            <div className="flex flex-row justify-between items-center md:items-center gap-4">
               <div className="relative w-full md:w-1/2">
                 <input
                   type="text"
                   placeholder="Search or type"
                   value={searchQuery}
                   onChange={handleSearchChange} 
-                  className="w-full p-2 pl-10 border border-gray-300 rounded-md"
+                  className="w-full lg:text-sm text-xs p-2 pl-10 border border-gray-300 rounded-md"
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
               <button 
-                className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700" style={{ fontSize: '14px' }}
+                className="flex items-center text-xs lg:text-sm bg-blue-800 text-white rounded hover:bg-blue-700"
                 onClick={handleAddTopic}
               >
-                <FaPlus className="mr-2" />
-                Tambah Topik Pengujian
+                <FaPlus className="mr-0 md:mr-2" />
+                <span className='hidden md:inline'>Tambah Topik Pengujian</span>
               </button>
             </div>
           </div>

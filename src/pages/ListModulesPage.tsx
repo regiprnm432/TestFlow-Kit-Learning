@@ -208,27 +208,26 @@ const ListModulesPage = () => {
       <div className={`flex-1 ${isSidebarOpen ? "ml-64" : "ml-20"} transition-all duration-300`}>
         <div className="w-full bg-white p-4 shadow mb-6">
           <div className="max-w-screen-xl mx-auto">
-            <h1 className="text-2xl font-bold text-blue-800 mb-6 mt-4">
+            <h1 className="lg:text-2xl text-xl font-bold text-blue-800 mb-6 mt-4">
               Kelola Data Modul Program
             </h1>
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+            <div className="flex flex-row justify-between items-center md:items-center gap-4">
               <div className="relative w-full md:w-1/2">
                 <input
                   type="text"
                   placeholder="Search or type"
-                  className="w-full p-2 pl-10 border border-gray-300 rounded-md"
+                  className="w-full lg:text-sm text-xs p-2 pl-10 border border-gray-300 rounded-md"
                   value={searchTerm}
                   onChange={handleSearch}
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
               <button
-                className="mr-6 flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
-                style={{ fontSize: "14px" }}
+                className="flex items-center text-xs lg:text-sm bg-blue-800 text-white rounded hover:bg-blue-700"
                 onClick={addModul}
               >
-                <FaPlus className="mr-2" />
-                Tambah Modul Program
+                <FaPlus className="mr-0 md:mr-2" />
+                <span className="hidden md:inline">Tambah Modul Program</span>
               </button>
             </div>
           </div>
@@ -238,7 +237,7 @@ const ListModulesPage = () => {
             {deleteMessage && (
               <div className="p-4 mb-4 text-green-500 bg-green-100 rounded-md">
                 {deleteMessage}
-              </div>
+              </div>  
             )}
             {deleteErrorMessage && (
               <div className="p-4 mb-4 text-red-500 bg-red-100 rounded-md">
