@@ -329,7 +329,22 @@ const ListTopicsPage: React.FC = () => {
   };
 
 
+  
+    
+
+
   useEffect(() => {
+
+    if (session != null){
+      if (session.login_type != "teacher"){
+          navigate("/dashboard-student")
+      }else{
+        fetchDataTopik(1,searchQuery,orderBy, order)
+      }
+    }else{
+      navigate("/login")
+    }
+    
     const mediaQuery = window.matchMedia("(min-width: 768px)");
     const handleMediaQueryChange = (event: MediaQueryListEvent) => {
       setIsSidebarOpen(event.matches);
@@ -341,6 +356,8 @@ const ListTopicsPage: React.FC = () => {
     return () => {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
+
+    
   }, []);
 
 
