@@ -229,7 +229,7 @@ const TopicPage: React.FC = () => {
         tempCompleted.push(
             { id: data.data[i].ms_id_topik, 
               title: data.data[i].ms_nama_topik, 
-              xp: data.data[i].jml_point }
+              xp: data.data[i].jml_ongoing_point }
           )
       }
       setCompletedTopics(tempCompleted);
