@@ -381,7 +381,12 @@ const TestCaseFormDialog = ({
       if (!response.ok) {
         if (response.status === 403) {
           throw new Error("Forbidden: Access is denied");
-        } else {
+        } else if (response.status === 422) {
+          const responseData = await response.json();
+          setErrorMessage(responseData.message);
+          throw new Error( "422" );
+        }else {
+          setErrorMessage("Error Saving Data");
           throw new Error(`HTTP error! status: ${response.status}`);
         }
       }
@@ -406,8 +411,7 @@ const TestCaseFormDialog = ({
         return newNumber;
       });
     } catch (error) {
-      console.error("Error saving data:", error);
-      setErrorMessage("Error saving data");
+      console.log(error)
     }
   };
 

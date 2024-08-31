@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaTrophy } from 'react-icons/fa';
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import Modal from '../custom/Modal';
 
 interface ChallengeCardProps {
   idTopikModul: string;
@@ -14,6 +15,16 @@ interface ChallengeCardProps {
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, level, currentPoints, maxPoints, status }) => {
   const navigate = useNavigate();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const apiUrl = import.meta.env.VITE_API_URL;
+  let apiKey = import.meta.env.VITE_API_KEY;
+  // const modulId = import.meta.env.VITE_MODULE_ID;
+  const sessionData = localStorage.getItem('session')
+  if (sessionData != null){
+      const session = JSON.parse(sessionData);
+      apiKey = session.token
+  }
   const getLevelColor = (level: string) => {
     switch (level) {
       case 'Mudah':
@@ -55,11 +66,38 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, leve
     }
   };
 
-  const goToTestCasePage = () => {
-    navigate({
-      pathname: '/topikModul',
-      search: '?topikModulId='+idTopikModul,
-    });
+  const goToTestCasePage = async () => {
+    try {
+        const response = await fetch(`${apiUrl}/topik/checkChallenge?idTopikModul=${idTopikModul}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          // throw new Error('Forbidden: Access is denied');
+          navigate('/error');
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      }
+      const data = await response.json();
+      console.log(data.data_allowed)
+      if (data.data_allowed){
+          navigate({
+            pathname: '/topikModul',
+            search: '?topikModulId='+idTopikModul,
+          });
+      }else{
+          setModalMessage("Anda belum bisa mengerjakan modul ini, silahkan selesaikan dahulu modul sebelumnya");
+          setIsModalVisible(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
   return (
     <Card className="mb-4 border border-blue-800 rounded">
@@ -83,6 +121,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, leve
           </button>
         </div>
       </CardContent>
+      <Modal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        message={modalMessage}
+      />
     </Card>
   );
 };

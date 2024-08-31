@@ -42,36 +42,38 @@ const getStatusLabel = (status: 'P' | 'D'): string => {
   }
 };
 
-// const parseStudentAccess = (access: number | string) => {
-//   if (typeof access === 'number') {
-//     return access;
-//   } else if (typeof access === 'string' && access === '-') {
-//     return 0;
-//   } else {
-//     return parseInt(access);
-//   }
-// };
 // Fungsi untuk memformat tampilan jumlah mahasiswa
 const formatStudentAccess = (access: number | string) => {
   return access === 0 ? '-' : access;
 };
 
-
 const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort, onTogglePublish, onDelete, onEdit }) => {
   return (
-    <table className="min-w-full ">
+    <table className="min-w-full">
       <thead className="bg-blue-800 text-white" style={{ fontSize: '14px' }}>
         <tr>
           <th className="py-3 px-6 text-left border-b border-r">Nama Topik</th>
           <th className="py-3 px-6 text-left border-b border-r">Deskripsi</th>
-          <th className="py-3 px-6 text-left border-b border-r cursor-pointer flex items-center" onClick={() => onSort('jml_modul')}>
-            Jumlah Modul Program
-            {orderBy === 'jml_modul' ? (order === 'asc' ? <FaSortUp className="ml-2" /> : <FaSortDown className="ml-2" />) : <FaSortDown className="ml-2 text-gray-400" />}
+          <th className="py-3 px-6 text-left border-b border-r cursor-pointer" onClick={() => onSort('jml_modul')}>
+            <div className="flex items-center">
+              Jumlah Modul Program
+              {orderBy === 'jml_modul' ? (
+                order === 'asc' ? <FaSortUp className="ml-2 text-white" /> : <FaSortDown className="ml-2 text-white" />
+              ) : (
+                <FaSortDown className="ml-2 text-white opacity-50" />
+              )}
+            </div>
           </th>
           <th className="py-3 px-6 text-left border-b border-r">Status Tayang</th>
-          <th className="py-3 px-6 text-left border-b border-r cursor-pointer flex items-center" onClick={() => onSort('jml_student')}>
-            Jumlah Mahasiswa Mengakses
-            {orderBy === 'jml_student' ? (order === 'asc' ? <FaSortUp className="ml-2" /> : <FaSortDown className="ml-2" />) : <FaSortDown className="ml-2 text-gray-400" />}
+          <th className="py-3 px-6 text-left border-b border-r cursor-pointer" onClick={() => onSort('jml_student')}>
+            <div className="flex items-center">
+              Jumlah Mahasiswa Mengakses
+              {orderBy === 'jml_student' ? (
+                order === 'asc' ? <FaSortUp className="ml-2 text-white" /> : <FaSortDown className="ml-2 text-white" />
+              ) : (
+                <FaSortDown className="ml-2 text-white opacity-50" />
+              )}
+            </div>
           </th>
           <th className="py-3 px-6 text-left border-b">Action</th>
         </tr>
