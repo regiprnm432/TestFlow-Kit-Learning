@@ -198,12 +198,11 @@ const AddStudentDataForm = ({
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                     <Button
-                        className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
-                        style={{ fontSize: "14px" }}
+                        className="flex items-center justify-center text-sm bg-blue-800 text-white py-2 px-3 md:px-4 lg:px-5 rounded hover:bg-blue-700"
                         onClick={() =>setIdStudent("0")}
                     >
-                        <FaPlus className="mr-2" />
-                        Tambah
+                       <FaPlus className="mr-0 md:mr-2" />
+                       <span className="hidden md:inline">Tambah</span>
                     </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-white p-10 rounded-lg shadow-lg max-w-2xl mx-auto">

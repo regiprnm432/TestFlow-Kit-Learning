@@ -361,10 +361,10 @@ const StudentPage: React.FC = () => {
       >
         <div className="w-full bg-white p-4 shadow mb-6">
           <div className="max-w-screen-xl mx-auto">
-            <h1 className="text-2xl font-bold text-blue-800 mb-6">
+            <h1 className="lg:text-2xl text-xl font-bold text-blue-800 mb-6 mt-4">
               Kelola Data Mahasiswa
             </h1>
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+            <div className="flex flex-row justify-between items-center space-y-0 gap-4">
               <div className="relative w-full md:w-1/2">
                 <input
                   type="text"
@@ -375,7 +375,7 @@ const StudentPage: React.FC = () => {
                     setCurrentPage(1); // Reset to first page on search
                     fetchDataStudent(1,e.target.value);
                   }}
-                  className="w-full p-2 pl-10 border border-gray-300 rounded-md"
+                  className="w-full p-2 pl-10 border text-sm border-gray-300 rounded-md"
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
