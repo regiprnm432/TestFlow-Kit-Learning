@@ -6,9 +6,9 @@ interface PaginationProps {
   
   const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
     return (
-      <div className="flex justify-center items-center py-4" style={{ fontSize: "14px" }}>
+      <div className="flex justify-center items-center py-2 text-xs lg:text-sm">
         <button
-          className={`mx-2 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-200 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
+          className={`mx-1 md:mx-2 px-2 py-1 rounded-md ${currentPage === 1 ? "bg-gray-200 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
@@ -17,14 +17,14 @@ interface PaginationProps {
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
           <button
             key={page}
-            className={`mx-2 px-3 py-1 rounded-md ${currentPage === page ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+            className={`mx-1 md:mx-2 px-2 py-1 rounded-md ${currentPage === page ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
             onClick={() => onPageChange(page)}
           >
             {page}
           </button>
         ))}
         <button
-          className={`mx-2 px-3 py-1 rounded-md ${currentPage === totalPages ? "bg-gray-200 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
+          className={`mx-1 md:mx-2 px-2 py-1 rounded-md ${currentPage === totalPages ? "bg-gray-200 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
