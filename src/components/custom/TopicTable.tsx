@@ -54,7 +54,7 @@ const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort,
         <tr>
           <th className="py-3 px-2 md:px-6 text-left border-b border-r">Nama Topik</th>
           <th className="py-3 px-2 md:px-6 text-left border-b border-r">Deskripsi</th>
-          <th className="py-3 px-2 md:px-6 text-left border-b border-rcursor-pointer" onClick={() => onSort('jml_modul')}>
+          <th className="py-3 px-2 md:px-6 text-left border-b border-r cursor-pointer" onClick={() => onSort('jml_modul')}>
             <div className="flex items-center">
               Jumlah Modul Program
               {orderBy === 'jml_modul' ? (
