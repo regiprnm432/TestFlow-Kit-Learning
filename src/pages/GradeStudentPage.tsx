@@ -327,16 +327,16 @@ const GradeStudentPage: React.FC = () => {
       <div className={`flex-1 ${isSidebarOpen ? "ml-64" : "ml-20"} transition-all duration-300 `}>
         <div className="w-full bg-white p-4 shadow mb-6 ">
           <div className="max-w-screen-xl mx-auto">
-            <h1 className="text-2xl font-bold text-blue-800 mb-6 mt-4">
+          <h1 className="lg:text-2xl text-xl font-bold text-blue-800 mb-6 mt-4">
               Grade Pencapaian Mahasiswa
             </h1>
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex flex-row justify-between items-center space-y-0 gap-4">
               <div className="flex items-center w-full md:w-1/2">
                 <span className="text-black font-semibold mr-2">Topik:</span>
                 <select
                   value={selectedTopic}
                   onChange={handleTopicChange}
-                  className="p-2 border border-gray-300 rounded-md"
+                   className="text-sm p-2 border border-gray-300 rounded-md w-full md:w-3/4 lg:w-1/2"
                 >
                   <option value="">Semua</option>
                   {topics.map((topic) => (
@@ -352,7 +352,7 @@ const GradeStudentPage: React.FC = () => {
                   placeholder="Search or type"
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="w-full p-2 pl-10 border border-gray-300 rounded-md"
+                  className="text-sm w-full p-2 pl-10 border border-gray-300 rounded-md"
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
@@ -361,12 +361,11 @@ const GradeStudentPage: React.FC = () => {
         </div>
         <div className="min-h-screen p-4 md:p-6">
           <button
-            className="flex items-center bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-600 mb-4"
-            style={{ fontSize: "14px", marginLeft: "auto" }}
+            className="flex items-center text-sm bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-600 mb-4 ml-auto"
             onClick={handleDownload}
           >
-            <FaDownload className="mr-2" />
-            Unduh
+            <FaDownload className="mr-0 md:mr-2" />
+            <span className="hidden md:inline">Unduh</span>
           </button>
           <div className="bg-white shadow-md rounded-lg">
             {students.length === 0 ? (

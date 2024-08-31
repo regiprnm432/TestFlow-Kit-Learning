@@ -33,7 +33,7 @@ const GradeStudentTable: React.FC<StudentTableProps> = ({ students, onSort, sort
   return (
     <div className="bg-white shadow-md rounded-lg overflow-x-auto">
       <table className="min-w-full">
-        <thead className="bg-blue-800 text-white" style={{ fontSize: '14px' }}>
+        <thead className="bg-blue-800 text-white text-xs lg:text-sm">
           <tr>
             <th className="py-3 px-2 md:px-6 text-left border-b border-r">No</th>
             <th className="py-3 px-2 md:px-6 text-left border-b border-r">Nim</th>
@@ -57,7 +57,7 @@ const GradeStudentTable: React.FC<StudentTableProps> = ({ students, onSort, sort
             <th className="py-3 px-2 md:px-6 text-left border-b">Modul Program Terakhir</th>
           </tr>
         </thead>
-        <tbody style={{ fontSize: '14px' }}>
+        <tbody className="text-xs lg:text-sm">
           {students.map((student, index) => (
             <tr key={student.no} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
               <td className="py-3 px-2 md:px-6 border-r">{student.no}</td>
