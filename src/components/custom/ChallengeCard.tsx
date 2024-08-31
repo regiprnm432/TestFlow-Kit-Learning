@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaTrophy } from 'react-icons/fa';
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import Modal from '../custom/Modal';
 
 interface ChallengeCardProps {
   idTopikModul: string;
@@ -14,6 +15,8 @@ interface ChallengeCardProps {
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, level, currentPoints, maxPoints, status }) => {
   const navigate = useNavigate();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const apiUrl = import.meta.env.VITE_API_URL;
   let apiKey = import.meta.env.VITE_API_KEY;
   // const modulId = import.meta.env.VITE_MODULE_ID;
@@ -89,7 +92,8 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, leve
             search: '?topikModulId='+idTopikModul,
           });
       }else{
-        alert("Anda belum bisa mengerjakan modul ini, silahkan selesaikan dahulu modul sebelumnya")
+          setModalMessage("Anda belum bisa mengerjakan modul ini, silahkan selesaikan dahulu modul sebelumnya");
+          setIsModalVisible(true);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -114,6 +118,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ idTopikModul, title, leve
           </button>
         </div>
       </CardContent>
+      <Modal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        message={modalMessage}
+      />
     </Card>
   );
 };
