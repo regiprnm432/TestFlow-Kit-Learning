@@ -50,11 +50,11 @@ const formatStudentAccess = (access: number | string) => {
 const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort, onTogglePublish, onDelete, onEdit }) => {
   return (
     <table className="min-w-full">
-      <thead className="bg-blue-800 text-white" style={{ fontSize: '14px' }}>
+      <thead className="bg-blue-800 text-white text-xs lg:text-sm">
         <tr>
-          <th className="py-3 px-6 text-left border-b border-r">Nama Topik</th>
-          <th className="py-3 px-6 text-left border-b border-r">Deskripsi</th>
-          <th className="py-3 px-6 text-left border-b border-r cursor-pointer" onClick={() => onSort('jml_modul')}>
+          <th className="py-3 px-2 md:px-6 text-left border-b border-r">Nama Topik</th>
+          <th className="py-3 px-2 md:px-6 text-left border-b border-r">Deskripsi</th>
+          <th className="py-3 px-2 md:px-6 text-left border-b border-rcursor-pointer" onClick={() => onSort('jml_modul')}>
             <div className="flex items-center">
               Jumlah Modul Program
               {orderBy === 'jml_modul' ? (
@@ -78,13 +78,13 @@ const TopicTable: React.FC<TopicTableProps> = ({ topics, orderBy, order, onSort,
           <th className="py-3 px-6 text-left border-b">Action</th>
         </tr>
       </thead>
-      <tbody style={{ fontSize: '14px' }}>
+      <tbody className="text-xs lg:text-sm">
         {topics.map((topic, index) => (
           <tr key={topic.id} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-            <td className="py-3 px-6 border-r">{topic.name}</td>
-            <td className="py-3 px-6 border-r">{topic.description}</td>
-            <td className="py-3 px-6 border-r">{topic.moduleCount}</td>
-            <td className="py-3 px-6 border-r">
+            <td className="py-3 px-2 md:px-6 border-r">{topic.name}</td>
+            <td className="py-3 px-2 md:px-6 border-r">{topic.description}</td>
+            <td className="py-3 px-2 md:px-6 border-r">{topic.moduleCount}</td>
+            <td className="py-3 px-2 md:px-6 border-r">
               <span className={`px-2 py-1 rounded ${getStatusStyle(topic.status)}`}>{getStatusLabel(topic.status)}</span>
             </td>
             <td className="py-3 px-6 border-r">{formatStudentAccess(topic.studentAccess)}</td>
