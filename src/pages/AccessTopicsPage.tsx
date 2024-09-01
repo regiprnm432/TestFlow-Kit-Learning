@@ -263,17 +263,17 @@ const TopicPage: React.FC = () => {
       <div className={`flex-1 ${isSidebarOpen ? "ml-64" : "ml-20"} transition-all duration-300`}>
         <div className="w-full bg-white p-4 shadow mb-6">
           <div className="max-w-screen-xl mx-auto">
-            <h1 className="text-2xl font-bold text-blue-800 mb-6 mt-4">
+            <h1 className="text-xl lg:text-2xl font-bold text-blue-800 mb-6 mt-4">
               Belajar Kemampuan Pembuatan Test Case Unit
             </h1>
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+            <div className="flex flex-row justify-between items-center space-y-0 gap-4">
               <div className="relative w-full md:w-1/2">
                 <input
                   type="text"
                   placeholder="Search or type"
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="w-full p-2 pl-10 border border-gray-300 rounded-md"
+                  className="w-full p-2 text-sm pl-10 border border-gray-300 rounded-md"
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
@@ -281,7 +281,7 @@ const TopicPage: React.FC = () => {
                 <select
                   value={filterOption}
                   onChange={handleFilterChange}
-                  className="p-2 border border-gray-300 rounded-md"
+                  className="p-2 border border-gray-300 rounded-md text-sm"
                 >
                   <option value="all">Semua</option>
                   <option value="ongoing">Sedang Berjalan</option>
