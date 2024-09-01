@@ -111,19 +111,19 @@ export function Navbar() {
         <img
           src={logo_polban}
           alt="Polban Logo"
-          className="w-12 h-12 mr-4"
+         className="w-10 h-10 lg:w-12 lg:h-12 mr-1 lg:mr-4"
         />
         <img
           src={logo_default}
           alt="App Logo"
-          className="w-9 h-9"
+          className="w-6 h-6 lg:w-9 lg:h-9"
         />
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/Home"
-                className="block px-4 py-2 text-xl font-medium text-white hover:text-black"
+                className="block px-1 lg:px-2 py-0 lg:py-2 text-sm lg:text-xl font-medium text-white hover:text-black"
               >
                 Coverage Test
               </NavigationMenuLink>
@@ -161,8 +161,8 @@ export function Navbar() {
         onClick={handleBack}
         className="flex items-center text-white hover:text-gray-300 mr-8"
       >
-        <FaSignOutAlt size={18} className="mr-2" />
-        Kembali
+        <FaSignOutAlt size={18} className="mr-0 md:mr-2" />
+        <span className="hidden md:inline text-base">Kembali</span>
       </a>
     </nav>
   );
