@@ -111,12 +111,12 @@ export function Navbar() {
         <img
           src={logo_polban}
           alt="Polban Logo"
-          className="w-12 h-12 mr-4"
+          className="w-12 h-12 mr-2"
         />
         <img
           src={logo_default}
           alt="App Logo"
-          className="w-9 h-9"
+          className="w-12 h-12"
         />
         <NavigationMenu>
           <NavigationMenuList>
