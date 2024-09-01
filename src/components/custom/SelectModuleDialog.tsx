@@ -156,7 +156,7 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
             Tambahkan Tantangan Pada Topik {topicName}
           </DialogTitle>
         </DialogHeader>
-        <div className="overflow-x-auto text-sm">
+        <div className="overflow-x-auto text-xs lg:text-sm">
           <table className="min-w-full bg-white border rounded-lg shadow-md">
             <thead>
               <tr className="bg-blue-800 text-white">
@@ -189,14 +189,14 @@ const SelectModuleDialog: React.FC<SelectModuleDialogProps> = ({ isDialogOpen, s
               ))}
             </tbody>
           </table>
-          <div className="flex justify-center mt-2">
+        </div>
+        <div className="flex justify-center mt-2">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={(page) => setCurrentPage(page)}
             />
           </div>
-        </div>
         <div className="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-4 w-full">
           <Button className="bg-transparent border border-blue-800 text-blue-800 rounded-full px-4 py-2 hover:bg-blue-100" onClick={handleCancel}>
             Kembali
