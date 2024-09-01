@@ -421,20 +421,13 @@ const StudentPage: React.FC = () => {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
               />
-              <div
-                className="flex justify-center items-center py-4"
-                style={{ fontSize: "14px" }}
-              >
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              </div>
             </>
           )}
+          </div>
+          <div className="flex justify-center items-center py-4 text-xs lg:text-sm">
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          </div>
         </div>
-      </div>
       </div>
       {showConfirmation && (
         <ConfirmationModal
