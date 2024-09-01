@@ -419,7 +419,7 @@ const ListTopicsPage: React.FC = () => {
               </>
             )}
           </div>
-          <div className="flex justify-center items-center py-4 text-sm">
+          <div className="flex justify-center items-center py-4 text-xs lg:text-sm">
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
           </div>
         </div>
