@@ -361,7 +361,7 @@ const AddTopicPage: React.FC = () => {
                     maxLength: { value: 50, message: "Nama Topik tidak sesuai!" } }}
                   render={({ field, fieldState: { error } }) => (
                     <FormItem className="flex items-center w-full">
-                      <FormLabel className="text-gray-700 font-bold text-base w-1/4">
+                      <FormLabel className="text-gray-700 font-bold text-sm lg:text-base w-1/4">
                         Nama Topik <span className="text-red-500">*</span>
                       </FormLabel>
                       <div className="w-1/12 text-center">:</div>
@@ -377,11 +377,11 @@ const AddTopicPage: React.FC = () => {
                               setTopicName(e.target.value);
                             }}
                           />
-                          <p className="text-gray-500 text-sm mt-1">
+                          <p className="text-gray-500 text-xs lg:text-sm mt-1">
                             * Nama topik harus unik, belum pernah dibuat sebelumnya.
                           </p>
                           {error && (
-                          <p className="text-red-600 text-sm mt-1">
+                          <p className="text-red-600 text-xs lg:text-sm mt-1">
                             {error.message}
                           </p>
                         )}
@@ -397,7 +397,7 @@ const AddTopicPage: React.FC = () => {
                   name="deskripsiTopik"
                   render={({ field }) => (
                     <FormItem className="flex items-center w-full">
-                      <FormLabel className="text-gray-700 font-bold text-base w-1/4">
+                      <FormLabel className="text-gray-700 font-bold text-sm lg:text-base w-1/4">
                         Deskripsi Topik 
                       </FormLabel>
                       <div className="w-1/12 text-center">:</div>
@@ -414,7 +414,7 @@ const AddTopicPage: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-gray-700 text-lg font-bold">Daftar Modul Program <span className="text-red-500">*</span></h2>
+            <h2 className="text-gray-700 text-base lg:text-lg font-bold">Daftar Modul Program <span className="text-red-500">*</span></h2>
             <Button className="text-white bg-blue-800 px-3 py-2 shadow hover:bg-blue-700 rounded-full" onClick={() => setIsSelectModuleDialogOpen(true)}>
               <FaPlus />
             </Button>
@@ -424,7 +424,7 @@ const AddTopicPage: React.FC = () => {
             {infoModuleMessage}
             </div>
           )}
-          <table className="min-w-full bg-white border rounded-lg shadow-md text-sm">
+          <table className="min-w-full bg-white border rounded-lg shadow-md text-xs lg:text-sm">
             <thead>
               <tr className="bg-blue-800 text-white">
                 <th className="py-3 px-2 md:px-6 border">No</th>
@@ -468,7 +468,7 @@ const AddTopicPage: React.FC = () => {
               ))}
             </tbody>
           </table>
-          <p className="text-gray-500 text-sm mt-1 pt-8">* Harus terdapat setidaknya 1 modul program</p>
+          <p className="text-gray-500 text-xs lg:text-sm mt-1 pt-6 lg:pt-8">* Harus terdapat setidaknya 1 modul program</p>
         </div>
 
         <div className="flex justify-end mt-6">
