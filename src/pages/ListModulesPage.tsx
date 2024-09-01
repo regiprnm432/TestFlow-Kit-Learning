@@ -251,15 +251,15 @@ const ListModulesPage = () => {
             ) : (
               <>
                 <ModulesTable modules={modules} onDelete={openModal} onEdit={editModul} />
-                <div className="flex justify-center items-center py-4 text-xs lg:text-sm">
+              </>
+            )}
+          </div>
+          <div className="flex justify-center items-center py-4 text-xs lg:text-sm">
                   <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
                   />
-                </div>
-              </>
-            )}
           </div>
         </div>
       </div>
