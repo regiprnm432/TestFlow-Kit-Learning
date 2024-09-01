@@ -360,38 +360,33 @@ const GradeStudentPage: React.FC = () => {
           </div>
         </div>
         <div className="min-h-screen p-4 md:p-6">
-          <button
-            className="flex items-center text-sm bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-600 mb-4 ml-auto"
-            onClick={handleDownload}
-          >
-            <FaDownload className="mr-0 md:mr-2" />
-            <span className="hidden md:inline">Unduh</span>
-          </button>
-          <div className="bg-white shadow-md rounded-lg">
-            {students.length === 0 ? (
-              <div className="p-4 text-center text-red-500">
-                Data tidak ditemukan
-              </div>
-            ) : (
-              <>
-                <GradeStudentTable
-                  students={students}
-                  onSort={handleSort}
-                  sortColumn={sortColumn || undefined}
-                  sortDirection={sortDirection}
-                />
-                <div
-                  className="flex justify-center items-center py-4"
-                  style={{ fontSize: "14px" }}
-                >
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
+          <div className="bg-white shadow-md rounded-lg overflow-x-auto">
+            <button
+              className="flex items-center text-sm bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-600 mb-4 ml-auto"
+              onClick={handleDownload}
+            >
+              <FaDownload className="mr-0 md:mr-2" />
+              <span className="hidden md:inline">Unduh</span>
+            </button>
+            <div className="bg-white shadow-md rounded-lg">
+              {students.length === 0 ? (
+                <div className="p-4 text-center text-red-500">
+                  Data tidak ditemukan
                 </div>
-              </>
-            )}
+              ) : (
+                <>
+                  <GradeStudentTable
+                    students={students}
+                    onSort={handleSort}
+                    sortColumn={sortColumn || undefined}
+                    sortDirection={sortDirection}
+                  />
+                </>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-center items-center py-4 text-xs lg:text-sm">
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
           </div>
         </div>
       </div>
