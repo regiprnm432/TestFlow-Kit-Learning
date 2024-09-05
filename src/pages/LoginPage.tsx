@@ -120,12 +120,12 @@ const LoginPage = () => {
           <img
             src={logo_polban}
             alt="Logo"
-            className="w-28 mr-4"
+            className="w-28 mr-2"
           />
           <img
             src={logo_default}
             alt="Logo"
-            className="w-20 mr-4"
+            className="w-24 mr-2"
           />
         </div>
         <h2 className="text-2xl font-bold mb-6">Selamat Datang Kembali</h2>
