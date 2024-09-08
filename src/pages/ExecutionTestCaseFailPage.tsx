@@ -6,11 +6,11 @@ import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard
 import AddTestCaseCard from "@/components/custom/AddTestCaseCard";
 import CFGCard from "@/components/custom/CFGCard";
 import { Button } from "@/components/ui/button";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+// import {
+//   ResizableHandle,
+//   ResizablePanel,
+//   ResizablePanelGroup,
+// } from "@/components/ui/resizable";
 // import { ScrollArea } from "@/components/ui/scroll-area";
 import FailCard from "@/components/custom/FailCard";
 
@@ -72,50 +72,37 @@ const ExecutionTestCaseFailPage: React.FC = () => {
     <>
       <Layout>
         <Menu />
-        <div className="flex flex-col w-screen min-h-screen">
-          <ResizablePanelGroup
-            direction="horizontal"
-            className="w-full rounded-lg border flex-grow"
+        <div className="flex flex-col md:flex-row w-screen min-h-screen">
+          <div className="flex flex-col w-full md:w-1/2">
+            <ModuleSpecificationCard />
+          </div>
+          <div
+            className="flex flex-col w-full md:w-1/2 items-center md:pl-4 md:pr-4 md:gap-4"
+            style={{ overflowY: "auto" }}
           >
-            <ResizablePanel defaultSize={50}>
-              <div className="flex h-full flex-col">
-                <ModuleSpecificationCard />
-              </div>
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize={50}>
-              <div
-                className="flex flex-col h-full items-center pl-4 pr-4 gap-4"
-                style={{ overflowY: "auto" }}
-              >
-                <CFGCard
-                  showCyclomaticComplexity={showCyclomaticComplexity}
-                  showCodeCoverage={showCodeCoverage}
-                  codeCoveragePercentage={codeCoveragePercentage}
-                />
-                <AddTestCaseCard />
-                <div className="mt-6 w-full">
-                  <FailCard
-                    percentageCoverage={navigationData?.coverage_score || 0}
-                    minimumCoverage={navigationData?.minimum_coverage_score || 0}
-                    statusEksekusi={navigationData?.status_eksekusi || false}
-                    tanggalEksekusi={navigationData?.tgl_eksekusi || ""}
-                    modulId={navigationData?.modul_id||""}
-                  />
-                </div>
-                {/* Tombol untuk navigasi ke halaman /test-result dengan ID modul */}
-                <Button
-                    className="bg-white rounded-lg font-bold text-red-700 border border-red-700 hover:bg-red-700 hover:text-white button-custom "
-                    onClick={handleNavigateToTestResult}
-                    style={{ fontSize: "14px" }}
-                  >
-                    Laporan Pengujian
-                  </Button>
-                {/* Penanda untuk scroll ke bagian paling bawah */}
-                <div ref={bottomRef}></div>
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
+            <CFGCard
+              showCyclomaticComplexity={showCyclomaticComplexity}
+              showCodeCoverage={showCodeCoverage}
+              codeCoveragePercentage={codeCoveragePercentage}
+            />
+            <AddTestCaseCard />
+            <div className="mt-6 w-full">
+              <FailCard
+                percentageCoverage={navigationData?.coverage_score || 0}
+                minimumCoverage={navigationData?.minimum_coverage_score || 0}
+                statusEksekusi={navigationData?.status_eksekusi || false}
+                tanggalEksekusi={navigationData?.tgl_eksekusi || ""}
+                modulId={navigationData?.modul_id || ""}
+              />
+            </div>
+            <Button
+              className="my-2 md:my-0 text-sm bg-white rounded-lg font-bold text-red-700 border border-red-700 hover:bg-red-700 hover:text-white button-custom"
+              onClick={handleNavigateToTestResult}
+            >
+              Laporan Pengujian
+            </Button>
+            <div ref={bottomRef}></div>
+          </div>
         </div>
       </Layout>
     </>

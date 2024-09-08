@@ -6,11 +6,11 @@ import { Menu } from "@/components/custom/Menu";
 import ModuleSpecificationCard from "@/components/custom/ModuleSpecificationCard";
 import AddTestCaseCard from "@/components/custom/AddTestCaseCard";
 import CFGCard from "@/components/custom/CFGCard";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+// import {
+//   ResizableHandle,
+//   ResizablePanel,
+//   ResizablePanelGroup,
+// } from "@/components/ui/resizable";
 // import { ScrollArea } from "@/components/ui/scroll-area";
 import PassCard from "@/components/custom/PassCard";
 
@@ -140,25 +140,20 @@ const ExecutionTestCasePassPage: React.FC = () => {
   return (
     <Layout>
       <Menu />
-      <div className="flex flex-col w-screen min-h-screen">
-        <ResizablePanelGroup
-          direction="horizontal"
-          className="w-full rounded-lg border flex-grow"
-        >
-          <ResizablePanel defaultSize={50}>
-            <div className="flex h-full flex-col">
-              <ModuleSpecificationCard />
-            </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={50}>
-            <div  className="flex flex-col h-full items-center pl-4 pr-4 gap-4"
-              style={{ overflowY: "auto" }}>
-              <CFGCard 
-                  showCyclomaticComplexity={showCyclomaticComplexity}
-                  showCodeCoverage={showCodeCoverage}
-                  codeCoveragePercentage={codeCoveragePercentage}
-                />
+      <Menu />
+        <div className="flex flex-col md:flex-row w-screen min-h-screen">
+          <div className="flex flex-col w-full md:w-1/2">
+            <ModuleSpecificationCard />
+          </div>
+          <div
+            className="flex flex-col w-full md:w-1/2 items-center md:pl-4 md:pr-4 md:gap-4"
+            style={{ overflowY: "auto" }}
+          >
+            <CFGCard 
+              showCyclomaticComplexity={showCyclomaticComplexity}
+              showCodeCoverage={showCodeCoverage}
+              codeCoveragePercentage={codeCoveragePercentage}
+            />
               <AddTestCaseCard />
               <div className="mt-6 w-full">
                 <PassCard
@@ -174,23 +169,21 @@ const ExecutionTestCasePassPage: React.FC = () => {
               {/* Penanda untuk scroll ke bagian paling bawah */}
               <div ref={bottomRef}></div>
               <div className="space-x-2 items-center justify-end">
-                        <Button
-                            variant="outline"
-                            className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
-                            onClick={handleNavigateToTestResult}
-                        >
-                            Hasil Pengujian 
-                        </Button>
-                        <Button
-                            className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
-                            onClick={handleNavigateNextChallenge}
-                        >
-                            Kasus Selanjutnya
-                        </Button>
-                    </div>
-            </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+                <Button
+                  variant="outline"
+                  className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"
+                   onClick={handleNavigateToTestResult}
+                >
+                Hasil Pengujian 
+                </Button>
+                <Button
+                  className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[20] pt-0 pb-0"
+                  onClick={handleNavigateNextChallenge}
+                  >
+                  Kasus Selanjutnya
+                  </Button>
+              </div>
+          </div>
       </div>
     </Layout>
   );

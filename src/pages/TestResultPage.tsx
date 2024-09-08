@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import { Menu } from "@/components/custom/Menu";
 import ModuleCoverage from "@/components/custom/ModuleCoverage";
 import CFGCard from "@/components/custom/CFGCard";
-import {
-//   ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+// import {
+// //   ResizableHandle,
+//   ResizablePanel,
+//   ResizablePanelGroup,
+// } from "@/components/ui/resizable";
 import TestResultCard from "@/components/custom/TestResultCard";
 import { Button } from "@/components/ui/button";
 //import PercentageCodeCoverage from "@/components/custom/PresentaseCodeCoverage";
@@ -118,24 +118,20 @@ const TestResultPage = () => {
     return (
         <Layout>
         <Menu />
-        <div className="flex flex-col w-screen min-h-screen">
-            <ResizablePanelGroup
-            direction="horizontal"
-            className="w-full rounded-lg border flex-grow"
-            >
-            <ResizablePanel defaultSize={50}>
-                <div className="flex h-full flex-col">
-                <ModuleCoverage dataResultTest = {dataTestResult}/>
-                </div>
-            </ResizablePanel>
-            <ResizablePanel defaultSize={50}>
-                <div className="flex flex-col overflow-auto pr-4 pl-4 pb-4 gap-4">
-                  <CFGCard 
-                    showCyclomaticComplexity={showCyclomaticComplexity}
-                    showCodeCoverage={showCodeCoverage}
-                    codeCoveragePercentage={dataTestResult.coverageScore}
-                  />
-                  <TestResultCard dataResultTest = {dataTestResult}/>
+        <div className="flex flex-col md:flex-row w-screen min-h-screen">
+          <div className="flex flex-col w-full md:w-1/2">
+            <ModuleCoverage dataResultTest = {dataTestResult}/>
+          </div>
+          <div
+            className="flex flex-col w-full md:w-1/2 items-center md:pl-4 md:pr-4 md:gap-4"
+            style={{ overflowY: "auto" }}
+          >
+             <CFGCard 
+                showCyclomaticComplexity={showCyclomaticComplexity}
+                showCodeCoverage={showCodeCoverage}
+                codeCoveragePercentage={dataTestResult.coverageScore}
+              />
+              <TestResultCard dataResultTest = {dataTestResult}/>
                   <div className="flex justify-end space-x-2 items-center pr-4">
                       {dataTestResult.totalFailedTestCase == 0 && (
                         <Button
@@ -154,8 +150,6 @@ const TestResultPage = () => {
                       </Button>
                   </div>
                 </div>
-            </ResizablePanel>
-            </ResizablePanelGroup>
         </div>
         </Layout>
     );
