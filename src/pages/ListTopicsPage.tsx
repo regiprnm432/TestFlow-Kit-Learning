@@ -391,7 +391,7 @@ const ListTopicsPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="min-h-screen p-4 md:p-6 ">
+        <div className="min-h-screen scroll-auto p-4 md:p-6 ">
           <div className="bg-white shadow-md rounded-lg overflow-x-auto">
           {infoMessage && (
               <div className="p-4 mb-4 text-green-500 bg-green-100 rounded-md">
@@ -426,7 +426,12 @@ const ListTopicsPage: React.FC = () => {
       </div>
 
       {showConfirmation && (
-        <ConfirmationModal message="Apakah Anda yakin ingin menghapus topik ini?" onConfirm={confirmDelete} onCancel={cancelDelete} />
+        <ConfirmationModal 
+          message="Apakah Anda yakin ingin menghapus topik ini?" 
+          onConfirm={confirmDelete} 
+          onCancel={cancelDelete} 
+          isSidebarOpen={isSidebarOpen}
+        />
       )}
 
      

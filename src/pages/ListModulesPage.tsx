@@ -268,6 +268,7 @@ const ListModulesPage = () => {
           message="Apakah kamu benar-benar ingin menghapus modul ini? Modul akan dihapus secara permanen."
           onConfirm={() => handleDelete(moduleToDelete.id)}
           onCancel={closeModal}
+          isSidebarOpen={isSidebarOpen}
         />
       )}
     </div>
