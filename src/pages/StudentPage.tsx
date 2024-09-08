@@ -434,6 +434,7 @@ const StudentPage: React.FC = () => {
           message="Are you sure you want to delete this student?"
           onConfirm={confirmDelete}
           onCancel={cancelDelete}
+          isSidebarOpen={isSidebarOpen}
         />
       )}
     </div>
