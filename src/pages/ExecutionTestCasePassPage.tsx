@@ -140,7 +140,6 @@ const ExecutionTestCasePassPage: React.FC = () => {
   return (
     <Layout>
       <Menu />
-      <Menu />
         <div className="flex flex-col md:flex-row w-screen min-h-screen">
           <div className="flex flex-col w-full md:w-1/2">
             <ModuleSpecificationCard />
@@ -168,7 +167,7 @@ const ExecutionTestCasePassPage: React.FC = () => {
               </div>
               {/* Penanda untuk scroll ke bagian paling bawah */}
               <div ref={bottomRef}></div>
-              <div className="space-x-2 items-center justify-end">
+              <div className="space-x-2 items-center p-4 justify-end">
                 <Button
                   variant="outline"
                   className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10] hover:bg-blue-800 hover:text-white"

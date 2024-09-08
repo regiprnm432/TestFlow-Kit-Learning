@@ -132,7 +132,7 @@ const TestResultPage = () => {
                 codeCoveragePercentage={dataTestResult.coverageScore}
               />
               <TestResultCard dataResultTest = {dataTestResult}/>
-                  <div className="flex justify-end space-x-2 items-center pr-4">
+                  <div className="flex justify-end space-x-2 items-center p-4">
                       {dataTestResult.totalFailedTestCase == 0 && (
                         <Button
                         variant="outline"
