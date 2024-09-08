@@ -325,7 +325,7 @@ const GradeStudentPage: React.FC = () => {
     <div className="flex flex-col lg:flex-row w-screen lg:w-screen">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className={`flex-1 ${isSidebarOpen ? "ml-64" : "ml-20"} transition-all duration-300 `}>
-        <div className="w-full bg-white p-4 shadow mb-6 ">
+        <div className="w-full bg-white p-4 shadow">
           <div className="max-w-screen-xl mx-auto">
           <h1 className="lg:text-2xl text-xl font-bold text-blue-800 mb-6 mt-4">
               Grade Pencapaian Mahasiswa
@@ -346,7 +346,7 @@ const GradeStudentPage: React.FC = () => {
                   ))}
                 </select>
               </div>
-              <div className="mr-4 relative w-full md:w-1/2">
+              <div className="relative w-full md:w-1/2">
                 <input
                   type="text"
                   placeholder="Search or type"
@@ -359,15 +359,15 @@ const GradeStudentPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="min-h-screen p-4 md:p-6">
-          <div className="bg-white shadow-md rounded-lg overflow-x-auto">
-            <button
-              className="flex items-center text-sm bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-600 mb-4 ml-auto"
+        <button
+              className="flex items-center text-sm bg-blue-800 text-white px-4 m-4 rounded hover:bg-blue-600 ml-auto"
               onClick={handleDownload}
             >
               <FaDownload className="mr-0 md:mr-2" />
               <span className="hidden md:inline">Unduh</span>
             </button>
+        <div className="min-h-screen px-4">
+          <div className="bg-white shadow-md rounded-lg overflow-x-auto">
             <div className="bg-white shadow-md rounded-lg">
               {students.length === 0 ? (
                 <div className="p-4 text-center text-red-500">
