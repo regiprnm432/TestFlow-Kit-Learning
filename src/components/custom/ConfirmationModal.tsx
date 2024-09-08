@@ -4,14 +4,14 @@ interface ConfirmationModalProps {
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
-  isSidebarOpen: boolean;
+  isSidebarOpen?: boolean;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ message, onConfirm, onCancel, isSidebarOpen }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ message, onConfirm, onCancel,  isSidebarOpen = null }) => {
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 
-                  ${isSidebarOpen ? "ml-64" : "ml-20"} transition-all duration-300`}
+        ${isSidebarOpen === true ? "ml-64" : isSidebarOpen === false ? "ml-20" : ""} transition-all duration-300`}
     >
       <div
         className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-11/12 max-w-md md:max-w-lg lg:max-w-xl"
