@@ -86,7 +86,7 @@ const ExecutionTestCaseFailPage: React.FC = () => {
               codeCoveragePercentage={codeCoveragePercentage}
             />
             <AddTestCaseCard />
-            <div className="mt-6 w-full">
+            <div className="mt-6 h-full w-full">
               <FailCard
                 percentageCoverage={navigationData?.coverage_score || 0}
                 minimumCoverage={navigationData?.minimum_coverage_score || 0}
