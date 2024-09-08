@@ -86,7 +86,7 @@ export function Menu() {
         marginRight: "20px",
       }}
     >
-      <div className="buttons" style={{ display: "flex" }}>
+      <div className="buttons text-sm lg:text-base" style={{ display: "flex" }}>
         <Link
           to={linkPembuatanTestCase}
           className={
@@ -118,13 +118,13 @@ export function Menu() {
         <img
           src={PoinIcon}
           alt="Poin Icon"
-          style={{ width: 24, height: 24, marginRight: 10 }}
+          className="w-5 h-5 lg:w-6 lg:h-6 mr-2"
         />
         <div>
-          <p style={{ fontSize: 14, fontWeight: "bold", marginTop: "3px" }}>
+          <p className='text-xs lg:text-sm font-bold mt-1'>
             Poin Maksimal: {maxPoint}
           </p>
-          <p style={{ fontSize: 12, marginBottom: "5px" }}>
+          <p className="text-xs mb-1">
             {levels[difficultyLevel]}
           </p>
         </div>
