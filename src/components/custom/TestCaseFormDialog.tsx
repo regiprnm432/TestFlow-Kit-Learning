@@ -441,7 +441,7 @@ const TestCaseFormDialog = ({
             </DialogTitle>
             <Form {...form}>
               <form
-                className="space-y-6"
+                className="space-y-6 text-left"
                 onSubmit={form.handleSubmit(handleSubmit)}
               >
                 <FormField
