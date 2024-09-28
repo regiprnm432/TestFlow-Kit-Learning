@@ -17,7 +17,7 @@ const PercentageCodeCoverage: React.FC<PercentageCircleProps> = ({ percentage })
           textColor: '#000',
           pathColor: '#0000ff',
           trailColor: '#d3d3d3',
-          textSize: '24px',
+          textSize: '18px',
         })}
       />
     </div>

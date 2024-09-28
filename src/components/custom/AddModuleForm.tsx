@@ -393,8 +393,8 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-10 w-full mx-auto bg-white shadow-md rounded-md">
-        <div className="grid grid-cols-2 gap-10 pb-14">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-4 sm:p-6 md:p-10 w-full mx-auto bg-white shadow-md rounded-md">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-10 pb-10 md:pb-14">
             <div>
                 <FormField
                     control={form.control}
@@ -485,7 +485,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                     )}
                 />
             </div>
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full sm:pb-1">
                 <FormField
                     control={form.control}
                     name="moduleDescription"
@@ -510,7 +510,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
         </div>
         <div>
         {fields.map((field, index) => (
-          <div key={field.id} className="flex gap-4 bg-blue-50 rounded p-4">
+          <div key={field.id} className="flex flex-col md:flex-row gap-4 bg-blue-50 rounded p-4">
             <FormField
                 control={form.control}
                 name={`parameters.${index}.paramName`}
@@ -668,7 +668,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
           <FormDescription className="text-xs text-gray-500 mt-2 pl-5">*Urutan parameter dan tipe data harus sama dengan source code</FormDescription>
         </div>
     
-        <div className="grid grid-cols-2 gap-10 pb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-10 pb-8">
         <div className="flex flex-col space-y-4">
             <FormField
             control={form.control}
@@ -676,8 +676,8 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
             rules={{ required: "Tipe data kembalian harus dipilih!" }}
             render={({ field, fieldState: { error } }) => (
                 <FormItem>
-                <div className="flex items-center space-x-4">
-                <FormLabel className="w-1/3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                <FormLabel className="w-full sm:w-1/3">
                     Tipe Data Kembalian
                     <span className="text-red-500">*</span>
                     :
@@ -713,8 +713,8 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
             }}
             render={({ field, fieldState:{error} }) => (
                 <FormItem>
-                <div className="flex items-center space-x-4">
-                <FormLabel className="w-1/3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                <FormLabel className="w-full sm:w-1/3">
                     Source Code
                     {!editMode && (<span className="text-red-500">*</span>)}
                     :
@@ -755,8 +755,8 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
             rules={{ required: "Tingkat kesulitan harus dipilih!" }}
             render={({ field, fieldState: {error} }) => (
                 <FormItem>
-                 <div className="flex items-center space-x-4">
-                <FormLabel className="w-1/3">
+                 <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                 <FormLabel className="w-full sm:w-1/3">
                     Tingkat Kesulitan
                     <span className="text-red-500">*</span>
                     :
@@ -797,8 +797,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
               }
             }}
             render={({ field, fieldState: {error} }) => (
-                <FormItem className="flex items-center space-x-4">
-                <FormLabel className="w-1/3">
+                <FormItem>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                <FormLabel className="w-full sm:w-1/3">
                     Nama Class
                     <span className="text-red-500">*</span>
                     :
@@ -814,6 +815,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                         )}
                     </div>
                 </FormControl>
+                </div>
                 </FormItem>
             )}
             />
@@ -828,8 +830,9 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
               }
             }}
             render={({ field, fieldState:{error} }) => (
-                <FormItem className="flex items-center space-x-4">
-                <FormLabel className="w-1/3">
+                <FormItem>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                <FormLabel className="w-full sm:w-1/3">
                     Nama Fungsi
                     <span className="text-red-500">*</span>
                     :
@@ -845,6 +848,7 @@ const AddModuleForm: React.FC<AddModuleFormProps> = ({ onAddModule, onEditModule
                         )}
                     </div>
                 </FormControl>
+                </div>
                 </FormItem>
             )}
             />
