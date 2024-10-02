@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  FaUserPlus,
+  // FaUserPlus,
   FaTachometerAlt,
   FaBook,
   FaClipboard,
@@ -132,10 +132,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       </div>
       {isOpen && (
         <div className="p-4 w-full">
-          <button className="w-full bg-white text-blue-800 hover:bg-blue-600 hover:text-white p-2 rounded flex items-center justify-center mb-2">
+          {/* <button className="w-full bg-white text-blue-800 hover:bg-blue-600 hover:text-white p-2 rounded flex items-center justify-center mb-2">
             <FaUserPlus className="mr-2" />
             <span style={{ fontSize: "14px" }}>Tambahkan Mahasiswa</span>
-          </button>
+          </button> */}
           <button
             className="w-full bg-white text-blue-800 hover:bg-red-600 hover:text-white p-2 rounded flex items-center justify-center"
             onClick={handleLogout}
