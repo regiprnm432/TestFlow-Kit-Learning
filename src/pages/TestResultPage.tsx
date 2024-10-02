@@ -77,14 +77,13 @@ const TestResultPage = () => {
             if (response.status === 403) {
               // throw new Error('Forbidden: Access is denied');
               navigate("/error")
-            } else {
+            } else if (response.status !== 404) {
               throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            } 
+          }else{
+            const data = await response.json();
+            setDataTestResult(data || null);
           }
-    
-          const data = await response.json();
-          setDataTestResult(data || null);
-
         } catch (error) {
           console.error('Error fetching data:', error);
           setError((error as Error).message);
@@ -133,7 +132,7 @@ const TestResultPage = () => {
               />
               <TestResultCard dataResultTest = {dataTestResult}/>
                   <div className="flex justify-end space-x-2 items-center p-4">
-                      {dataTestResult.totalFailedTestCase == 0 && (
+                      {(dataTestResult.totalFailedTestCase == 0 && dataTestResult.executionDate !== "") && (
                         <Button
                         variant="outline"
                         className="bg-white text-sm text-blue-800 border-2 border-blue-800 rounded-[10px] hover:bg-blue-800 hover:text-white"
@@ -142,12 +141,14 @@ const TestResultPage = () => {
                           Coverage Test
                         </Button>
                       )}
+                      {dataTestResult.executionDate !== "" && (
                       <Button
                           className="bg-blue-800 text-sm text-white border-2 border-blue-800 rounded-[10px] pt-0 pb-0"
                           onClick={handleTestReport}
                       >
                           Test Report
                       </Button>
+                      )}
                   </div>
                 </div>
         </div>

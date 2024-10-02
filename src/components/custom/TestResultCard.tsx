@@ -138,7 +138,9 @@ const TestResultCard: React.FC<TestResultCardProps> = ({
   return (
     <Card className="w-full flex flex-col">
     <CardHeader className="flex justify-between">
+    {(dataResultTest.totalTestCase > 0 ) && (
       <CardTitle className="text-base module-title m-0">Hasil Pengujian {(dataResultTest.totalPassTestCase/dataResultTest.totalTestCase)*100}% Pass</CardTitle>
+    )}
     </CardHeader>
     <CardContent>
       <div className="mb-6 text-sm text-gray-600">

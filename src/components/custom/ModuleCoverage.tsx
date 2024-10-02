@@ -161,7 +161,34 @@ const ModuleCoverage: React.FC<ModuleCoverageProps> = ({
     );
   }
 
-  if (dataResultTest.totalTestCase == dataResultTest.totalPassTestCase){
+  if (dataResultTest.totalTestCase == 0){
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-lg h-full">
+        <div className="overflow-y-auto">
+          {dataModule && dataModule.data_modul && dataModule.data_parameter_modul && (
+            <>
+              <h3 className="text-base font-bold mb-4 text-gray-800">Spesifikasi Modul</h3>
+              <div className='border border-black p-2 mb-6 bg-slate-50'>
+                <p className="mb-4 text-sm  text-gray-600">Modul : {dataModule.data_modul.ms_nama_modul}</p>
+                <p className="mb-4 text-sm  text-gray-600">{dataModule.data_modul.ms_deskripsi_modul}</p>
+              </div>
+              <h4 className="text-base font-bold mb-1 text-gray-800">Code Coverage</h4>
+              <div className="text-sm p-2 rounded-lg">
+                {/* <CopyBlock
+                  language="java"
+                  text={sourceCode || 'Loading source code...'}
+                  showLineNumbers={true}
+                  theme={dracula}
+                  codeBlock
+                /> */}
+              </div>
+              <p className="mb-6 text-sm  text-red-600">Code Coverage Tidak Terbentuk, karena belum ada test case </p>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }else if (dataResultTest.totalTestCase == dataResultTest.totalPassTestCase){
     return (
       <div className="p-6 bg-white rounded-lg shadow-lg h-full">
         <div className="overflow-y-auto">
