@@ -1,13 +1,30 @@
 //import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate  } from 'react-router-dom';
 import logo_polban from "../assets/logo/polban.png";
 import logo_landing from "../assets/logo/landing.png";
 const LandingPage = () => {
+  const sessionData = localStorage.getItem('session')
+  let session = null
+  if (sessionData != null){
+      session = JSON.parse(sessionData);
+  }
+
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
     navigate('/login');
   };
+
+  useEffect(() => {
+    if (session != null){
+      if (session.login_type !== "student") {
+        navigate("/dashboard-teacher");
+      } else {
+        navigate("/dashboard-student")  
+      }
+    }
+  }, []); 
 
   return (
     <div className="min-h-screen w-screen bg-blue-900 text-white flex flex-col">
