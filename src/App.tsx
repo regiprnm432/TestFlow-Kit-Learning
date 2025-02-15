@@ -14,6 +14,7 @@ import ListModulesPage from "./pages/ListModulesPage";
 import ListChallengesPage from "./pages/ListChallangesPage";
 import AccessTopicsPage from "./pages/AccessTopicsPage";
 import GradeStudentPage from "./pages/GradeStudentPage";
+import ProgressStudentPage from "./pages/ProgressStudentPage";
 import StudentPage from "./pages/StudentPage";
 import AddTopicPage from "./pages/AddTopicPage";
 
@@ -36,6 +37,7 @@ function App() {
         <Route path="/list-challanges" element={<ListChallengesPage />}/>
         <Route path="/challenge" element={<AccessTopicsPage />} />
         <Route path="/grade" element={<GradeStudentPage />} />
+        <Route path="/progress" element={<ProgressStudentPage />} />
         <Route path="/data-mahasiswa" element={<StudentPage />} />
         <Route path="/add-topics" element={<AddTopicPage />} />
       </Routes>

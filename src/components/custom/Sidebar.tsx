@@ -96,8 +96,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               onClick={() => handleItemClick("/grade")}
             >
               <FaUserGraduate size={16} />
-              {isOpen && <span className="ml-2">Grade Siswa</span>}
+              {isOpen && <span className="ml-2">Grade Mahasiswa</span>}
             </li>
+            <li
+              className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
+                activeItem === "/progress"
+                  ? "bg-white text-blue-800"
+                  : "hover:bg-white hover:text-blue-800"
+              }`}
+              onClick={() => handleItemClick("/progress")}
+            >
+              <FaUserGraduate size={16} />
+              {isOpen && <span className="ml-2">Progress Mahasiswa</span>}
+            </li>
+            
             {/* <li
               className={`flex items-center mb-2 cursor-pointer p-2 rounded ${
                 activeItem === "/materi"
