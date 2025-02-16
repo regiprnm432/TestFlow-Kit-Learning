@@ -198,7 +198,7 @@ const ProgressStudentPage: React.FC = () => {
     setCurrentPage(page);
     setSearchQuery(keyword);
     try {
-      const response = await fetch(`${apiUrl}/grade/download?keyword=${keyword}&id_topik=${id_topik}&page=${page}&limit=${itemsPerPage}`, {
+      const response = await fetch(`${apiUrl}/progress/download?keyword=${keyword}&id_topik=${id_topik}&page=${page}&limit=${itemsPerPage}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
