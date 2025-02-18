@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaSortUp, FaSortDown } from 'react-icons/fa';
+// import { FaSortUp, FaSortDown } from 'react-icons/fa';
 
 interface Student {
   no: number;
@@ -24,18 +24,19 @@ interface ProgressStudentTableProps {
   sortDirection?: 'asc' | 'desc';
 }
 
-const ProgressStudentTable: React.FC<ProgressStudentTableProps> = ({ students, topiks,  onSort, sortColumn, sortDirection }) => {
-  const renderSortIcon = (column: 'poin' | 'modul') => {
-    if (sortColumn === column) {
-      return sortDirection === 'asc' ? <FaSortUp /> : <FaSortDown />;
-    }
-    return (
-      <span className="text-gray-400 flex flex-col">
-        <FaSortUp />
-        <FaSortDown />
-      </span>
-    );
-  };
+// const ProgressStudentTable: React.FC<ProgressStudentTableProps> = ({ students, topiks,  onSort, sortColumn, sortDirection }) => {
+const ProgressStudentTable: React.FC<ProgressStudentTableProps> = ({ students, topiks }) => {
+  //   const renderSortIcon = (column: 'poin' | 'modul') => {
+  //   if (sortColumn === column) {
+  //     return sortDirection === 'asc' ? <FaSortUp /> : <FaSortDown />;
+  //   }
+  //   return (
+  //     <span className="text-gray-400 flex flex-col">
+  //       <FaSortUp />
+  //       <FaSortDown />
+  //     </span>
+  //   );
+  // };
 
   return (
     <div className="bg-white shadow-md rounded-lg overflow-x-auto">
