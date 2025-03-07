@@ -224,7 +224,7 @@ const LoginPage = () => {
       <div className="hidden md:flex md:w-1/2 bg-blue-800 text-white p-8 items-center justify-center">
         <div className="flex flex-col items-center justify-center">
           <h3 className="text-3xl font-bold mb-2 text-center">
-            Masuk dan Lihat,
+            Test Flow Kit Learning
           </h3>
           <p className="mb-4 text-xl mt-4 text-center">
             Anda Bisa Belajar Banyak Hal Tentang Pembuatan Test Case dengan Path
